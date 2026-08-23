@@ -1,3 +1,6 @@
+/* Design tokens for the Login / Reports screens.
+   Names are deliberately distinct from the tokens in src/index.css
+   (--bg-dark, --text-primary, --cyan-glow, ...) so both systems coexist. */
 :root {
   /* Surfaces */
   --bg: #080b11;
@@ -12,7 +15,7 @@
   --text-dim: #5c6878;
   --text-h: #e9eef5;
 
-  /* Accents */
+  /* Accents — cyan matches src/index.css --cyan-glow (#00e5ff) */
   --cyan: #00e5ff;
   --cyan-2: #22d3ee;
   --cyan-dim: rgba(0, 229, 255, 0.12);
@@ -25,26 +28,10 @@
   --display: 'Space Grotesk', system-ui, 'Segoe UI', sans-serif;
 
   color-scheme: dark;
-  font: 16px/1.5 var(--mono);
-  color: var(--text);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 * {
   box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100svh;
-  background-color: var(--bg);
-  /* Faint tactical grid */
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
-  background-size: 42px 42px;
 }
 
 #root {
@@ -53,34 +40,62 @@ body {
   flex-direction: column;
 }
 
-h1,
-h2,
-h3 {
+/* ------------------------------------------------------------------
+   Everything below is scoped to the two screens this stylesheet owns.
+   Keeping it scoped means the global `html, body` rules in
+   src/index.css cannot restyle these pages, and these rules cannot
+   leak into the landing / dashboard / timeline / settings pages.
+   ------------------------------------------------------------------ */
+.auth,
+.reports {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font: 16px/1.5 var(--mono);
+  color: var(--text);
+  background-color: var(--bg);
+  /* Faint tactical grid */
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 42px 42px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.auth :is(h1, h2, h3),
+.reports :is(h1, h2, h3) {
   font-family: var(--display);
   color: var(--text-h);
   margin: 0;
 }
 
-p {
+.auth p,
+.reports p {
   margin: 0;
 }
 
-a {
+.auth a,
+.reports a {
   color: var(--cyan);
   text-decoration: none;
 }
 
-button {
+.auth button,
+.reports button {
   font-family: inherit;
   cursor: pointer;
 }
 
-input {
+.auth input,
+.reports input {
   font-family: var(--mono);
 }
 
-/* Shared: small uppercase mono label */
-.label {
+/* Small uppercase mono label */
+.auth .label,
+.reports .label {
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -88,7 +103,7 @@ input {
   color: var(--text);
 }
 
-/* Shared: brand wordmark */
+/* Brand wordmark */
 .logo {
   display: inline-flex;
   align-items: center;
@@ -99,19 +114,25 @@ input {
 .logo-text {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 25px;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
   white-space: nowrap;
+  color: var(--text-h);
 }
 
-/* Shared: card shell used by both pages */
+.logo-text em {
+  font-style: normal;
+  color: var(--cyan);
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+}
+
+/* Card shell used by both pages */
 .panel {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
 }
 
-/* Shared: status dot */
+/* Status dot */
 .dot {
   width: 7px;
   height: 7px;
@@ -121,7 +142,8 @@ input {
   flex: none;
 }
 
-:focus-visible {
+.auth :focus-visible,
+.reports :focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 2px;
 }

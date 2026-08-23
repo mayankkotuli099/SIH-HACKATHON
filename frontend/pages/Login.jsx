@@ -174,7 +174,7 @@ function Login() {
       </main>
 
       <footer className="auth-foot">
-        <span>&copy; 2024 Crime Intel AI - Intelligence Beyond Connections</span>
+        <span>&copy; 2024 Kavach AI - Intelligence Beyond Connections</span>
         <nav className="auth-foot-links">
           {FOOTER_LINKS.map((link) => (
             <a key={link} href="#/">
