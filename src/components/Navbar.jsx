@@ -17,8 +17,10 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
       onNavigate && onNavigate('timeline');
     } else if (id === 'settings') {
       onNavigate && onNavigate('settings');
+    } else if (id === 'entities') {
+      onNavigate && onNavigate('entities');
     } else {
-      // For network, entities, cases
+      // For network, cases
       onNavigate && onNavigate('home');
       setTimeout(() => {
         const el = document.getElementById('explore') || document.getElementById('workflow');

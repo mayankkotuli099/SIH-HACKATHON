@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import DashboardPage from './pages/DashboardPage';
 import TimelinePage from './pages/TimelinePage';
 import SettingsPage from './pages/SettingsPage';
+import EntityPage from './pages/EntityPage';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -36,6 +37,10 @@ export default function App() {
 
         {currentPage === 'timeline' && (
           <TimelinePage onNavigate={handleNavigate} />
+        )}
+
+        {currentPage === 'entities' && (
+          <EntityPage onNavigate={handleNavigate} />
         )}
 
         {currentPage === 'settings' && (
