@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Navbar({ activePage = 'home', onNavigate }) {
   const navItems = [
-    { id: 'home', label: 'HOME' },
+    { id: 'dashboard', label: 'DASHBOARD' },
     { id: 'network', label: 'NETWORK' },
     { id: 'timeline', label: 'TIMELINE' },
     { id: 'entities', label: 'ENTITIES' },
@@ -11,14 +11,14 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
   ];
 
   const handleNavClick = (id) => {
-    if (id === 'timeline') {
+    if (id === 'dashboard') {
+      onNavigate && onNavigate('dashboard');
+    } else if (id === 'timeline') {
       onNavigate && onNavigate('timeline');
     } else if (id === 'settings') {
       onNavigate && onNavigate('settings');
-    } else if (id === 'home' || id === 'dashboard') {
-      onNavigate && onNavigate('home');
     } else {
-      // For other tabs (network, entities, cases), navigate to home and scroll to section
+      // For network, entities, cases
       onNavigate && onNavigate('home');
       setTimeout(() => {
         const el = document.getElementById('explore') || document.getElementById('workflow');
@@ -45,7 +45,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        {/* Brand Logo & Name (Clicking always goes to Home page) */}
+        {/* Brand Logo & Kavach AI text (Acts as Home Button) */}
         <div
           onClick={() => onNavigate && onNavigate('home')}
           style={{
@@ -55,7 +55,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
             cursor: 'pointer',
             userSelect: 'none'
           }}
-          title="Return to Home Page"
+          title="Kavach AI - Return to Home Page"
         >
           <div style={{
             width: '28px',
@@ -85,7 +85,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
           </span>
         </div>
 
-        {/* Center Nav Items */}
+        {/* Center Nav Items (Dashboard button in its original place!) */}
         <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
           {navItems.map((item) => {
             const isActive = activePage === item.id;
@@ -124,13 +124,13 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
           })}
         </nav>
 
-        {/* CTA Button */}
+        {/* Right CTA Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button
-            onClick={() => onNavigate && onNavigate(activePage === 'home' ? 'timeline' : 'home')}
+            onClick={() => onNavigate && onNavigate(activePage === 'home' ? 'dashboard' : 'home')}
             className="btn-cyan"
           >
-            {activePage === 'home' ? 'OPEN TIMELINE' : 'BACK TO HOME'}
+            {activePage === 'home' ? 'GET STARTED' : 'HOME'}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>

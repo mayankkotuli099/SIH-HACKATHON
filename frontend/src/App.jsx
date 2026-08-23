@@ -5,6 +5,7 @@ import CoreEngine from './components/CoreEngine';
 import OperationalWorkflow from './components/OperationalWorkflow';
 import AIChatbotWidget from './components/AIChatbotWidget';
 import Footer from './components/Footer';
+import DashboardPage from './pages/DashboardPage';
 import TimelinePage from './pages/TimelinePage';
 import SettingsPage from './pages/SettingsPage';
 
@@ -21,17 +22,24 @@ export default function App() {
       <Navbar activePage={currentPage} onNavigate={handleNavigate} />
 
       <main style={{ flex: 1 }}>
-        {currentPage === 'timeline' ? (
-          <TimelinePage onNavigate={handleNavigate} />
-        ) : currentPage === 'settings' ? (
-          <SettingsPage onNavigate={handleNavigate} />
-        ) : (
-          /* Default Home / Landing Page View */
+        {currentPage === 'home' && (
           <>
-            <Hero onExplore={() => handleNavigate('timeline')} />
+            <Hero onExplore={() => handleNavigate('dashboard')} />
             <CoreEngine />
             <OperationalWorkflow />
           </>
+        )}
+
+        {currentPage === 'dashboard' && (
+          <DashboardPage onNavigate={handleNavigate} />
+        )}
+
+        {currentPage === 'timeline' && (
+          <TimelinePage onNavigate={handleNavigate} />
+        )}
+
+        {currentPage === 'settings' && (
+          <SettingsPage onNavigate={handleNavigate} />
         )}
       </main>
 
