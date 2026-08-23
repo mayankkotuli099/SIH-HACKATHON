@@ -16,6 +16,7 @@ export default function EntityPage({ onNavigate }) {
 
   return (
     <div style={{
+      flex: 1,
       minHeight: 'calc(100vh - 68px)',
       backgroundColor: '#07090E',
       color: '#FFFFFF',
@@ -23,7 +24,8 @@ export default function EntityPage({ onNavigate }) {
       padding: '2rem 2.5rem 3rem 2.5rem',
       position: 'relative',
       maxWidth: '1440px',
-      margin: '0 auto'
+      margin: '0 auto',
+      width: '100%'
     }}>
       {exportNotification && (
         <div style={{
