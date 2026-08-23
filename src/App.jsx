@@ -70,6 +70,10 @@ export default function App() {
               <DashboardPage onNavigate={handleNavigate} />
             )}
 
+            {currentPage === 'network' && (
+              <NetworkPage onNavigate={handleNavigate} />
+            )}
+
             {currentPage === 'timeline' && (
               <TimelinePage onNavigate={handleNavigate} />
             )}
