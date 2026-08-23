@@ -116,7 +116,30 @@ export default function TimelinePage({ onNavigate }) {
 
           {/* Nav Links */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <button
+              onClick={() => onNavigate && onNavigate('home')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '10px 14px',
+                background: 'rgba(0, 229, 255, 0.05)',
+                border: '1px solid rgba(0, 229, 255, 0.2)',
+                borderRadius: '4px',
+                color: 'var(--cyan-glow)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11.5px',
+                fontWeight: 600,
+                letterSpacing: '1px',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              <span>🏠</span>
+              HOME / OVERVIEW
+            </button>
             {[
+              { id: 'timeline', label: 'TIMELINE (ACTIVE)', icon: '⏱' },
               { id: 'anomalies', label: 'ANOMALIES', icon: '⚡' },
               { id: 'location', label: 'LOCATION', icon: '📍' },
               { id: 'influencers', label: 'INFLUENCERS', icon: '🕸' },

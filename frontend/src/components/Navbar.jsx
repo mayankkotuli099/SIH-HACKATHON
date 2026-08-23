@@ -1,14 +1,31 @@
 import React from 'react';
 
-export default function Navbar({ activePage = 'landing', onNavigate }) {
+export default function Navbar({ activePage = 'home', onNavigate }) {
   const navItems = [
-    { id: 'landing', label: 'DASHBOARD' },
+    { id: 'home', label: 'HOME' },
     { id: 'network', label: 'NETWORK' },
     { id: 'timeline', label: 'TIMELINE' },
     { id: 'entities', label: 'ENTITIES' },
     { id: 'cases', label: 'CASES' },
     { id: 'settings', label: 'SETTINGS' },
   ];
+
+  const handleNavClick = (id) => {
+    if (id === 'timeline') {
+      onNavigate && onNavigate('timeline');
+    } else if (id === 'settings') {
+      onNavigate && onNavigate('settings');
+    } else if (id === 'home' || id === 'dashboard') {
+      onNavigate && onNavigate('home');
+    } else {
+      // For other tabs (network, entities, cases), navigate to home and scroll to section
+      onNavigate && onNavigate('home');
+      setTimeout(() => {
+        const el = document.getElementById('explore') || document.getElementById('workflow');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    }
+  };
 
   return (
     <header style={{
@@ -28,10 +45,17 @@ export default function Navbar({ activePage = 'landing', onNavigate }) {
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        {/* Brand Logo (clickable to return to Home/Landing) */}
+        {/* Brand Logo & Name (Clicking always goes to Home page) */}
         <div
-          onClick={() => onNavigate && onNavigate('landing')}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+          onClick={() => onNavigate && onNavigate('home')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+          title="Return to Home Page"
         >
           <div style={{
             width: '28px',
@@ -68,7 +92,7 @@ export default function Navbar({ activePage = 'landing', onNavigate }) {
             return (
               <button
                 key={item.id}
-                onClick={() => onNavigate && onNavigate(item.id)}
+                onClick={() => handleNavClick(item.id)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -103,10 +127,10 @@ export default function Navbar({ activePage = 'landing', onNavigate }) {
         {/* CTA Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button
-            onClick={() => onNavigate && onNavigate(activePage === 'timeline' ? 'landing' : 'timeline')}
+            onClick={() => onNavigate && onNavigate(activePage === 'home' ? 'timeline' : 'home')}
             className="btn-cyan"
           >
-            {activePage === 'timeline' ? 'VIEW DASHBOARD' : 'OPEN TIMELINE'}
+            {activePage === 'home' ? 'OPEN TIMELINE' : 'BACK TO HOME'}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>

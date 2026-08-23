@@ -9,7 +9,7 @@ import TimelinePage from './pages/TimelinePage';
 import SettingsPage from './pages/SettingsPage';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('landing');
+  const [currentPage, setCurrentPage] = useState('home');
 
   const handleNavigate = (page) => {
     setCurrentPage(page);
@@ -21,25 +21,17 @@ export default function App() {
       <Navbar activePage={currentPage} onNavigate={handleNavigate} />
 
       <main style={{ flex: 1 }}>
-        {currentPage === 'landing' && (
+        {currentPage === 'timeline' ? (
+          <TimelinePage onNavigate={handleNavigate} />
+        ) : currentPage === 'settings' ? (
+          <SettingsPage onNavigate={handleNavigate} />
+        ) : (
+          /* Default Home / Landing Page View */
           <>
             <Hero onExplore={() => handleNavigate('timeline')} />
             <CoreEngine />
             <OperationalWorkflow />
           </>
-        )}
-
-        {currentPage === 'timeline' && (
-          <TimelinePage onNavigate={handleNavigate} />
-        )}
-
-        {currentPage === 'settings' && (
-          <SettingsPage onNavigate={handleNavigate} />
-        )}
-
-        {/* Fallback for other tabs: jump to timeline or landing */}
-        {(currentPage !== 'landing' && currentPage !== 'timeline' && currentPage !== 'settings') && (
-          <TimelinePage onNavigate={handleNavigate} />
         )}
       </main>
 
