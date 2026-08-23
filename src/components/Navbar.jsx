@@ -27,6 +27,10 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
   const handleNavClick = (id) => {
     if (id === 'dashboard') {
       onNavigate && onNavigate('dashboard');
+    } else if (id === 'network') {
+      onNavigate && onNavigate('network');
+    } else if (id === 'cases') {
+      onNavigate && onNavigate('cases');
     } else if (id === 'timeline') {
       onNavigate && onNavigate('timeline');
     } else if (id === 'settings') {

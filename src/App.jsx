@@ -10,6 +10,8 @@ import DashboardPage from './pages/DashboardPage';
 import TimelinePage from './pages/TimelinePage';
 import SettingsPage from './pages/SettingsPage';
 import EntityPage from './pages/EntityPage';
+import CasesPage from './pages/CasesPage';
+import NetworkPage from './pages/NetworkPage';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -48,11 +50,11 @@ export default function App() {
         }}>
           {/* Tactical Collapsible Sidebar */}
           <Sidebar
-            activePage={currentPage}
-            onNavigate={handleNavigate}
-            isCollapsed={isSidebarCollapsed}
-            onToggle={toggleSidebar}
-          />
+              activePage={currentPage}
+              onNavigate={handleNavigate}
+              isCollapsed={isSidebarCollapsed}
+              onToggle={toggleSidebar}
+            />
 
           {/* Main Content Area */}
           <main style={{
@@ -80,8 +82,16 @@ export default function App() {
               <SettingsPage onNavigate={handleNavigate} />
             )}
 
+            {currentPage === 'cases' && (
+              <CasesPage />
+            )}
+
+            {currentPage === 'network' && (
+              <NetworkPage onNavigate={handleNavigate} />
+            )}
+
             {/* Tactical Fallbacks / Modules for Network, Anomalies, Location, Influencers, Cases */}
-            {(currentPage === 'network' || currentPage === 'anomalies' || currentPage === 'location' || currentPage === 'influencers' || currentPage === 'cases' || currentPage === 'ai_assistant') && (
+            {(currentPage === 'anomalies' || currentPage === 'location' || currentPage === 'ai_assistant') && (
               <div style={{
                 flex: 1,
                 padding: '2.5rem 3rem',
@@ -114,11 +124,8 @@ export default function App() {
                       letterSpacing: '1px',
                       textTransform: 'uppercase'
                     }}>
-                      {currentPage === 'network' && '🕸️ Network Graph & Link Analysis'}
                       {currentPage === 'anomalies' && '⚡ Real-time Threat Anomalies'}
                       {currentPage === 'location' && '📍 Geospatial Vectors & Tracking'}
-                      {currentPage === 'influencers' && '🧬 High-Centrality Influencer Matrix'}
-                      {currentPage === 'cases' && '📁 Active Case Dossiers & Evidence'}
                       {currentPage === 'ai_assistant' && '🤖 Neural Copilot & AI Investigation'}
                     </h1>
                   </div>
@@ -145,11 +152,8 @@ export default function App() {
                     margin: '0 auto 1.5rem auto',
                     fontSize: '28px'
                   }}>
-                    {currentPage === 'network' && '🕸️'}
                     {currentPage === 'anomalies' && '⚡'}
                     {currentPage === 'location' && '📍'}
-                    {currentPage === 'influencers' && '🧬'}
-                    {currentPage === 'cases' && '📁'}
                     {currentPage === 'ai_assistant' && '🤖'}
                   </div>
 

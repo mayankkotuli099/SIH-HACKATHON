@@ -28,7 +28,6 @@ export default function Sidebar({
         { id: 'dashboard', label: 'DASHBOARD', icon: '📊', badge: null, desc: 'Live Telemetry & KPIs' },
         { id: 'timeline', label: 'TIMELINE', icon: '⏱️', badge: 'LIVE', badgeColor: '#00E5FF', desc: 'Chronological Event Trace' },
         { id: 'entities', label: 'ENTITY 360', icon: '🛡️', badge: 'DOSSIER', badgeColor: '#00E676', desc: 'Biometric & Profile Intel' },
-        { id: 'network', label: 'NETWORK GRAPH', icon: '🕸️', badge: null, desc: 'Cluster & Node Linkage' }
       ]
     },
     {
@@ -36,7 +35,7 @@ export default function Sidebar({
       items: [
         { id: 'anomalies', label: 'ANOMALIES', icon: '⚡', badge: '3 NEW', badgeColor: '#FF5555', desc: 'Neural Outlier Alerts' },
         { id: 'location', label: 'GEO TRACKING', icon: '📍', badge: null, desc: 'Spatial Heatmaps & Geofence' },
-        { id: 'influencers', label: 'INFLUENCERS', icon: '🧬', badge: null, desc: 'High-Centrality Actors' },
+        { id: 'network', label: 'NETWORK GRAPH', icon: '🕸️', badge: null, desc: 'Cluster & Node Linkage' },
         { id: 'ai_assistant', label: 'AI COPILOT', icon: '🤖', badge: 'GPT-4.5', badgeColor: '#A855F7', desc: 'Neural Investigation Agent' }
       ]
     },
