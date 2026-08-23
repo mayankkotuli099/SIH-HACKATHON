@@ -57,7 +57,7 @@ export default function Navbar() {
             alignItems: 'center',
             gap: '6px'
           }}>
-            CRIME INTEL <span style={{ color: 'var(--cyan-glow)', textShadow: '0 0 10px rgba(0,229,255,0.6)' }}>AI</span>
+            KAVACH <span style={{ color: 'var(--cyan-glow)', textShadow: '0 0 10px rgba(0,229,255,0.6)' }}>AI</span>
           </span>
         </div>
 

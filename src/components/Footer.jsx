@@ -32,7 +32,7 @@ export default function Footer() {
           letterSpacing: '1px',
           color: 'var(--text-muted)'
         }}>
-          &copy; 2024 CRIME INTEL AI - INTELLIGENCE BEYOND CONNECTIONS
+          &copy; 2024 KAVACH AI - INTELLIGENCE BEYOND CONNECTIONS
         </div>
 
         {/* Right Links */}
