@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function Navbar() {
-  const [activeTab, setActiveTab] = useState('DASHBOARD');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+export default function Navbar({ activePage = 'landing', onNavigate }) {
   const navItems = [
-    { id: 'DASHBOARD', label: 'DASHBOARD' },
-    { id: 'NETWORK', label: 'NETWORK' },
-    { id: 'TIMELINE', label: 'TIMELINE' },
-    { id: 'ENTITIES', label: 'ENTITIES' },
-    { id: 'CASES', label: 'CASES' },
-    { id: 'REPORTS', label: 'REPORTS' },
+    { id: 'landing', label: 'DASHBOARD' },
+    { id: 'network', label: 'NETWORK' },
+    { id: 'timeline', label: 'TIMELINE' },
+    { id: 'entities', label: 'ENTITIES' },
+    { id: 'cases', label: 'CASES' },
+    { id: 'settings', label: 'SETTINGS' },
   ];
 
   return (
@@ -31,8 +28,11 @@ export default function Navbar() {
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        {/* Brand Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+        {/* Brand Logo (clickable to return to Home/Landing) */}
+        <div
+          onClick={() => onNavigate && onNavigate('landing')}
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+        >
           <div style={{
             width: '28px',
             height: '28px',
@@ -64,11 +64,11 @@ export default function Navbar() {
         {/* Center Nav Items */}
         <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
           {navItems.map((item) => {
-            const isActive = activeTab === item.id;
+            const isActive = activePage === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => onNavigate && onNavigate(item.id)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -102,13 +102,16 @@ export default function Navbar() {
 
         {/* CTA Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <a href="#explore" className="btn-cyan">
-            GET STARTED
+          <button
+            onClick={() => onNavigate && onNavigate(activePage === 'timeline' ? 'landing' : 'timeline')}
+            className="btn-cyan"
+          >
+            {activePage === 'timeline' ? 'VIEW DASHBOARD' : 'OPEN TIMELINE'}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
-          </a>
+          </button>
         </div>
       </div>
     </header>
