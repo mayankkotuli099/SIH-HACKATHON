@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api.js';
-import { getInitialTheme, toggleTheme } from '../utils/theme.js';
+import AddCriminalModal from './AddCriminalModal.jsx';
 
 export default function Navbar({ activePage = 'home', onNavigate }) {
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const profileRef = useRef(null);
-  const [theme, setTheme] = useState(getInitialTheme);
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const stored = localStorage.getItem('crimelens_user');
@@ -17,7 +17,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
     }
   });
 
-  // Sync user and theme state
+  // Sync user state
   useEffect(() => {
     const syncUser = () => {
       try {
@@ -27,31 +27,23 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
         setCurrentUser(null);
       }
     };
-    const syncTheme = (e) => {
-      setTheme(e.detail || getInitialTheme());
-    };
     syncUser();
     window.addEventListener('storage', syncUser);
-    window.addEventListener('crimelens-theme-change', syncTheme);
     return () => {
       window.removeEventListener('storage', syncUser);
-      window.removeEventListener('crimelens-theme-change', syncTheme);
     };
   }, []);
 
   const allNavItems = [
     { id: 'dashboard', label: 'DASHBOARD' },
-    { id: 'network', label: 'NETWORK' },
+    { id: 'entities', label: 'CRIMINAL 360' },
+    { id: 'cases', label: 'FIR & CASES' },
+    { id: 'network', label: 'GANG NETWORK' },
     { id: 'timeline', label: 'TIMELINE' },
-    { id: 'entities', label: 'ENTITIES' },
-    { id: 'cases', label: 'CASES' },
-    { id: 'reports', label: 'REPORTS' },
-    { id: 'settings', label: 'SETTINGS' },
+    { id: 'reports', label: 'CHARGESHEETS' },
   ];
 
-  const navItems = activePage === 'home'
-    ? allNavItems
-    : allNavItems.filter((item) => item.id !== 'settings');
+  const navItems = allNavItems;
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -76,12 +68,9 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
       onNavigate && onNavigate('cases');
     } else if (id === 'timeline') {
       onNavigate && onNavigate('timeline');
-    } else if (id === 'settings') {
-      onNavigate && onNavigate('settings');
     } else if (id === 'entities') {
       onNavigate && onNavigate('entities');
     } else {
-      // For network, cases
       onNavigate && onNavigate('home');
       setTimeout(() => {
         const el = document.getElementById('explore') || document.getElementById('workflow');
@@ -188,58 +177,8 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
           })}
         </nav>
 
-        {/* Right Section: CTA Button + Theme Toggle + Profile Button */}
+        {/* Right Section: Sign in / Register Criminal / Profile Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', position: 'relative' }}>
-          {/* Theme Toggle Button */}
-          <button
-            onClick={() => {
-              const next = toggleTheme();
-              setTheme(next);
-            }}
-            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--bg-card)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--cyan-glow)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              fontSize: '15px',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 0 10px rgba(0, 229, 255, 0.1)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--cyan-glow)';
-              e.currentTarget.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-color)';
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
-          >
-            {theme === 'dark' ? (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="5" />
-                <line x1="12" y1="1" x2="12" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="23" />
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                <line x1="1" y1="12" x2="3" y2="12" />
-                <line x1="21" y1="12" x2="23" y2="12" />
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-              </svg>
-            ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              </svg>
-            )}
-          </button>
-
           {/* Show SIGN IN button only if NOT signed in */}
           {!currentUser ? (
             <button
@@ -250,16 +189,30 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
             </button>
           ) : null}
 
+          {/* Prominent + REGISTER CRIMINAL button for Indian Police Authorities */}
           <button
-            onClick={() => onNavigate && onNavigate(activePage === 'home' ? 'dashboard' : 'home')}
-            className="btn-cyan"
-            style={{ padding: '8px 18px', fontSize: '12px' }}
+            onClick={() => setIsAddModalOpen(true)}
+            style={{
+              backgroundColor: '#00E5FF',
+              color: '#07090E',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '8px 14px',
+              fontWeight: 800,
+              fontSize: '12px',
+              fontFamily: 'var(--font-mono, monospace)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)',
+              transition: 'transform 0.15s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            {activePage === 'home' ? 'LAUNCH APP' : 'PORTAL HOME'}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
+            <span>🚨</span>
+            <span>+ ADD CRIMINAL</span>
           </button>
 
           {/* Tactical Profile Button & Dropdown */}
@@ -522,40 +475,6 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
                     <span>⏱️</span>
                     <span>Event Timeline Stream</span>
                   </button>
-
-                  <button
-                    onClick={() => {
-                      setProfileOpen(false);
-                      onNavigate && onNavigate('settings');
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: '9px 12px',
-                      background: 'none',
-                      border: 'none',
-                      borderRadius: '5px',
-                      color: 'var(--text-primary)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '11px',
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      transition: 'all 0.15s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.1)';
-                      e.currentTarget.style.color = 'var(--cyan-glow)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = 'var(--text-primary)';
-                    }}
-                  >
-                    <span>⚙️</span>
-                    <span>Security & Neural Settings</span>
-                  </button>
                 </div>
 
                 {/* Footer Action */}
@@ -606,6 +525,14 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
           </div>
         </div>
       </div>
+
+      <AddCriminalModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onCriminalAdded={() => {
+          if (onNavigate) onNavigate('entities');
+        }}
+      />
     </header>
   );
 }

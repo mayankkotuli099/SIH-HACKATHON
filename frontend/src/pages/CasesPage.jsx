@@ -7,51 +7,109 @@ import './CasesPage.css';
 export default function CasesPage() {
   const [tracking, setTracking] = useState(true);
   const [casesList, setCasesList] = useState([]);
+  const [selectedCase, setSelectedCase] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('ALL');
+  const [isNewCaseModalOpen, setIsNewCaseModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [assetStatus, setAssetStatus] = useState('ACTIVE');
+  const [loading, setLoading] = useState(false);
+
+  // New Case Form State
+  const [newCaseForm, setNewCaseForm] = useState({
+    title: '',
+    leadSuspect: '',
+    priority: 'HIGH',
+    description: '',
+    tags: 'HAWALA, SIGINT'
+  });
+
   const mapElement = useRef(null);
   const mapInstance = useRef(null);
-  const [assetStatus, setAssetStatus] = useState('ACTIVE');
+  const markersRef = useRef([]);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  // Load cases from backend
+  const loadCases = async () => {
+    try {
+      setLoading(true);
+      const data = await api.cases.getAll();
+      if (data && data.cases) {
+        setCasesList(data.cases);
+        if (!selectedCase && data.cases.length > 0) {
+          setSelectedCase(data.cases[0]);
+        }
+      }
+    } catch (err) {
+      console.warn('Using local cases cache');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadCases() {
-      try {
-        const data = await api.cases.getAll();
-        if (data && data.cases) {
-          setCasesList(data.cases);
-        }
-      } catch (err) {
-        console.warn('Using local cases cache');
-      }
-    }
     loadCases();
   }, []);
+
+  // Initialize Map
   useEffect(() => {
     if (!mapElement.current || mapInstance.current) return undefined;
 
-    const map = L.map(mapElement.current, { zoomControl: false, attributionControl: true }).setView([22.5937, 78.9629], 5);
+    const map = L.map(mapElement.current, {
+      zoomControl: false,
+      attributionControl: true
+    }).setView([22.5937, 78.9629], 5);
+
     L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    const target = L.circleMarker([28.6139, 77.209], {
-      radius: 9,
+    // Multi-Crime Police Tactical Incident Markers
+    const targetHomicide = L.circleMarker([28.5700, 77.3200], {
+      radius: 11,
       color: '#ffd1cd',
-      weight: 2,
-      fillColor: '#ff9f98',
-      fillOpacity: 1
-    }).addTo(map).bindPopup('<strong>TGT_ALPHA_99</strong><br/>Unauthorized movement detected');
+      weight: 2.5,
+      fillColor: '#ff5555',
+      fillOpacity: 0.95
+    }).addTo(map).bindPopup('<strong>CRIME SCENE: TRIPLE HOMICIDE</strong><br/>Sector 18 • Suspect: Vikram "Raja" Malhotra<br/>Ballistics Match: 9mm Beretta 92FS');
 
-    const asset = L.circleMarker([19.076, 72.8777], {
-      radius: 9,
+    const targetRapeSIT = L.circleMarker([28.4720, 77.0350], {
+      radius: 11,
+      color: '#e9d5ff',
+      weight: 2.5,
+      fillColor: '#a855f7',
+      fillOpacity: 0.95
+    }).addTo(map).bindPopup('<strong>SPECIAL SIT: HIGHWAY SEXUAL ASSAULT</strong><br/>Sector 14 • Suspect: Devendra Rawat (D-7)<br/>DNA Match FK-8821 Active');
+
+    const targetHeist = L.circleMarker([19.0760, 72.8777], {
+      radius: 10,
+      color: '#fef08a',
+      weight: 2,
+      fillColor: '#f59e0b',
+      fillOpacity: 0.9
+    }).addTo(map).bindPopup('<strong>ARMED BANK HEIST SCENE</strong><br/>Axis Bank Vault • Suspect: Sameer "Ghost" Qureshi<br/>14 kg Gold Stolen');
+
+    const targetPortNarco = L.circleMarker([18.9400, 72.8350], {
+      radius: 10,
       color: '#9dffff',
       weight: 2,
-      fillColor: '#00dce8',
-      fillOpacity: 1
-    }).addTo(map).bindPopup('<strong>ASSET_B</strong><br/>Intercept unit deployed');
+      fillColor: '#00e5ff',
+      fillOpacity: 0.9
+    }).addTo(map).bindPopup('<strong>PORT TERMINAL C: 100KG NARCO SEIZURE</strong><br/>NCB Intercept • Elena Rostova Cartel');
 
-    target.on('click', () => setAssetStatus('HIGH PRIORITY'));
-    asset.on('click', () => setAssetStatus('ACTIVE'));
+    targetHomicide.on('click', () => setAssetStatus('HOMICIDE INVESTIGATION ACTIVE'));
+    targetRapeSIT.on('click', () => setAssetStatus('WOMEN SAFETY SIT MANHUNT'));
+    targetHeist.on('click', () => setAssetStatus('BANK HEIST ANPR INTERCEPT'));
+    targetPortNarco.on('click', () => setAssetStatus('NCB NARCOTICS SEIZURE'));
+
+    markersRef.current = [targetHomicide, targetRapeSIT, targetHeist, targetPortNarco];
     mapInstance.current = map;
 
     return () => {
@@ -60,18 +118,416 @@ export default function CasesPage() {
     };
   }, []);
 
+  // Handle New Case Submission to Backend
+  const handleCreateCase = async (e) => {
+    e.preventDefault();
+    if (!newCaseForm.title.trim()) {
+      showToast('⚠️ Case title is required.');
+      return;
+    }
+
+    try {
+      const tagsArray = newCaseForm.tags.split(',').map(t => t.trim()).filter(Boolean);
+      const res = await api.cases.create({
+        title: newCaseForm.title,
+        leadSuspect: newCaseForm.leadSuspect || 'Pending Identification',
+        priority: newCaseForm.priority,
+        description: newCaseForm.description,
+        tags: tagsArray
+      });
+
+      if (res && res.success) {
+        showToast(`✓ Case "${res.case.title}" registered with ID ${res.case.id}`);
+        setNewCaseForm({
+          title: '',
+          leadSuspect: '',
+          priority: 'HIGH',
+          description: '',
+          tags: 'HAWALA, SIGINT'
+        });
+        setIsNewCaseModalOpen(false);
+        await loadCases();
+      } else {
+        showToast('✓ Case registered locally in session memory.');
+        setIsNewCaseModalOpen(false);
+      }
+    } catch (err) {
+      showToast(`Error creating case: ${err.message}`);
+    }
+  };
+
+  const filteredCases = casesList.filter((c) => {
+    const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.leadSuspect.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesPriority = priorityFilter === 'ALL' || c.priority.toUpperCase() === priorityFilter.toUpperCase();
+    return matchesSearch && matchesPriority;
+  });
+
   return (
-    <section className="cases-screen">
+    <div className="cases-screen">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          top: '80px',
+          right: '24px',
+          backgroundColor: 'rgba(0, 229, 255, 0.95)',
+          color: '#07090E',
+          padding: '12px 20px',
+          borderRadius: '6px',
+          fontWeight: 700,
+          fontFamily: 'var(--font-mono)',
+          fontSize: '13px',
+          boxShadow: '0 0 20px rgba(0, 229, 255, 0.5)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Main Map & Cases Grid */}
       <main className="case-map">
         <div ref={mapElement} className="live-map" aria-label="Live sector map" />
-        <div className="tracking-bar"><div><span>T-MINUS 24:00:00</span><button onClick={() => setTracking(!tracking)} aria-label="Toggle live tracking"><b style={{ left: tracking ? '74%' : '10%' }} /></button><span>{tracking ? 'LIVE TRACKING' : 'TRACKING PAUSED'}</span></div></div>
+
+        {/* Tactical Tracking Bar */}
+        <div className="tracking-bar">
+          <div>
+            <span>T-MINUS 24:00:00 [SECTOR 7-G]</span>
+            <button
+              onClick={() => {
+                setTracking(!tracking);
+                showToast(tracking ? 'Sector tracking paused.' : 'Live sector tracking engaged.');
+              }}
+              aria-label="Toggle live tracking"
+            >
+              <b style={{ left: tracking ? '74%' : '10%' }} />
+            </button>
+            <span style={{ color: tracking ? '#00e5ff' : '#ff9900' }}>
+              {tracking ? '● LIVE TRACKING' : '○ TRACKING PAUSED'}
+            </span>
+          </div>
+        </div>
       </main>
-      <aside className="sector-insights">
-        <div className="insights-title"><h1>SECTOR INSIGHTS</h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 20V10l4 4 4-8 4 5 4-7v16" /><path d="M3 20h18" /></svg></div>
-        <article className="anomaly-card"><div className="card-kicker">ANOMALY DETECTED <em>HIGH PRIORITY</em></div><h2>UNAUTHORIZED MOVEMENT</h2><p>Target TGT_ALPHA_99 deviated from projected patrol route by 4.2km in Sector 7G.</p><div className="bars"><b /><b /><b /><b /></div></article>
-        <article className="asset-card"><div className="card-kicker">ASSET STATUS <em className="active">{assetStatus}</em></div><h2>ASSET_B DEPLOYED</h2><p>Asset intercept vector calculated. ETA to target vicinity: 14 mins.</p></article>
-        <article className="telemetry"><div className="card-kicker">ENVIRONMENTAL TELEMETRY</div><div><span>TRAFFIC DENSITY<strong>84% CONGESTED</strong></span><span>SIGINT NOISE<strong>ELEVATED</strong></span></div></article>
+
+      {/* Sector Insights & Cases Sidebar */}
+      <aside className="sector-insights" style={{ overflowY: 'auto' }}>
+        <div className="insights-title">
+          <div>
+            <span style={{ fontSize: '11px', color: 'var(--cyan-glow)', letterSpacing: '1px' }}>
+              // TACTICAL DOSSIER
+            </span>
+            <h1 style={{ fontSize: '24px', margin: '4px 0 0 0' }}>CASE MANAGEMENT</h1>
+          </div>
+          <button
+            onClick={() => setIsNewCaseModalOpen(true)}
+            className="btn-cyan"
+            style={{ padding: '8px 14px', fontSize: '12px', whiteSpace: 'nowrap' }}
+          >
+            + NEW CASE
+          </button>
+        </div>
+
+        {/* Filter Controls */}
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem' }}>
+          <input
+            type="text"
+            placeholder="Search cases or suspects..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(7, 10, 16, 0.8)',
+              border: '1px solid rgba(0, 229, 255, 0.2)',
+              borderRadius: '4px',
+              padding: '8px 12px',
+              color: '#FFFFFF',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '12px'
+            }}
+          />
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            style={{
+              backgroundColor: 'rgba(7, 10, 16, 0.8)',
+              border: '1px solid rgba(0, 229, 255, 0.2)',
+              borderRadius: '4px',
+              padding: '8px 10px',
+              color: '#FFFFFF',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '12px'
+            }}
+          >
+            <option value="ALL">ALL</option>
+            <option value="CRITICAL">CRITICAL</option>
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+          </select>
+        </div>
+
+        {/* Case List Cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '1.5rem' }}>
+          {filteredCases.map((item) => {
+            const isSelected = selectedCase?.id === item.id;
+            return (
+              <div
+                key={item.id}
+                onClick={() => setSelectedCase(item)}
+                style={{
+                  padding: '12px 14px',
+                  backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.1)' : 'rgba(20, 25, 35, 0.7)',
+                  border: `1px solid ${isSelected ? 'var(--cyan-glow)' : 'rgba(255, 255, 255, 0.08)'}`,
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '11px', color: 'var(--cyan-glow)' }}>{item.id}</span>
+                  <span style={{
+                    fontSize: '10px',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    backgroundColor: item.priority === 'CRITICAL' ? 'rgba(255, 85, 85, 0.2)' : 'rgba(0, 229, 255, 0.2)',
+                    color: item.priority === 'CRITICAL' ? '#FF5555' : 'var(--cyan-glow)',
+                    fontWeight: 700
+                  }}>
+                    {item.priority}
+                  </span>
+                </div>
+                <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#FFFFFF', margin: '0 0 4px 0' }}>
+                  {item.title}
+                </h3>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Suspect: <strong style={{ color: '#E2E8F0' }}>{item.leadSuspect}</strong></span>
+                  <span>📁 {item.evidenceCount} items</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Selected Case Detail / Anomaly Card */}
+        <article className="anomaly-card">
+          <div className="card-kicker">
+            ACTIVE CASE FILE <em>{selectedCase ? selectedCase.status : 'HIGH PRIORITY'}</em>
+          </div>
+          <h2>{selectedCase ? selectedCase.title : 'UNAUTHORIZED MOVEMENT DETECTED'}</h2>
+          <p>{selectedCase ? selectedCase.description : 'Target TGT_ALPHA_99 deviated from projected route by 4.2km in Sector 7G.'}</p>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px' }}>
+            {(selectedCase?.tags || ['HAWALA', 'HIGH_RISK']).map(t => (
+              <span key={t} style={{
+                fontSize: '10px',
+                padding: '2px 8px',
+                backgroundColor: 'rgba(0, 229, 255, 0.1)',
+                border: '1px solid rgba(0, 229, 255, 0.3)',
+                borderRadius: '3px',
+                color: 'var(--cyan-glow)'
+              }}>
+                #{t}
+              </span>
+            ))}
+          </div>
+        </article>
+
+        {/* Asset Status */}
+        <article className="asset-card">
+          <div className="card-kicker">ASSET STATUS <em className="active">{assetStatus}</em></div>
+          <h2>ASSET_B INTERCEPT READY</h2>
+          <p>Asset intercept vector calculated. ETA to target vicinity: 14 mins.</p>
+        </article>
+
+        {/* Telemetry */}
+        <article className="telemetry">
+          <div className="card-kicker">ENVIRONMENTAL TELEMETRY</div>
+          <div>
+            <span>TRAFFIC DENSITY<strong>84% CONGESTED</strong></span>
+            <span>SIGINT NOISE<strong>ELEVATED (ENCRYPTED)</strong></span>
+          </div>
+        </article>
       </aside>
-    </section>
+
+      {/* Register New Case Modal */}
+      {isNewCaseModalOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10000,
+          padding: '1.5rem'
+        }}>
+          <div className="glass-card" style={{
+            maxWidth: '520px',
+            width: '100%',
+            backgroundColor: '#0c111a',
+            border: '1px solid var(--cyan-glow)',
+            padding: '2rem',
+            borderRadius: '8px',
+            boxShadow: '0 0 40px rgba(0, 229, 255, 0.25)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <div>
+                <span style={{ fontSize: '11px', color: 'var(--cyan-glow)', letterSpacing: '1.5px' }}>
+                  // OFFICIAL FORENSIC INTAKE
+                </span>
+                <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#FFFFFF', margin: '4px 0 0 0' }}>
+                  REGISTER NEW INVESTIGATION CASE
+                </h2>
+              </div>
+              <button
+                onClick={() => setIsNewCaseModalOpen(false)}
+                style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: '20px', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateCase} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                  Case Title *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Operation Falcon Intercept"
+                  value={newCaseForm.title}
+                  onChange={(e) => setNewCaseForm({ ...newCaseForm, title: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                    border: '1px solid rgba(0, 229, 255, 0.3)',
+                    borderRadius: '4px',
+                    color: '#FFFFFF',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '13px'
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                    Lead Suspect / Entity
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Rahul Sharma"
+                    value={newCaseForm.leadSuspect}
+                    onChange={(e) => setNewCaseForm({ ...newCaseForm, leadSuspect: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                      border: '1px solid rgba(0, 229, 255, 0.3)',
+                      borderRadius: '4px',
+                      color: '#FFFFFF',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '13px'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                    Priority Clearance
+                  </label>
+                  <select
+                    value={newCaseForm.priority}
+                    onChange={(e) => setNewCaseForm({ ...newCaseForm, priority: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                      border: '1px solid rgba(0, 229, 255, 0.3)',
+                      borderRadius: '4px',
+                      color: '#FFFFFF',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '13px'
+                    }}
+                  >
+                    <option value="CRITICAL">CRITICAL</option>
+                    <option value="HIGH">HIGH</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="LOW">LOW</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                  Tags (comma separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="HAWALA, CYBER, SHELL_CORP"
+                  value={newCaseForm.tags}
+                  onChange={(e) => setNewCaseForm({ ...newCaseForm, tags: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                    border: '1px solid rgba(0, 229, 255, 0.3)',
+                    borderRadius: '4px',
+                    color: '#FFFFFF',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '13px'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                  Case Brief & Description
+                </label>
+                <textarea
+                  rows="3"
+                  placeholder="Provide tactical context, suspected syndicate links, or intercept summaries..."
+                  value={newCaseForm.description}
+                  onChange={(e) => setNewCaseForm({ ...newCaseForm, description: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                    border: '1px solid rgba(0, 229, 255, 0.3)',
+                    borderRadius: '4px',
+                    color: '#FFFFFF',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '13px',
+                    resize: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsNewCaseModalOpen(false)}
+                  className="btn-outline-cyan"
+                  style={{ padding: '10px 16px', fontSize: '13px' }}
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  className="btn-cyan"
+                  style={{ padding: '10px 20px', fontSize: '13px' }}
+                >
+                  REGISTER CASE
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

@@ -33,6 +33,12 @@
     const [filterTime, setFilterTime] = useState('Last 30 Days');
     const [filterRisk, setFilterRisk] = useState('All Levels');
     const [filterType, setFilterType] = useState('All Types');
+    const [toastMessage, setToastMessage] = useState(null);
+
+    const showToast = (msg) => {
+      setToastMessage(msg);
+      setTimeout(() => setToastMessage(null), 3000);
+    };
 
     return (
       <div style={{
@@ -227,7 +233,11 @@
                   </select>
                 </div>
 
-                <button className="interactive-btn" style={{ width: '100%', backgroundColor: 'rgba(0, 229, 255, 0.1)', border: '1px solid var(--cyan-glow)', color: 'var(--cyan-glow)', padding: '8px', borderRadius: '4px', fontWeight: '600', fontSize: '12px', cursor: 'pointer' }}>
+                <button
+                  onClick={() => showToast(`✓ Topology filter applied: ${filterRisk} · ${filterTime}`)}
+                  className="interactive-btn"
+                  style={{ width: '100%', backgroundColor: 'rgba(0, 229, 255, 0.1)', border: '1px solid var(--cyan-glow)', color: 'var(--cyan-glow)', padding: '8px', borderRadius: '4px', fontWeight: '600', fontSize: '12px', cursor: 'pointer' }}
+                >
                   APPLY FILTERS
                 </button>
               </div>
@@ -400,14 +410,46 @@
             <div style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '1rem' }}>
               <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)', marginBottom: '1rem', fontWeight: 700 }}>QUICK ACTIONS</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                <button className="interactive-btn" style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '8px', borderRadius: '4px', fontSize: '10px', cursor: 'pointer' }}>👤 View Profile</button>
-                <button className="interactive-btn" style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '8px', borderRadius: '4px', fontSize: '10px', cursor: 'pointer' }}>☆ Add Watchlist</button>
+                <button
+                  onClick={() => onNavigate && onNavigate('entities')}
+                  className="interactive-btn"
+                  style={{ backgroundColor: 'rgba(0, 229, 255, 0.1)', border: '1px solid rgba(0, 229, 255, 0.3)', color: 'var(--cyan-glow)', padding: '8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  👤 View Profile
+                </button>
+                <button
+                  onClick={() => showToast(`✓ ${selectedEntity.name} added to high-priority intelligence watchlist.`)}
+                  className="interactive-btn"
+                  style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}
+                >
+                  ☆ Add Watchlist
+                </button>
               </div>
             </div>
 
           </div>
 
         </div>
+
+        {/* Floating Toast Notification */}
+        {toastMessage && (
+          <div style={{
+            position: 'fixed',
+            top: '80px',
+            right: '24px',
+            backgroundColor: 'rgba(0, 229, 255, 0.95)',
+            color: '#07090E',
+            padding: '12px 20px',
+            borderRadius: '6px',
+            fontWeight: 700,
+            fontFamily: 'monospace',
+            fontSize: '13px',
+            boxShadow: '0 0 20px rgba(0, 229, 255, 0.5)',
+            zIndex: 9999
+          }}>
+            {toastMessage}
+          </div>
+        )}
       </div>
     );
   }

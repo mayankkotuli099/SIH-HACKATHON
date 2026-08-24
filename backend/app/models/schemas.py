@@ -84,6 +84,12 @@ class EntityDossier(BaseModel):
     id: str
     name: str
     aliases: List[str]
+    crimeType: Optional[str] = "HOMICIDE_AND_VIOLENT_CRIME"
+    firNumbers: Optional[List[str]] = []
+    weaponSignature: Optional[str] = None
+    modusOperandi: Optional[str] = None
+    wantedReward: Optional[str] = None
+    dnaProfileMatch: Optional[str] = None
     riskScore: float
     threatLevel: str
     status: str

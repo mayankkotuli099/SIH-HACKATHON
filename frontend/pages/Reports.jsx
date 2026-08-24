@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FileText, Lock, Upload, Volume2 } from 'lucide-react'
+import { FileText, Lock, Upload, Volume2, CheckCircle2, Copy, Download, Printer, ShieldCheck, X } from 'lucide-react'
 import TopNav from '../components/TopNav.jsx'
 import './Reports.css'
 
@@ -8,16 +8,19 @@ const EVIDENCE = [
     id: 'ev-1',
     time: '11:35:07',
     hash: '12356358a49b77b256b85922b78867537d',
+    status: 'VERIFIED'
   },
   {
     id: 'ev-2',
     time: '11:35:16',
     hash: '12356358a49b77b255b85322b78867536d',
+    status: 'VERIFIED'
   },
   {
     id: 'ev-3',
     time: '11:35:51',
     hash: '12356358a49b77b245b85322b78825523d',
+    status: 'VERIFIED'
   },
 ]
 
@@ -89,17 +92,77 @@ function NexusGraph() {
 
 function Reports() {
   const [enabled, setEnabled] = useState({
-    court: false,
-    intercept: false,
+    court: true,
+    intercept: true,
     topology: false,
   })
+  const [dossierModal, setDossierModal] = useState(false)
+  const [toastMessage, setToastMessage] = useState(null)
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  const toggle = (id) =>
-    setEnabled((prev) => ({ ...prev, [id]: !prev[id] }))
+  const showToast = (msg) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 3500)
+  }
+
+  const toggle = (id) => {
+    setEnabled((prev) => {
+      const next = { ...prev, [id]: !prev[id] }
+      showToast(`${EXPORTS.find(e => e.id === id)?.label} export ${next[id] ? 'enabled' : 'disabled'}`)
+      return next
+    })
+  }
+
+  const handleGenerateDossier = () => {
+    setIsGenerating(true)
+    showToast('Compiling judicial cryptographic hashes and case evidence...')
+    setTimeout(() => {
+      setIsGenerating(false)
+      setDossierModal(true)
+      showToast('✓ Subpoena Dossier Bundle compiled and cryptographically verified.')
+    }, 600)
+  }
+
+  const handleCopyHash = () => {
+    const hash = 'SHA256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069'
+    navigator.clipboard?.writeText(hash)
+    showToast('✓ Cryptographic SHA-256 seal copied to clipboard.')
+  }
+
+  const handleDownload = () => {
+    showToast('✓ Subpoena_Dossier_Package_CL-8921.enc downloaded.')
+  }
+
+  const handlePrint = () => {
+    window.print()
+  }
 
   return (
     <div className="reports">
       <TopNav />
+
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          top: '80px',
+          right: '24px',
+          backgroundColor: 'rgba(0, 229, 255, 0.95)',
+          color: '#07090E',
+          padding: '12px 20px',
+          borderRadius: '6px',
+          fontWeight: 700,
+          fontFamily: 'var(--font-mono, monospace)',
+          fontSize: '13px',
+          boxShadow: '0 0 20px rgba(0, 229, 255, 0.5)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <CheckCircle2 size={16} />
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
       <main className="reports-main">
         <header className="reports-head">
@@ -140,7 +203,7 @@ function Reports() {
               <li className="brief-item">
                 <div className="brief-row">
                   <h3>Synthesized Incident Timeline</h3>
-                  <time className="brief-time">2023-10-27 16:45:30 UTC</time>
+                  <time className="brief-time">2024-10-27 16:45:30 UTC</time>
                 </div>
                 <div className="brief-pair">
                   <div>
@@ -207,12 +270,127 @@ function Reports() {
               ))}
             </div>
 
-            <button type="button" className="dossier">
-              Generate Subpoena Dossier
+            <button
+              type="button"
+              className="dossier"
+              disabled={isGenerating}
+              onClick={handleGenerateDossier}
+              style={{ cursor: isGenerating ? 'wait' : 'pointer' }}
+            >
+              {isGenerating ? 'Compiling Dossier...' : 'Generate Subpoena Dossier'}
             </button>
           </Card>
         </div>
       </main>
+
+      {/* Subpoena Dossier Modal */}
+      {dossierModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10000,
+          padding: '1.5rem'
+        }}>
+          <div className="panel" style={{
+            maxWidth: '650px',
+            width: '100%',
+            backgroundColor: '#0c111a',
+            border: '1px solid var(--cyan, #00e5ff)',
+            borderRadius: '8px',
+            padding: '2rem',
+            boxShadow: '0 0 50px rgba(0, 229, 255, 0.3)',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid rgba(0, 229, 255, 0.2)', paddingBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <ShieldCheck size={26} color="#00e5ff" />
+                <div>
+                  <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#FFFFFF', margin: 0 }}>
+                    JUDICIAL SUBPOENA EVIDENCE DOSSIER
+                  </h2>
+                  <span style={{ fontSize: '11px', color: '#00e5ff', fontFamily: 'monospace' }}>
+                    CASE REF: CL-2024-8921 // SEAL #CL-9942
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setDossierModal(false)}
+                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '13px', color: '#94a3b8' }}>
+              <div style={{ backgroundColor: 'rgba(0, 229, 255, 0.05)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '12px 16px', borderRadius: '6px' }}>
+                <strong style={{ color: '#ffffff', display: 'block', marginBottom: '4px' }}>
+                  Cryptographic Chain-of-Custody Certificate
+                </strong>
+                <p style={{ margin: 0, fontSize: '12px', fontFamily: 'monospace', color: '#00e5ff', wordBreak: 'break-all' }}>
+                  ROOT_SEAL: SHA256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+                </p>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '12px', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>Target Suspects:</span>
+                  <p style={{ margin: '4px 0 0 0', fontWeight: 700, color: '#ffffff' }}>Vikram Malhotra &amp; Gang Cartel</p>
+                </div>
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '12px', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>Prosecution Jurisdiction:</span>
+                  <p style={{ margin: '4px 0 0 0', fontWeight: 700, color: '#ffffff' }}>Special Task Force &amp; Sessions Court</p>
+                </div>
+              </div>
+
+              <div>
+                <strong style={{ color: '#ffffff', display: 'block', marginBottom: '6px' }}>Included Multi-Domain Forensic Evidence:</strong>
+                <ul style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <li>✓ CFSL Ballistics Report: 9mm Beretta 92FS chamber markings match Sector 18 Homicide</li>
+                  <li>✓ National DNA Registry Hit: 100% STR profile match (FK-8821 Sexual Assault Case)</li>
+                  <li>✓ ANPR Highway Camera Timestamp: Bolero Getaway vehicle (Axis Bank Gold Heist)</li>
+                  <li>✓ Seizure Memo: 100kg Synthetic Heroin &amp; Steyr SMG Crates (Port Terminal C)</li>
+                  <li>✓ Wiretap Audio Intercept: Extortion threat call recording (MCOCA Gang Boss)</li>
+                </ul>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginTop: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1rem' }}>
+                <button
+                  type="button"
+                  onClick={handleCopyHash}
+                  className="btn-outline-cyan"
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '12px' }}
+                >
+                  <Copy size={14} /> COPY SEAL
+                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={handlePrint}
+                    className="btn-outline-cyan"
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '12px' }}
+                  >
+                    <Printer size={14} /> PRINT
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    className="btn-cyan"
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', fontSize: '12px' }}
+                  >
+                    <Download size={14} /> DOWNLOAD BUNDLE
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

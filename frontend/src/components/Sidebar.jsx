@@ -38,12 +38,6 @@ export default function Sidebar({
         { id: 'network', label: 'NETWORK GRAPH', icon: '🕸️', badge: null, desc: 'Cluster & Node Linkage' },
         { id: 'ai_assistant', label: 'AI COPILOT', icon: '🤖', badge: 'GPT-4.5', badgeColor: '#A855F7', desc: 'Neural Investigation Agent' }
       ]
-    },
-    {
-      group: 'SYSTEM CONTROL',
-      items: [
-        { id: 'settings', label: 'SETTINGS', icon: '⚙️', badge: null, desc: 'System & Neural Clearance' }
-      ]
     }
   ];
 
@@ -354,40 +348,6 @@ export default function Sidebar({
           backgroundColor: 'rgba(0, 229, 255, 0.02)'
         }}
       >
-        {/* Back to Home Portal Button */}
-        <button
-          onClick={() => onNavigate && onNavigate('home')}
-          title="Return to Home Landing Page"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            gap: '10px',
-            padding: collapsed ? '8px 0' : '8px 10px',
-            background: 'none',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '4px',
-            color: 'var(--text-muted)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10.5px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.08)';
-            e.currentTarget.style.color = 'var(--cyan-glow)';
-            e.currentTarget.style.borderColor = 'var(--cyan-glow)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = 'var(--text-muted)';
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-          }}
-        >
-          <span>🏠</span>
-          {!collapsed && <span>PORTAL HOME</span>}
-        </button>
-
         {/* Quick Toggle / Full Bar Expand-Collapse Button */}
         <button
           onClick={handleToggle}

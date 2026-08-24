@@ -18,47 +18,70 @@ router.post('/query', (req, res) => {
     confidence: '95.4%'
   };
 
-  if (q.includes('shell corp') || q.includes('financial') || q.includes('money') || q.includes('wire')) {
+  if (q.includes('murder') || q.includes('homicide') || q.includes('kill') || q.includes('shot') || q.includes('bullet') || q.includes('vikram') || q.includes('raja')) {
     aiResponse = {
-      text: 'Analyzing network connections for Shell Corp B: identified 12 direct transactions totaling $450,000 USD matching known criminal syndicate associates.',
+      text: 'HOMICIDE FORENSIC MATCH: Vikram "Raja" Malhotra (ID #CRM-9942) connected to Sector 18 double homicide. 9mm Beretta 92FS cartridge casings matched crime scene ballistics with 99.4% certainty. 3 active Non-Bailable Warrants pending under BNS Section 103 (IPC 302).',
       entities: [
-        { label: 'TARGET: RAHUL SHARMA', type: 'target' },
-        { label: 'SUSPICIOUS TRANSFER: $450,000 via Shell Corp B', type: 'money' },
-        { label: 'DESTINATION: Dubai Bullion Exchange', type: 'location' }
+        { label: 'SUSPECT: VIKRAM RAJA MALHOTRA', type: 'target' },
+        { label: 'WEAPON: 9mm Beretta 92FS Match', type: 'money' },
+        { label: 'SCENE: Sector 18 Homicide', type: 'location' }
       ],
-      note: 'Registered director of "Apex Global Logistics", a suspected front company in Hong Kong.',
-      confidence: '98.2%'
+      note: 'Fugitive last spotted on CCTV at Meerut Highway riding black KTM Duke (unregistered). ₹5 Lakhs state bounty active.',
+      confidence: '99.4%'
     };
-  } else if (q.includes('rahul') || q.includes('suspect') || q.includes('boss')) {
+  } else if (q.includes('rape') || q.includes('sexual') || q.includes('assault') || q.includes('pocso') || q.includes('rawat') || q.includes('d-7') || q.includes('dna')) {
     aiResponse = {
-      text: 'Target profile for RAHUL SHARMA (ID #ENT-8921): Risk Score 94.2/100 (CRITICAL). Connected to 3 burner SIMs, 2 offshore accounts, and 4 Hawala brokers in NCR.',
+      text: 'SEXUAL OFFENSE SIT DOSSIER: Devendra "D-7" Rawat (ID #CRM-7721) identified as prime suspect in Sector 14 serial highway abduction and sexual assault cases. Forensic DNA kit #FK-8821 yielded a 100% STR profile match in the National DNA Offender Registry.',
       entities: [
-        { label: 'PRIMARY: RAHUL SHARMA', type: 'target' },
-        { label: 'HAWALA BROKER: Vikram Mehta', type: 'target' },
-        { label: 'BURNER: +91-98765-43210', type: 'money' }
+        { label: 'FUGITIVE: DEVENDRA RAWAT (D-7)', type: 'target' },
+        { label: 'FORENSIC: 100% DNA STR Match', type: 'money' },
+        { label: 'CRIME: BNS Sec 64 / IPC 376D', type: 'location' }
       ],
-      note: 'Voiceprint matched in Wiretap Session #44 with 96.8% biometric certainty.',
-      confidence: '96.8%'
+      note: 'Modus operandi: Fake commercial taxi with altered registration plates. Red Alert issued across inter-state border checkposts.',
+      confidence: '100.0%'
     };
-  } else if (q.includes('location') || q.includes('gps') || q.includes('tower')) {
+  } else if (q.includes('robbery') || q.includes('heist') || q.includes('theft') || q.includes('steal') || q.includes('stolen') || q.includes('vault') || q.includes('gold') || q.includes('sameer') || q.includes('ghost')) {
     aiResponse = {
-      text: 'Geospatial vector analysis: Cell tower triangulated target signal at Sector 29 Cyber Hub (28.4595° N, 77.0266° E) at 13:54 UTC.',
+      text: 'ARMED ROBBERY INVESTIGATION: Axis Bank Vault Heist (FIR #103/2024). Safe-cracking specialist Sameer "Ghost" Qureshi (ID #CRM-8821) breached vault using thermal lance. 14 kg gold bullion stolen. ANPR camera logged getaway vehicle HR-26-XX-4902 on KMP Expressway.',
       entities: [
-        { label: 'VECTOR: Sector 29 Cyber Hub', type: 'location' },
-        { label: 'DEVICE: IMEI 864201938472910', type: 'target' }
+        { label: 'SUSPECT: SAMEER GHOST QURESHI', type: 'target' },
+        { label: 'SEIZED/STOLEN: 14 kg Gold Bullion', type: 'money' },
+        { label: 'HOTSPOT: KMP Expressway Toll #4', type: 'location' }
       ],
-      note: 'Target crossed geofence boundary within 15 minutes of wire transfer dispatch.',
-      confidence: '92.0%'
+      note: 'Thermal lance tool marks and glove DNA match retrieved from bank vault safety deposit cage.',
+      confidence: '94.8%'
+    };
+  } else if (q.includes('narco') || q.includes('drug') || q.includes('heroin') || q.includes('ndps') || q.includes('elena') || q.includes('rostova')) {
+    aiResponse = {
+      text: 'NARCOTICS & ARMS CARTEL: Elena "Czar" Rostova (ID #CRM-5512) syndicate intercepted. 100 kg synthetic heroin and 12 Steyr submachine guns seized at Port Container Terminal C. Network supplies inter-state distribution hubs across Delhi-NCR and Punjab.',
+      entities: [
+        { label: 'CARTEL HEAD: ELENA ROSTOVA', type: 'target' },
+        { label: 'SEIZURE: 100kg Heroin + Submachine Guns', type: 'money' },
+        { label: 'CORRIDOR: Port Terminal C Maritime Yard', type: 'location' }
+      ],
+      note: 'Interpol Red Notice active. Cross-border maritime shipping route identified from Arabian Sea.',
+      confidence: '97.2%'
+    };
+  } else if (q.includes('gang') || q.includes('extort') || q.includes('kidnap') || q.includes('mahesh') || q.includes('khan') || q.includes('tiger')) {
+    aiResponse = {
+      text: 'ORGANIZED GANG INTELLIGENCE: Mahesh "Tiger" Khan (ID #CRM-0014) syndicate active under MCOCA Act. Coordinates inter-state extortion, contract assassinations, and illicit arms smuggling. Demanded ₹50 Lakhs ransom from Gurugram infrastructure firm.',
+      entities: [
+        { label: 'GANGSTER KINGPIN: MAHESH KHAN', type: 'target' },
+        { label: 'RACKET: ₹5 Cr Monthly Extortion', type: 'money' },
+        { label: 'JURISDICTION: NCR Organized Crime SIT', type: 'location' }
+      ],
+      note: 'Voiceprint matched extortion wiretap recording with 99.1% biometric certainty. ₹25 Lakhs reward on arrest.',
+      confidence: '99.1%'
     };
   } else {
     aiResponse = {
-      text: `CrimeLens Neural Copilot analyzed query: "${message}". Scanned 12,458 indexed entities across 4 active syndicates. Zero conflicting alibis found.`,
+      text: `CrimeLens Police Intelligence Engine analyzed query: "${message}". Scanned 12,458 indexed criminal records across Homicide, Sexual Offenses, Armed Robbery, Kidnapping, Narcotics, and Gang Syndicates. FIR databases synchronized.`,
       entities: [
-        { label: 'CLUSTER: Alpha 9 Syndicate', type: 'target' },
-        { label: 'CLEARANCE: Level 4 Active', type: 'money' }
+        { label: 'CRIME DATABASE: National Police Network', type: 'target' },
+        { label: 'CLEARANCE: Law Enforcement Level 4', type: 'money' }
       ],
-      note: 'Cross-referenced against SIGINT domestic wire logs and INTERPOL Red Notices.',
-      confidence: '94.0%'
+      note: 'Cross-referenced against CCTNS, State Police STF databases, and Forensic Ballistics registries.',
+      confidence: '95.0%'
     };
   }
 
