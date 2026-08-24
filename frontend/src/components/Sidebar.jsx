@@ -23,19 +23,21 @@ export default function Sidebar({
 
   const navSections = [
     {
-      group: 'INTELLIGENCE',
+      group: 'INVESTIGATION & INTELLIGENCE',
       items: [
         { id: 'dashboard', label: 'DASHBOARD', icon: '📊', badge: null, desc: 'Live Telemetry & KPIs' },
-        { id: 'timeline', label: 'TIMELINE', icon: '⏱️', badge: 'LIVE', badgeColor: '#00E5FF', desc: 'Chronological Event Trace' },
-        { id: 'entities', label: 'ENTITY 360', icon: '🛡️', badge: 'DOSSIER', badgeColor: '#00E676', desc: 'Biometric & Profile Intel' },
+        { id: 'cases', label: 'FIR & CASES', icon: '📁', badge: 'ACTIVE', badgeColor: '#00E5FF', desc: 'Case Files & FIR Records' },
+        { id: 'entities', label: 'CRIMINAL 360', icon: '👤', badge: 'DOSSIER', badgeColor: '#00E676', desc: 'Biometric & Profile Intel' },
+        { id: 'timeline', label: 'TIMELINE & MAP', icon: '⏱️', badge: 'LIVE', badgeColor: '#00E5FF', desc: 'Chronological Event Trace & Map' },
+        { id: 'reports', label: 'CHARGESHEETS', icon: '📄', badge: 'BNSS 193', badgeColor: '#FBBF24', desc: 'Form 173 Final Reports' }
       ]
     },
     {
       group: 'THREAT DETECTION',
       items: [
+        { id: 'network', label: 'GANG NETWORK', icon: '🕸️', badge: null, desc: 'Cluster & Node Linkage' },
         { id: 'anomalies', label: 'ANOMALIES', icon: '⚡', badge: '3 NEW', badgeColor: '#FF5555', desc: 'Neural Outlier Alerts' },
         { id: 'location', label: 'GEO TRACKING', icon: '📍', badge: null, desc: 'Spatial Heatmaps & Geofence' },
-        { id: 'network', label: 'NETWORK GRAPH', icon: '🕸️', badge: null, desc: 'Cluster & Node Linkage' },
         { id: 'ai_assistant', label: 'AI COPILOT', icon: '🤖', badge: 'GPT-4.5', badgeColor: '#A855F7', desc: 'Neural Investigation Agent' }
       ]
     }
