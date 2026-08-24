@@ -78,7 +78,7 @@ export default function CasesPage() {
       weight: 2.5,
       fillColor: '#ff5555',
       fillOpacity: 0.95
-    }).addTo(map).bindPopup('<strong>CRIME SCENE: TRIPLE HOMICIDE</strong><br/>Sector 18 • Suspect: Vikram "Raja" Malhotra<br/>Ballistics Match: 9mm Beretta 92FS');
+    }).addTo(map).bindPopup('<strong>CRIME SCENE: TRIPLE HOMICIDE</strong><br/>Sector 18 • Suspect: Mayank Kotoli<br/>Ballistics Match: 9mm Beretta 92FS');
 
     const targetRapeSIT = L.circleMarker([28.4720, 77.0350], {
       radius: 11,

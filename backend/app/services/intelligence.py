@@ -13,11 +13,11 @@ class IntelligenceEngine:
         q = message.lower().strip()
 
         # 1. Homicide / Murder & Ballistics Analysis
-        if any(w in q for w in ["murder", "homicide", "kill", "shot", "bullet", "ballistic", "hitman", "beretta", "vikram", "raja"]):
+        if any(w in q for w in ["murder", "homicide", "kill", "shot", "bullet", "ballistic", "hitman", "beretta", "mayank", "kotoli", "vikram"]):
             return AIChatResponse(
-                text='HOMICIDE FORENSIC MATCH: Vikram "Raja" Malhotra (ID #CRM-9942) connected to Sector 18 double homicide. 9mm Beretta 92FS cartridge casings matched crime scene ballistics with 99.4% certainty. 3 active Non-Bailable Warrants pending under BNS Section 103 (IPC 302).',
+                text='HOMICIDE FORENSIC MATCH: Mayank Kotoli (ID #CRM-9942) connected to Sector 18 double homicide. 9mm Beretta 92FS cartridge casings matched crime scene ballistics with 99.4% certainty. 3 active Non-Bailable Warrants pending under BNS Section 103 (IPC 302).',
                 entities=[
-                    EntityHighlight(label='SUSPECT: VIKRAM RAJA MALHOTRA', type='target'),
+                    EntityHighlight(label='SUSPECT: MAYANK KOTOLI', type='target'),
                     EntityHighlight(label='WEAPON: 9mm Beretta 92FS Match', type='money'),
                     EntityHighlight(label='SCENE: Sector 18 Homicide', type='location')
                 ],

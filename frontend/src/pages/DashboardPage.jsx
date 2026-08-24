@@ -76,7 +76,7 @@ export default function DashboardPage({ onNavigate }) {
       threatLevel: 'CRITICAL',
       threatColor: '#FF5555',
       nodes: [
-        { id: 'N1', name: "VIKRAM 'RAJA' MALHOTRA", type: 'LEAD_HITMAN', x: 50, y: 70, r: 15, color: '#FF5555', clearance: 'WARRANT_ISSUED', risk: '99%', status: 'ACTIVE_FUGITIVE' },
+        { id: 'N1', name: "MAYANK KOTOLI", type: 'LEAD_HITMAN', x: 50, y: 70, r: 15, color: '#FF5555', clearance: 'WARRANT_ISSUED', risk: '99%', status: 'ACTIVE_FUGITIVE' },
         { id: 'N2', name: "MAHESH 'TIGER' KHAN", type: 'GANG_KINGPIN', x: 130, y: 35, r: 16, color: '#00E5FF', clearance: 'MCOCA_FLAG', risk: '98%', status: 'SURVEILLED' },
         { id: 'N3', name: 'SECTOR_18_CRIME_SCENE', type: 'HOMICIDE_SCENE', x: 210, y: 70, r: 12, color: '#FF5555', clearance: 'BALLISTICS_MATCH', risk: '100%', status: 'EVIDENCE_SEALED' },
         { id: 'N4', name: 'SURESH_ARMORER_KATAS', type: 'ILLEGAL_ARMS_SUPPLIER', x: 130, y: 105, r: 13, color: '#FBBF24', clearance: 'ARMS_ACT', risk: '94%', status: 'RAID_PENDING' },
@@ -130,7 +130,7 @@ export default function DashboardPage({ onNavigate }) {
   };
 
   const topInfluencers = [
-    { id: 'E1', name: "VIKRAM 'RAJA' MALHOTRA", relevance: '99.4%', connections: '4,210', category: 'Homicide / Contract Hitman', risk: 'CRITICAL', riskColor: '#FF5555' },
+    { id: 'E1', name: "MAYANK KOTOLI", relevance: '99.4%', connections: '4,210', category: 'Homicide / Contract Hitman', risk: 'CRITICAL', riskColor: '#FF5555' },
     { id: 'E2', name: "MAHESH 'TIGER' KHAN", relevance: '98.5%', connections: '3,845', category: 'Syndicate Don / MCOCA', risk: 'CRITICAL', riskColor: '#FF5555' },
     { id: 'E3', name: "DEVENDRA 'D-7' RAWAT", relevance: '99.8%', connections: '1,120', category: 'Serial Sexual Offender', risk: 'CRITICAL', riskColor: '#FF5555' },
     { id: 'E4', name: "SAMEER 'GHOST' QURESHI", relevance: '92.4%', connections: '2,109', category: 'Armed Bank Heist Master', risk: 'HIGH', riskColor: '#FF8800' },
@@ -143,7 +143,7 @@ export default function DashboardPage({ onNavigate }) {
       time: '2024-10-27 15:10:22',
       type: 'BALLISTICS HIT',
       typeColor: '#FF5555',
-      entity: "CRIME SCENE #18 → VIKRAM 'RAJA' MALHOTRA",
+      entity: "CRIME SCENE #18 → MAYANK KOTOLI",
       severity: '▲ CRITICAL',
       severityBadge: 'CRITICAL',
       severityColor: '#FF5555',
@@ -1390,7 +1390,7 @@ export default function DashboardPage({ onNavigate }) {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Vikram Malhotra, FIR-2024-402, 9mm Beretta, HR-26-XX-4902..."
+                  placeholder="e.g. Mayank Kotoli, FIR-2024-402, 9mm Beretta, HR-26-XX-4902..."
                   value={newQueryForm.identifier}
                   onChange={(e) => setNewQueryForm({ ...newQueryForm, identifier: e.target.value })}
                   style={{

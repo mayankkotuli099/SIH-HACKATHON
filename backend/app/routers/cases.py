@@ -9,7 +9,7 @@ CASES_DATABASE: List[CaseFile] = [
     CaseFile(
         id="CASE-2024-101",
         title="Operation Falcon Hunt: Triple Homicide & Contract Hit",
-        leadSuspect="Vikram 'Raja' Malhotra",
+        leadSuspect="Mayank Kotoli",
         status="ACTIVE_MANHUNT",
         priority="CRITICAL",
         assignedOfficer="ACP Rajesh Verma (Special Crime Branch)",

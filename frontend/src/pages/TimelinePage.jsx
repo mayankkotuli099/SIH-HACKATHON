@@ -21,7 +21,7 @@ export default function TimelinePage({ onNavigate }) {
       title: 'Homicide Forensics: 9mm Striation Match (Sector 18)',
       category: 'HOMICIDE',
       severity: 'CRITICAL',
-      entity: "Vikram 'Raja' Malhotra (CRM-9942)",
+      entity: "Mayank Kotoli (CRM-9942)",
       firNumber: 'FIR-2024-402 (BNS Sec 103 / IPC 302)',
       policeStation: 'Special Crime Branch / PS Sector 18',
       description: 'CFSL Ballistics unit confirmed 9mm spent cartridge at Sector 18 crime scene matches the rifling marks of seized Beretta 92FS.',

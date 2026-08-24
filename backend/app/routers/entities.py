@@ -7,8 +7,8 @@ router = APIRouter(prefix="/entities", tags=["Entities & Dossiers"])
 ENTITIES_DATABASE: List[EntityDossier] = [
     EntityDossier(
         id="CRM-9942",
-        name="VIKRAM 'RAJA' MALHOTRA",
-        aliases=["Raja Bhai", "The Trigger", "VK-99"],
+        name="MAYANK KOTOLI",
+        aliases=["Kotoli", "The Trigger", "MK-99"],
         crimeType="HOMICIDE & CONTRACT KILLING",
         firNumbers=["FIR-2024-402 (Murder Sec 302/103)", "FIR-2023-881 (Attempted Murder)", "FIR-2022-119 (Illegal Arms)"],
         weaponSignature="9mm Beretta 92FS / .32 Desi Katta",
@@ -24,7 +24,7 @@ ENTITIES_DATABASE: List[EntityDossier] = [
             "nationality": "Indian (Interpol Blue Notice)",
             "scarsAndMarks": "Deep scar across left jawline; Cobra tattoo on right forearm",
             "voiceprintConfidence": "98.9%",
-            "facialVectorId": "FV-99420-VK"
+            "facialVectorId": "FV-99420-MK"
         },
         knownAssociates=[
             KnownAssociate(id="CRM-0014", name="Mahesh 'Tiger' Khan", relation="Gang Syndicate Boss", risk="CRITICAL"),
@@ -45,15 +45,15 @@ ENTITIES_DATABASE: List[EntityDossier] = [
         name="DEVENDRA 'D-7' RAWAT",
         aliases=["D-7", "Highway Predator", "Night Stalker"],
         crimeType="SEXUAL ASSAULT & SERIAL RAPE",
-        firNumbers=["FIR-2024-102 (Aggravated Rape Sec 376D/64)", "FIR-2024-089 (POCSO Act)", "FIR-2023-312 (Kidnapping Sec 363)"],
-        weaponSignature="Hunting Knife / Chloroform / Pepper Spray",
+        firNumbers=["FIR-2024-102 (Aggravated Rape Sec 376D/64)", "FIR-2024-089 (POCSO Act)"],
+        weaponSignature="Hunting Knife / Chloroform Spray",
         modusOperandi="Stalks lone commuters near unlit transit hubs and ring roads; uses fake taxi cabs with altered plates.",
         wantedReward="₹1,000,000 INR ($12,000 USD)",
         dnaProfileMatch="100% STR DNA Match from Forensic Kit #FK-8821",
         riskScore=99.8,
         threatLevel="CRITICAL",
         status="ACTIVE_FUGITIVE",
-        category="Serial Sexual Offenses & Abduction",
+        category="Serial Sex Offender / Kidnapper",
         biometrics={
             "dob": "1991-11-03",
             "nationality": "Indian",
@@ -63,7 +63,7 @@ ENTITIES_DATABASE: List[EntityDossier] = [
         },
         knownAssociates=[
             KnownAssociate(id="CRM-3310", name="Raju 'Mechanic' Verma", relation="Fake Number Plate Supplier", risk="HIGH"),
-            KnownAssociate(id="CRM-9942", name="Vikram Malhotra", relation="Former Inmate / Gang Link", risk="CRITICAL")
+            KnownAssociate(id="CRM-9942", name="Mayank Kotoli", relation="Former Inmate / Gang Link", risk="CRITICAL")
         ],
         financialAccounts=[
             FinancialAccount(bank="Punjab National Bank", accNo="****-8821", balance="₹1.8 Lakhs (Monitored)")
@@ -94,7 +94,7 @@ ENTITIES_DATABASE: List[EntityDossier] = [
             "facialVectorId": "FV-00145-MK"
         },
         knownAssociates=[
-            KnownAssociate(id="CRM-9942", name="Vikram 'Raja' Malhotra", relation="Lead Hitman", risk="CRITICAL"),
+            KnownAssociate(id="CRM-9942", name="Mayank Kotoli", relation="Lead Hitman", risk="CRITICAL"),
             KnownAssociate(id="CRM-5512", name="Elena 'Czar' Rostova", relation="Narcotics Supply Partner", risk="CRITICAL"),
             KnownAssociate(id="CRM-8821", name="Sameer Qureshi", relation="Heist Specialist", risk="HIGH")
         ],
@@ -161,7 +161,7 @@ ENTITIES_DATABASE: List[EntityDossier] = [
         },
         knownAssociates=[
             KnownAssociate(id="CRM-0014", name="Mahesh Khan", relation="Distribution Partner", risk="CRITICAL"),
-            KnownAssociate(id="CRM-9942", name="Vikram Malhotra", relation="Enforcer", risk="CRITICAL")
+            KnownAssociate(id="CRM-9942", name="Mayank Kotoli", relation="Enforcer", risk="CRITICAL")
         ],
         financialAccounts=[
             FinancialAccount(bank="HSBC HK Maritime Trust", accNo="****-9921", balance="$4.2M USD (Frozen)")
