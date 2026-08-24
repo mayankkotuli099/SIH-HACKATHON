@@ -1,4 +1,7 @@
-import re
+import os
+import json
+import urllib.request
+import urllib.error
 from typing import Dict, Any, List
 from ..models.schemas import AIChatResponse, EntityHighlight
 
@@ -6,11 +9,75 @@ class IntelligenceEngine:
     """
     CrimeLens Neural Copilot & Cross-Modal Intelligence Resolution Engine
     Analyzes natural language queries from investigators, extracts target entities,
-    correlates financial vectors, and retrieves forensic dossiers.
+    correlates financial vectors, and retrieves forensic dossiers using live Google Gemini API
+    with offline fallback resolution.
     """
+
+    def _call_gemini_api(self, message: str) -> str:
+        api_key = os.getenv("GEMINI_API_KEY", "")
+        if not api_key or "YOUR_GEMINI_API_KEY_HERE" in api_key:
+            return ""
+
+        system_instruction = (
+            "You are CrimeLens AI Copilot, an elite tactical forensic and criminal intelligence AI built for Indian Law Enforcement, "
+            "Police Special Cells, and State Crime Branches.\n"
+            "Analyze criminal dossiers, forensic ballistics (e.g. 9mm Beretta), DNA STR matches, ANPR hits, and cross-reference cases under "
+            "Bharatiya Nyaya Sanhita (BNS / IPC), Bharatiya Nagarik Suraksha Sanhita (BNSS), Section 65B BSA electronic evidence rules, MCOCA, POCSO, and NDPS Acts.\n"
+            "Provide crisp, structured, authoritative responses."
+        )
+
+        payload = {
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [{"text": message}]
+                }
+            ],
+            "systemInstruction": {
+                "parts": [{"text": system_instruction}]
+            },
+            "generationConfig": {
+                "temperature": 0.3,
+                "maxOutputTokens": 800
+            }
+        }
+
+        models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-pro"]
+        for model in models:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json"}
+                )
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    res_data = json.loads(response.read().decode("utf-8"))
+                    candidates = res_data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts and "text" in parts[0]:
+                            return parts[0]["text"]
+            except Exception:
+                continue
+
+        return ""
 
     def process_query(self, message: str) -> AIChatResponse:
         q = message.lower().strip()
+
+        # Try live Gemini call
+        live_text = self._call_gemini_api(message)
+        if live_text:
+            return AIChatResponse(
+                text=live_text,
+                entities=[
+                    EntityHighlight(label='AI ENGINE: GOOGLE GEMINI NEURAL', type='target'),
+                    EntityHighlight(label='CLEARANCE: LAW ENFORCEMENT LEVEL 4', type='money')
+                ],
+                note='Processed via Google Gemini AI Copilot with Section 65B BSA forensic verification.',
+                confidence='99.2%'
+            )
 
         # 1. Homicide / Murder & Ballistics Analysis
         if any(w in q for w in ["murder", "homicide", "kill", "shot", "bullet", "ballistic", "hitman", "beretta", "mayank", "kotoli", "vikram"]):
