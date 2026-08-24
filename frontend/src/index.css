@@ -1,22 +1,68 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
+  /* Surfaces */
   --bg-dark: #07090e;
+  --bg-sidebar: rgba(9, 13, 21, 0.96);
+  --bg-navbar: rgba(7, 9, 14, 0.92);
   --bg-card: rgba(16, 22, 34, 0.75);
   --bg-card-hover: rgba(22, 30, 46, 0.9);
+  --bg-modal: rgba(11, 16, 26, 0.98);
+  --bg-input: #0b101a;
+  --bg-table-row: rgba(16, 22, 34, 0.4);
   --border-color: rgba(0, 229, 255, 0.12);
   --border-active: rgba(0, 229, 255, 0.5);
+
+  /* Accents */
   --cyan-glow: #00e5ff;
   --cyan-subtle: rgba(0, 229, 255, 0.1);
   --cyan-hover: #33ebff;
   --accent-blue: #2979ff;
   --accent-green: #00e676;
   --accent-coral: #ff5555;
+
+  /* Text */
   --text-primary: #ffffff;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
+
+  /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  color-scheme: dark;
+}
+
+/* ==============================================================================
+   Light Theme System & Overrides
+   ============================================================================== */
+[data-theme="light"] {
+  /* Surfaces */
+  --bg-dark: #f1f5f9;
+  --bg-sidebar: #ffffff;
+  --bg-navbar: rgba(255, 255, 255, 0.96);
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-modal: #ffffff;
+  --bg-input: #ffffff;
+  --bg-table-row: #ffffff;
+  --border-color: #cbd5e1;
+  --border-active: #0891b2;
+
+  /* Accents */
+  --cyan-glow: #0891b2;
+  --cyan-subtle: rgba(8, 145, 178, 0.1);
+  --cyan-hover: #0e7490;
+  --accent-blue: #2563eb;
+  --accent-green: #16a34a;
+  --accent-coral: #dc2626;
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  color-scheme: light;
 }
 
 * {
@@ -33,6 +79,46 @@ html, body {
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ==============================================================================
+   Light Mode Global Typography & Layout Overrides
+   ============================================================================== */
+[data-theme="light"] :is(h1, h2, h3, h4, h5, h6) {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] p {
+  color: #475569;
+}
+
+[data-theme="light"] header {
+  background-color: var(--bg-navbar) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-theme="light"] aside {
+  background-color: var(--bg-sidebar) !important;
+  border-right-color: var(--border-color) !important;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] main {
+  background-color: var(--bg-dark) !important;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
 }
 
 /* Cyber Tactical Grid Background */
@@ -43,6 +129,13 @@ html, body {
     linear-gradient(to bottom, rgba(0, 229, 255, 0.035) 1px, transparent 1px);
   background-size: 40px 40px;
   position: relative;
+}
+
+[data-theme="light"] .cyber-grid-bg {
+  background-color: #f1f5f9;
+  background-image: 
+    linear-gradient(to right, rgba(8, 145, 178, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(8, 145, 178, 0.06) 1px, transparent 1px);
 }
 
 .cyber-grid-bg::before {
@@ -58,6 +151,10 @@ html, body {
   z-index: 0;
 }
 
+[data-theme="light"] .cyber-grid-bg::before {
+  background: radial-gradient(circle, rgba(8, 145, 178, 0.08) 0%, rgba(37, 99, 235, 0.03) 50%, transparent 70%);
+}
+
 /* Typography Helpers */
 .font-mono {
   font-family: var(--font-mono);
@@ -70,7 +167,7 @@ html, body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 8px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
@@ -78,6 +175,18 @@ html, body {
   border-color: var(--border-active);
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.12);
   transform: translateY(-2px);
+}
+
+[data-theme="light"] .glass-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .glass-card:hover {
+  background: #ffffff;
+  border-color: #0891b2;
+  box-shadow: 0 8px 24px rgba(8, 145, 178, 0.15);
 }
 
 /* Buttons */
@@ -98,6 +207,19 @@ html, body {
   font-size: 13px;
   transition: all 0.25s ease;
   box-shadow: 0 0 15px rgba(0, 229, 255, 0.35);
+}
+
+[data-theme="light"] .btn-cyan {
+  background: #0891b2 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(8, 145, 178, 0.35) !important;
+}
+
+[data-theme="light"] .btn-cyan:hover {
+  background: #0e7490 !important;
+  box-shadow: 0 6px 20px rgba(8, 145, 178, 0.5) !important;
+  transform: translateY(-1px);
 }
 
 .btn-cyan:hover {
@@ -124,6 +246,19 @@ html, body {
   transition: all 0.25s ease;
 }
 
+[data-theme="light"] .btn-outline-cyan {
+  color: #0891b2 !important;
+  border-color: #0891b2 !important;
+  background: rgba(8, 145, 178, 0.08) !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="light"] .btn-outline-cyan:hover {
+  background: rgba(8, 145, 178, 0.18) !important;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.2) !important;
+  transform: translateY(-1px);
+}
+
 .btn-outline-cyan:hover {
   border-color: var(--cyan-glow);
   background: rgba(0, 229, 255, 0.12);
@@ -135,6 +270,11 @@ html, body {
 .text-cyan-glow {
   color: var(--cyan-glow);
   text-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+
+[data-theme="light"] .text-cyan-glow {
+  color: #0891b2 !important;
+  text-shadow: none !important;
 }
 
 /* Pulse animation */
@@ -165,7 +305,7 @@ html, body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #07090e;
+  background: var(--bg-dark);
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 229, 255, 0.2);
@@ -173,4 +313,16 @@ html, body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 229, 255, 0.4);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

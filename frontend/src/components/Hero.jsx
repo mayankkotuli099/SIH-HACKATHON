@@ -44,7 +44,7 @@ export default function Hero() {
         letterSpacing: '-0.03em',
         maxWidth: '900px',
         margin: '0 auto 1.5rem',
-        color: '#FFFFFF'
+        color: 'var(--text-primary)'
       }}>
         Uncover Connections.<br />
         <span style={{

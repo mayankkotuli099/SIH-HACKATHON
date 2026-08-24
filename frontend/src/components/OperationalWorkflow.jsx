@@ -69,7 +69,7 @@ export default function OperationalWorkflow() {
         <h2 style={{
           fontSize: '2rem',
           fontWeight: 700,
-          color: '#FFFFFF',
+          color: 'var(--text-primary)',
           marginBottom: '0.5rem',
           letterSpacing: '-0.01em'
         }}>
@@ -141,7 +141,7 @@ export default function OperationalWorkflow() {
                 fontSize: '13px',
                 fontWeight: 700,
                 letterSpacing: '1px',
-                color: isSelected ? 'var(--cyan-glow)' : '#E2E8F0',
+                color: isSelected ? 'var(--cyan-glow)' : 'var(--text-primary)',
                 marginBottom: '0.65rem'
               }}>
                 {step.number}

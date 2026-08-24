@@ -37,8 +37,8 @@
     return (
       <div style={{
         flex: 1,
-        backgroundColor: '#03070d',
-        color: '#e2e8f0',
+        backgroundColor: 'var(--bg-dark)',
+        color: 'var(--text-primary)',
         fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
         padding: '1.5rem 2rem',
         maxWidth: '1600px',

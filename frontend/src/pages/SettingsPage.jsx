@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api.js';
+import { getInitialTheme, applyTheme } from '../utils/theme.js';
 
 export default function SettingsPage({ onNavigate }) {
   const [sensitivity, setSensitivity] = useState(85);
@@ -7,7 +8,14 @@ export default function SettingsPage({ onNavigate }) {
   const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [autoDossier, setAutoDossier] = useState(true);
   const [shaVerification, setShaVerification] = useState(true);
+  const [localTheme, setLocalTheme] = useState(getInitialTheme);
   const [saveStatus, setSaveStatus] = useState('');
+
+  useEffect(() => {
+    const handleTheme = (e) => setLocalTheme(e.detail || getInitialTheme());
+    window.addEventListener('crimelens-theme-change', handleTheme);
+    return () => window.removeEventListener('crimelens-theme-change', handleTheme);
+  }, []);
 
   useEffect(() => {
     async function loadSettings() {
@@ -189,7 +197,7 @@ export default function SettingsPage({ onNavigate }) {
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.75rem', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <div>
-                  <div style={{ fontSize: '13.5px', fontWeight: 600, color: '#FFFFFF' }}>Real-time Dark Web Surge Alerts</div>
+                  <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--text-primary)' }}>Real-time Dark Web Surge Alerts</div>
                   <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Trigger audio alarm & SMS dispatch when target syndicate mentions increase by &gt;200%.</div>
                 </div>
                 <input
@@ -198,6 +206,91 @@ export default function SettingsPage({ onNavigate }) {
                   onChange={(e) => setAlertsEnabled(e.target.checked)}
                   style={{ width: '18px', height: '18px', accentColor: 'var(--cyan-glow)' }}
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Section 3: Interface & Visual Theme */}
+          <div className="glass-card" style={{ padding: '2rem' }}>
+            <h3 style={{
+              fontSize: '16px',
+              fontWeight: 700,
+              color: 'var(--cyan-glow)',
+              marginBottom: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              letterSpacing: '0.5px'
+            }}>
+              🎨 INTERFACE THEME & DISPLAY PREFERENCES
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 600, marginBottom: '8px' }}>
+                  Active Workspace Visual Mode
+                </label>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      applyTheme('dark');
+                      setLocalTheme('dark');
+                    }}
+                    style={{
+                      flex: 1,
+                      minWidth: '180px',
+                      padding: '14px',
+                      borderRadius: '6px',
+                      border: localTheme === 'dark' ? '2px solid var(--cyan-glow)' : '1px solid var(--border-color)',
+                      backgroundColor: localTheme === 'dark' ? 'rgba(0, 229, 255, 0.1)' : 'var(--bg-card)',
+                      color: 'var(--text-primary)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '13px',
+                      fontWeight: 600
+                    }}
+                  >
+                    <span style={{ fontSize: '20px' }}>🌙</span>
+                    <div style={{ textAlign: 'left' }}>
+                      <div>Cyber Dark Mode</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 400 }}>High contrast neon forensic palette</div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      applyTheme('light');
+                      setLocalTheme('light');
+                    }}
+                    style={{
+                      flex: 1,
+                      minWidth: '180px',
+                      padding: '14px',
+                      borderRadius: '6px',
+                      border: localTheme === 'light' ? '2px solid var(--cyan-glow)' : '1px solid var(--border-color)',
+                      backgroundColor: localTheme === 'light' ? 'rgba(8, 145, 178, 0.1)' : 'var(--bg-card)',
+                      color: 'var(--text-primary)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '13px',
+                      fontWeight: 600
+                    }}
+                  >
+                    <span style={{ fontSize: '20px' }}>☀️</span>
+                    <div style={{ textAlign: 'left' }}>
+                      <div>Clarity Light Mode</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 400 }}>Clean daylit analytical theme</div>
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

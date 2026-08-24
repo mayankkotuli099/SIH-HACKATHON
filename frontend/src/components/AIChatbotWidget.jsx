@@ -135,10 +135,10 @@ export default function AIChatbotWidget() {
           width: '360px',
           maxWidth: 'calc(100vw - 32px)',
           height: '520px',
-          backgroundColor: 'rgba(11, 15, 23, 0.95)',
+          backgroundColor: 'var(--bg-modal, #ffffff)',
           border: '1.5px solid var(--cyan-glow)',
           borderRadius: '12px',
-          boxShadow: '0 0 35px rgba(0, 229, 255, 0.25), 0 20px 40px rgba(0,0,0,0.8)',
+          boxShadow: '0 0 35px rgba(0, 229, 255, 0.25), 0 20px 40px rgba(0,0,0,0.4)',
           backdropFilter: 'blur(20px)',
           display: 'flex',
           flexDirection: 'column',
@@ -148,19 +148,19 @@ export default function AIChatbotWidget() {
           {/* Header */}
           <div style={{
             padding: '14px 16px',
-            borderBottom: '1px solid rgba(0, 229, 255, 0.15)',
+            borderBottom: '1px solid var(--border-color)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: 'rgba(16, 24, 38, 0.8)'
+            backgroundColor: 'var(--bg-card)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div style={{
                 width: '30px',
                 height: '30px',
                 borderRadius: '6px',
-                backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                border: '1px solid rgba(0, 229, 255, 0.3)',
+                backgroundColor: 'var(--cyan-subtle)',
+                border: '1px solid var(--border-active)',
                 color: 'var(--cyan-glow)',
                 display: 'flex',
                 alignItems: 'center',
@@ -174,7 +174,7 @@ export default function AIChatbotWidget() {
                 </svg>
               </div>
               <div>
-                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF', letterSpacing: '0.5px' }}>
+                <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.5px' }}>
                   AI INVESTIGATION COPILOT
                 </h4>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -224,9 +224,9 @@ export default function AIChatbotWidget() {
               >
                 {m.sender === 'user' ? (
                   <div style={{
-                    backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                    border: '1px solid rgba(0, 229, 255, 0.3)',
-                    color: '#FFFFFF',
+                    backgroundColor: 'var(--cyan-subtle)',
+                    border: '1px solid var(--border-active)',
+                    color: 'var(--text-primary)',
                     padding: '8px 12px',
                     borderRadius: '8px 8px 0px 8px',
                     fontSize: '12.5px'
@@ -235,12 +235,12 @@ export default function AIChatbotWidget() {
                   </div>
                 ) : (
                   <div style={{
-                    backgroundColor: 'rgba(18, 24, 38, 0.9)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    backgroundColor: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '8px 8px 8px 0px',
                     padding: '10px 12px',
                     fontSize: '12px',
-                    color: '#E2E8F0',
+                    color: 'var(--text-primary)',
                     lineHeight: 1.5
                   }}>
                     <p style={{ marginBottom: m.entities ? '8px' : 0 }}>{m.text}</p>
@@ -319,11 +319,11 @@ export default function AIChatbotWidget() {
             onSubmit={handleSend}
             style={{
               padding: '10px 12px',
-              borderTop: '1px solid rgba(0, 229, 255, 0.12)',
+              borderTop: '1px solid var(--border-color)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              backgroundColor: 'rgba(13, 17, 26, 0.95)'
+              backgroundColor: 'var(--bg-card)'
             }}
           >
             <input
@@ -333,24 +333,23 @@ export default function AIChatbotWidget() {
               placeholder="Enter query parameters..."
               style={{
                 flex: 1,
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'var(--bg-input)',
+                border: '1px solid var(--border-color)',
                 borderRadius: '4px',
                 padding: '8px 10px',
-                color: '#FFFFFF',
+                color: 'var(--text-primary)',
                 fontSize: '12px',
                 outline: 'none'
               }}
             />
             <button
               type="submit"
+              className="btn-cyan"
               style={{
                 width: '32px',
                 height: '32px',
                 borderRadius: '4px',
-                backgroundColor: 'var(--cyan-glow)',
-                border: 'none',
-                color: '#000000',
+                padding: 0,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

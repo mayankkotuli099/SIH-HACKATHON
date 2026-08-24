@@ -78,7 +78,7 @@ export default function CoreEngine() {
         <h2 style={{
           fontSize: '2rem',
           fontWeight: 700,
-          color: '#FFFFFF',
+          color: 'var(--text-primary)',
           marginBottom: '0.5rem',
           letterSpacing: '-0.01em'
         }}>
@@ -132,7 +132,7 @@ export default function CoreEngine() {
             <h3 style={{
               fontSize: '17px',
               fontWeight: 600,
-              color: '#FFFFFF',
+              color: 'var(--text-primary)',
               marginBottom: '0.85rem',
               letterSpacing: '-0.01em'
             }}>

@@ -34,8 +34,8 @@ export default function EntityPage({ onNavigate }) {
     <div style={{
       flex: 1,
       minHeight: 'calc(100vh - 68px)',
-      backgroundColor: '#07090E',
-      color: '#FFFFFF',
+      backgroundColor: 'var(--bg-dark)',
+      color: 'var(--text-primary)',
       fontFamily: 'var(--font-sans)',
       padding: '2rem 2.5rem 3rem 2.5rem',
       position: 'relative',

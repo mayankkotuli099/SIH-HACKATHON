@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api.js';
+import { getInitialTheme, toggleTheme } from '../utils/theme.js';
 
 export default function Navbar({ activePage = 'home', onNavigate }) {
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
+  const [theme, setTheme] = useState(getInitialTheme);
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const stored = localStorage.getItem('crimelens_user');
@@ -15,7 +17,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
     }
   });
 
-  // Sync user state on storage change or mount
+  // Sync user and theme state
   useEffect(() => {
     const syncUser = () => {
       try {
@@ -25,9 +27,16 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
         setCurrentUser(null);
       }
     };
+    const syncTheme = (e) => {
+      setTheme(e.detail || getInitialTheme());
+    };
     syncUser();
     window.addEventListener('storage', syncUser);
-    return () => window.removeEventListener('storage', syncUser);
+    window.addEventListener('crimelens-theme-change', syncTheme);
+    return () => {
+      window.removeEventListener('storage', syncUser);
+      window.removeEventListener('crimelens-theme-change', syncTheme);
+    };
   }, []);
 
   const allNavItems = [
@@ -179,8 +188,58 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
           })}
         </nav>
 
-        {/* Right Section: CTA Button + Profile Button */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative' }}>
+        {/* Right Section: CTA Button + Theme Toggle + Profile Button */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', position: 'relative' }}>
+          {/* Theme Toggle Button */}
+          <button
+            onClick={() => {
+              const next = toggleTheme();
+              setTheme(next);
+            }}
+            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--cyan-glow)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              fontSize: '15px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 0 10px rgba(0, 229, 255, 0.1)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--cyan-glow)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-color)';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            {theme === 'dark' ? (
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
+
           {/* Show SIGN IN button only if NOT signed in */}
           {!currentUser ? (
             <button
