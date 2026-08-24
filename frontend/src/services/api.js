@@ -140,6 +140,12 @@ export const api = {
     },
     getById: async (id) => {
       return await request(`/entities/${id}`);
+    },
+    create: async (criminalData) => {
+      return await request('/entities', {
+        method: 'POST',
+        body: JSON.stringify(criminalData)
+      });
     }
   },
 

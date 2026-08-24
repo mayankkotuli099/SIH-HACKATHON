@@ -9,17 +9,18 @@ export default function AIChatbotWidget() {
     {
       id: 1,
       sender: 'user',
-      text: 'Trace financial flow for Shell Corp B'
+      text: 'Analyze homicide forensic match for Vikram Malhotra'
     },
     {
       id: 2,
       sender: 'ai',
-      text: 'Analyzing network connections for entity: identified 12 direct connections matching known criminal syndicate associates.',
+      text: 'HOMICIDE FORENSIC MATCH: Vikram "Raja" Malhotra (ID #CRM-9942) connected to Sector 18 double homicide. 9mm Beretta 92FS cartridge casings matched crime scene ballistics with 99.4% certainty. 3 active Non-Bailable Warrants pending under BNS Section 103 (IPC 302).',
       entities: [
-        { label: 'TARGET: RAHUL SHARMA', type: 'target' },
-        { label: 'SUSPICIOUS TRANSFER: $450,000 via Shell Corp B', type: 'money' }
+        { label: 'SUSPECT: VIKRAM RAJA MALHOTRA', type: 'target' },
+        { label: 'WEAPON: 9mm Beretta 92FS Match', type: 'money' },
+        { label: 'SCENE: Sector 18 Homicide', type: 'location' }
       ],
-      note: 'Registered director of "Apex Global Logistics", a suspected front company.'
+      note: 'Fugitive last spotted on CCTV at Meerut Highway riding black KTM Duke (unregistered). ₹5 Lakhs state bounty active.'
     }
   ]);
 
@@ -283,7 +284,37 @@ export default function AIChatbotWidget() {
             overflowX: 'auto'
           }}>
             <button
-              onClick={() => setInputVal('Expand Node Graph')}
+              onClick={() => setInputVal('Check Sector 14 Rape & DNA Dossier (Devendra Rawat)')}
+              style={{
+                background: 'rgba(168, 85, 247, 0.1)',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
+                borderRadius: '4px',
+                padding: '4px 8px',
+                fontSize: '10.5px',
+                color: '#C084FC',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              + Rape & DNA Dossier
+            </button>
+            <button
+              onClick={() => setInputVal('Track Axis Bank Armed Robbery Heist (Sameer Qureshi)')}
+              style={{
+                background: 'rgba(251, 191, 36, 0.1)',
+                border: '1px solid rgba(251, 191, 36, 0.3)',
+                borderRadius: '4px',
+                padding: '4px 8px',
+                fontSize: '10.5px',
+                color: '#FBBF24',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              + Armed Heist Trail
+            </button>
+            <button
+              onClick={() => setInputVal('Elena Rostova 100kg Heroin Cartel Seizure')}
               style={{
                 background: 'rgba(0, 229, 255, 0.06)',
                 border: '1px solid rgba(0, 229, 255, 0.2)',
@@ -295,22 +326,7 @@ export default function AIChatbotWidget() {
                 whiteSpace: 'nowrap'
               }}
             >
-              + Expand Node Graph
-            </button>
-            <button
-              onClick={() => setInputVal('Export Case Note')}
-              style={{
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '4px',
-                padding: '4px 8px',
-                fontSize: '10.5px',
-                color: 'var(--text-secondary)',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Export Case Note
+              + Narco Cartel
             </button>
           </div>
 

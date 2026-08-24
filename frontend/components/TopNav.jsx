@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { User } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import Logo from './Logo.jsx'
-import { getInitialTheme, toggleTheme } from '../src/utils/theme.js'
 import './TopNav.css'
 
 const LINKS = [
@@ -15,8 +14,7 @@ const LINKS = [
 ]
 
 function TopNav() {
-  const [theme, setTheme] = useState(getInitialTheme)
-  const [user, setUser] = useState(() => {
+  const [user] = useState(() => {
     try {
       const stored = localStorage.getItem('crimelens_user')
       return stored ? JSON.parse(stored) : null
@@ -24,12 +22,6 @@ function TopNav() {
       return null
     }
   })
-
-  useEffect(() => {
-    const handleTheme = (e) => setTheme(e.detail || getInitialTheme())
-    window.addEventListener('crimelens-theme-change', handleTheme)
-    return () => window.removeEventListener('crimelens-theme-change', handleTheme)
-  }, [])
 
   return (
     <header className="topnav">
@@ -44,29 +36,6 @@ function TopNav() {
       </nav>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <button
-          type="button"
-          onClick={() => {
-            const next = toggleTheme()
-            setTheme(next)
-          }}
-          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-          style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
-            backgroundColor: 'var(--panel)',
-            border: '1px solid var(--border)',
-            color: 'var(--cyan)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer'
-          }}
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
-
         <div className="operator">
           <span className="operator-avatar">
             <User size={17} strokeWidth={2} />

@@ -5,6 +5,12 @@ export default function TimelinePage({ onNavigate }) {
   const [filterType, setFilterType] = useState('ALL');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [backendEvents, setBackendEvents] = useState([]);
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   useEffect(() => {
     async function loadTimeline() {
@@ -27,7 +33,7 @@ export default function TimelinePage({ onNavigate }) {
       badgeLabel: 'Phone Communication',
       badgeColor: 'var(--cyan-glow)',
       dotColor: 'var(--cyan-glow)',
-      timestamp: '2023-10-27 14:32:00 UTC',
+      timestamp: '2024-10-27 14:32:00 UTC',
       source: '+1 (555) 019-8372',
       target: '+44 7700 900077',
       analysis: 'Encrypted signal detected. Duration: 04m 12s. High probability of operational coordination based on historical patterns.',
@@ -39,10 +45,10 @@ export default function TimelinePage({ onNavigate }) {
       badgeLabel: 'Location Visit',
       badgeColor: 'var(--cyan-glow)',
       dotColor: 'var(--cyan-glow)',
-      timestamp: '2023-10-27 16:45:30 UTC',
-      coordinates: '40.7128° N, 74.0060° W',
-      observation: 'Target vehicle (License Plate: UNK-482) lingered at Port Terminal C for 45 minutes. Associated with maritime logistics firm.',
-      locationTag: 'Port Terminal C // Sector 7',
+      timestamp: '2024-10-27 16:45:30 UTC',
+      coordinates: '28.4595° N, 77.0266° E',
+      observation: 'Target vehicle lingered at Sector 29 Cyber Hub for 45 minutes near financial district.',
+      locationTag: 'Sector 29 Cyber Hub // Sector 7',
       isAnomaly: false
     },
     {
@@ -51,10 +57,10 @@ export default function TimelinePage({ onNavigate }) {
       badgeLabel: 'Financial Transaction',
       badgeColor: '#FF5555',
       dotColor: '#FF5555',
-      timestamp: '2023-10-28 09:15:00 UTC',
+      timestamp: '2024-10-28 09:15:00 UTC',
       amount: '$2,450,000 USD',
       origin: 'Offshore Trust (BVI)',
-      destination: 'Shell Corp Holdings',
+      destination: 'Shell Corp Holdings (HK)',
       warningTitle: 'WARNING: ANOMALY DETECTED',
       warningText: 'Transaction volume exceeds historical baseline by 400%.',
       isAnomaly: true
@@ -65,13 +71,18 @@ export default function TimelinePage({ onNavigate }) {
       badgeLabel: 'Encrypted Radio Burst',
       badgeColor: '#A855F7',
       dotColor: '#A855F7',
-      timestamp: '2023-10-28 11:20:15 UTC',
+      timestamp: '2024-10-28 11:20:15 UTC',
       source: 'SIGINT Node Alpha-9',
       target: 'Unknown Receiver // Frequency: 433.92 MHz',
       analysis: 'Shortwave burst detected near Warehouse 4 perimeter. AI automated decrypt extracted coordinates matching target container depot.',
       isAnomaly: false
     }
   ];
+
+  const filteredEvents = timelineEvents.filter((evt) => {
+    if (filterType === 'ALL') return true;
+    return evt.type.toUpperCase() === filterType.toUpperCase();
+  });
 
   return (
     <div style={{
@@ -82,24 +93,50 @@ export default function TimelinePage({ onNavigate }) {
       width: '100%'
     }}>
         {/* Header */}
-        <div style={{ marginBottom: '2.5rem' }}>
-          <h1 style={{
-            fontSize: '2.2rem',
-            fontWeight: 800,
-            letterSpacing: '1px',
-            color: '#FFFFFF',
-            marginBottom: '0.4rem',
-            textTransform: 'uppercase'
-          }}>
-            Activity Timeline
-          </h1>
-          <p style={{
-            color: 'var(--text-secondary)',
-            fontSize: '14px',
-            fontFamily: 'var(--font-mono)'
-          }}>
-            Chronological sequence of identified events and anomalies.
-          </p>
+        <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h1 style={{
+              fontSize: '2.2rem',
+              fontWeight: 800,
+              letterSpacing: '1px',
+              color: '#FFFFFF',
+              marginBottom: '0.4rem',
+              textTransform: 'uppercase'
+            }}>
+              Activity Timeline
+            </h1>
+            <p style={{
+              color: 'var(--text-secondary)',
+              fontSize: '14px',
+              fontFamily: 'var(--font-mono)'
+            }}>
+              Chronological sequence of identified events and anomalies.
+            </p>
+          </div>
+
+          {/* Filter Pills */}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {['ALL', 'PHONE', 'LOCATION', 'FINANCE', 'INTERCEPT'].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setFilterType(cat)}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '4px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '11px',
+                  fontWeight: filterType === cat ? 700 : 500,
+                  cursor: 'pointer',
+                  border: `1px solid ${filterType === cat ? 'var(--cyan-glow)' : 'rgba(255, 255, 255, 0.15)'}`,
+                  backgroundColor: filterType === cat ? 'rgba(0, 229, 255, 0.15)' : 'rgba(15, 21, 32, 0.6)',
+                  color: filterType === cat ? 'var(--cyan-glow)' : 'var(--text-secondary)',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {cat === 'ALL' ? 'ALL EVENTS' : cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Layout Grid: Timeline stream on left, Insights on right */}
@@ -124,7 +161,7 @@ export default function TimelinePage({ onNavigate }) {
 
             {/* Event Cards */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              {timelineEvents.map((evt) => (
+              {filteredEvents.map((evt) => (
                 <div key={evt.id} style={{ position: 'relative' }}>
                   {/* Timeline Glowing Dot */}
                   <div style={{
@@ -391,7 +428,11 @@ export default function TimelinePage({ onNavigate }) {
             </div>
 
             {/* Export Report Action */}
-            <button className="btn-outline-cyan" style={{ width: '100%', justifyContent: 'center' }}>
+            <button
+              onClick={() => showToast('✓ Timeline chronology report exported (JSON / PDF format).')}
+              className="btn-outline-cyan"
+              style={{ width: '100%', justifyContent: 'center', cursor: 'pointer' }}
+            >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
@@ -401,6 +442,26 @@ export default function TimelinePage({ onNavigate }) {
             </button>
           </div>
         </div>
+
+        {/* Floating Toast Notification */}
+        {toastMessage && (
+          <div style={{
+            position: 'fixed',
+            top: '80px',
+            right: '24px',
+            backgroundColor: 'rgba(0, 229, 255, 0.95)',
+            color: '#07090E',
+            padding: '12px 20px',
+            borderRadius: '6px',
+            fontWeight: 700,
+            fontFamily: 'monospace',
+            fontSize: '13px',
+            boxShadow: '0 0 20px rgba(0, 229, 255, 0.5)',
+            zIndex: 9999
+          }}>
+            {toastMessage}
+          </div>
+        )}
     </div>
   );
 }

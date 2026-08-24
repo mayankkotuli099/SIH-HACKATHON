@@ -1,32 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api.js';
+import AddCriminalModal from '../components/AddCriminalModal.jsx';
 
 export default function DashboardPage({ onNavigate }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [severityFilter, setSeverityFilter] = useState('ALL');
-  const [activeCluster, setActiveCluster] = useState('CLUSTER_ALPHA_9');
+  const [activeCluster, setActiveCluster] = useState('CLUSTER_HOMICIDE_GANG');
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedLogDetail, setSelectedLogDetail] = useState(null);
   const [isNewQueryModalOpen, setIsNewQueryModalOpen] = useState(false);
+  const [isAddCriminalModalOpen, setIsAddCriminalModalOpen] = useState(false);
   const [showAllInfluencersModal, setShowAllInfluencersModal] = useState(false);
   const [isLiveFeedActive, setIsLiveFeedActive] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
-
-  // Load live data from backend
-  useEffect(() => {
-    async function loadDashboard() {
-      try {
-        const data = await api.dashboard.getOverview();
-        if (data && data.success) {
-          if (data.metrics) setMetrics(data.metrics);
-          if (data.logs && data.logs.length > 0) setRecentLogs(data.logs);
-        }
-      } catch (err) {
-        console.warn('Using local telemetry cache:', err);
-      }
-    }
-    loadDashboard();
-  }, []);
 
   // New query state
   const [newQueryForm, setNewQueryForm] = useState({
@@ -83,152 +69,137 @@ export default function DashboardPage({ onNavigate }) {
 
   // Cluster graph definitions
   const clusterData = {
-    CLUSTER_ALPHA_9: {
-      name: 'CLUSTER_ALPHA_9 [SYNDICATE CORE]',
+    CLUSTER_HOMICIDE_GANG: {
+      name: 'CLUSTER_HOMICIDE_GANG [CONTRACT KILLING & ARMS]',
       nodesCount: '1,432',
       edgesCount: '4,891',
-      threatLevel: 'HIGH',
-      threatColor: '#FF5555',
-      nodes: [
-        { id: 'N1', name: 'NODE_X92_BETA', type: 'COMMAND_NODE', x: 50, y: 70, r: 11, color: '#00E5FF', clearance: 'LVL 4', risk: '98%', status: 'ACTIVE_TRANSMITTING' },
-        { id: 'N2', name: 'RAHUL_SHARMA_ALIAS', type: 'PRIMARY_SUSPECT', x: 130, y: 35, r: 15, color: '#00E5FF', clearance: 'FLAGGED', risk: '95%', status: 'SURVEILLED' },
-        { id: 'N3', name: 'SHELL_CORP_B_HK', type: 'FINANCIAL_PROXY', x: 210, y: 70, r: 12, color: '#00E5FF', clearance: 'FROZEN', risk: '89%', status: 'LAUNDERING_NEXUS' },
-        { id: 'N4', name: 'IP_ROUTE_77.9.XX', type: 'C2_GATEWAY', x: 130, y: 105, r: 13, color: '#FF5555', clearance: 'ANOMALOUS', risk: '99%', status: 'DARKNET_BURST' },
-        { id: 'N5', name: 'BURNER_SIM_+91882', type: 'SIGINT_ENDPOINT', x: 90, y: 125, r: 8, color: '#FBBF24', clearance: 'INTERCEPTED', risk: '72%', status: 'TRACED' },
-        { id: 'N6', name: 'OFFSHORE_ACC_9921', type: 'CRYPTO_ESCROW', x: 170, y: 125, r: 9, color: '#A855F7', clearance: 'MONITORED', risk: '84%', status: 'MIXER_TX' },
-      ],
-      edges: [
-        { from: [50, 70], to: [130, 35], color: 'rgba(0, 229, 255, 0.6)', width: 2, label: 'VOICE CALLS (42)' },
-        { from: [130, 35], to: [210, 70], color: 'rgba(0, 229, 255, 0.6)', width: 2, label: '$450K WIRE' },
-        { from: [50, 70], to: [130, 105], color: 'rgba(255, 85, 85, 0.5)', width: 1.5, dashed: true },
-        { from: [130, 105], to: [210, 70], color: 'rgba(255, 85, 85, 0.5)', width: 1.5, dashed: true },
-        { from: [130, 35], to: [130, 105], color: 'rgba(255, 85, 85, 0.8)', width: 2, dashed: true },
-        { from: [50, 70], to: [90, 125], color: 'rgba(251, 191, 36, 0.5)', width: 1.2 },
-        { from: [210, 70], to: [170, 125], color: 'rgba(168, 85, 247, 0.6)', width: 1.5 },
-      ]
-    },
-    CLUSTER_FINANCIAL_NEXUS: {
-      name: 'CLUSTER_FINANCIAL_NEXUS [MONEY TRAIL]',
-      nodesCount: '842',
-      edgesCount: '2,910',
       threatLevel: 'CRITICAL',
       threatColor: '#FF5555',
       nodes: [
-        { id: 'FN1', name: 'APEX_LOGISTICS_HOLDINGS', type: 'FRONT_COMPANY', x: 60, y: 50, r: 13, color: '#00E5FF', clearance: 'REGISTERED', risk: '92%', status: 'HAWALA_HUB' },
-        { id: 'FN2', name: 'DUBAI_BULLION_EXCHANGE', type: 'ASSET_CONVERT', x: 140, y: 40, r: 14, color: '#FBBF24', clearance: 'INTERPOL_FLAG', risk: '97%', status: 'GOLD_PARKING' },
-        { id: 'FN3', name: 'SWISS_PRIV_ACC_#88', type: 'BENEFICIARY', x: 210, y: 60, r: 12, color: '#00E676', clearance: 'SEALED', risk: '78%', status: 'TIER_1_DEPOSIT' },
-        { id: 'FN4', name: 'TETHER_USDT_0x8f9...', type: 'CRYPTO_TUMBLER', x: 110, y: 110, r: 10, color: '#A855F7', clearance: 'UNTRACEABLE', risk: '99%', status: 'DEFI_DRAIN' },
+        { id: 'N1', name: "VIKRAM 'RAJA' MALHOTRA", type: 'LEAD_HITMAN', x: 50, y: 70, r: 15, color: '#FF5555', clearance: 'WARRANT_ISSUED', risk: '99%', status: 'ACTIVE_FUGITIVE' },
+        { id: 'N2', name: "MAHESH 'TIGER' KHAN", type: 'GANG_KINGPIN', x: 130, y: 35, r: 16, color: '#00E5FF', clearance: 'MCOCA_FLAG', risk: '98%', status: 'SURVEILLED' },
+        { id: 'N3', name: 'SECTOR_18_CRIME_SCENE', type: 'HOMICIDE_SCENE', x: 210, y: 70, r: 12, color: '#FF5555', clearance: 'BALLISTICS_MATCH', risk: '100%', status: 'EVIDENCE_SEALED' },
+        { id: 'N4', name: 'SURESH_ARMORER_KATAS', type: 'ILLEGAL_ARMS_SUPPLIER', x: 130, y: 105, r: 13, color: '#FBBF24', clearance: 'ARMS_ACT', risk: '94%', status: 'RAID_PENDING' },
+        { id: 'N5', name: 'KTM_DUKE_GETAWAY', type: 'VEHICLE_INTERCEPT', x: 90, y: 125, r: 8, color: '#00E676', clearance: 'ANPR_FLAGGED', risk: '88%', status: 'TRACED_TOLL' },
+        { id: 'N6', name: 'HAWALA_PAYMENT_DROP', type: 'CONTRACT_BOUNTY', x: 170, y: 125, r: 9, color: '#A855F7', clearance: 'MONITORED', risk: '91%', status: 'CASH_SEIZED' },
       ],
       edges: [
-        { from: [60, 50], to: [140, 40], color: 'rgba(0, 229, 255, 0.7)', width: 2 },
-        { from: [140, 40], to: [210, 60], color: 'rgba(0, 230, 118, 0.7)', width: 2.5 },
-        { from: [60, 50], to: [110, 110], color: 'rgba(168, 85, 247, 0.6)', width: 1.5, dashed: true },
-        { from: [140, 40], to: [110, 110], color: 'rgba(255, 85, 85, 0.6)', width: 2, dashed: true },
+        { from: [50, 70], to: [130, 35], color: 'rgba(255, 85, 85, 0.7)', width: 2.5, label: 'HIT CONTRACT' },
+        { from: [50, 70], to: [210, 70], color: 'rgba(255, 85, 85, 0.8)', width: 2, label: '9mm CASINGS' },
+        { from: [130, 35], to: [130, 105], color: 'rgba(251, 191, 36, 0.6)', width: 1.5, dashed: true },
+        { from: [130, 105], to: [50, 70], color: 'rgba(251, 191, 36, 0.8)', width: 2, dashed: true },
+        { from: [50, 70], to: [90, 125], color: 'rgba(0, 230, 118, 0.7)', width: 1.5 },
+        { from: [130, 35], to: [170, 125], color: 'rgba(168, 85, 247, 0.6)', width: 1.5 },
       ]
     },
-    CLUSTER_DARKNET_RELAY: {
-      name: 'CLUSTER_DARKNET_RELAY [TOR & ENCRYPTED CHATS]',
-      nodesCount: '620',
-      edgesCount: '1,490',
-      threatLevel: 'ELEVATED',
+    CLUSTER_ROBBERY_FENCING: {
+      name: 'CLUSTER_ROBBERY_FENCING [BANK HEISTS & GOLD BULLION]',
+      nodesCount: '842',
+      edgesCount: '2,910',
+      threatLevel: 'HIGH',
       threatColor: '#FBBF24',
       nodes: [
-        { id: 'DN1', name: 'TOR_EXIT_NODE_FRANKFURT', type: 'RELAY_PROXY', x: 70, y: 70, r: 12, color: '#A855F7', clearance: 'MONITORED', risk: '85%', status: 'ENCRYPTED_HOP' },
-        { id: 'DN2', name: 'TELEGRAM_BOT_TELEMETRY', type: 'DEAD_DROP_C2', x: 130, y: 40, r: 14, color: '#00E5FF', clearance: 'DECRYPTED', risk: '94%', status: 'DISPATCH_FEED' },
-        { id: 'DN3', name: 'SIGNAL_GROUP_GHOST_7', type: 'COVERT_CELL', x: 190, y: 80, r: 11, color: '#FF5555', clearance: 'SUBPOENA_REQ', risk: '91%', status: 'ACTIVE_PING' },
+        { id: 'FN1', name: "SAMEER 'GHOST' QURESHI", type: 'SAFE_CRACKER', x: 60, y: 50, r: 14, color: '#FBBF24', clearance: 'WARRANT_ACTIVE', risk: '93%', status: 'FUGITIVE' },
+        { id: 'FN2', name: 'AXIS_BANK_VAULT_SCENE', type: 'CRIME_SCENE', x: 140, y: 40, r: 15, color: '#FF5555', clearance: 'THERMAL_BREACH', risk: '99%', status: '14KG_GOLD_STOLEN' },
+        { id: 'FN3', name: 'BULLION_FENCER_CHANDNI_CHOWK', type: 'BLACK_MARKET', x: 210, y: 60, r: 12, color: '#00E676', clearance: 'RECEIVER', risk: '89%', status: 'MONITORED' },
+        { id: 'FN4', name: 'GETAWAY_BOLERO_HR26', type: 'ANPR_CAMERA_HIT', x: 110, y: 110, r: 10, color: '#00E5FF', clearance: 'KMP_EXPRESSWAY', risk: '96%', status: 'INTERCEPT_UNIT' },
       ],
       edges: [
-        { from: [70, 70], to: [130, 40], color: 'rgba(168, 85, 247, 0.7)', width: 2 },
-        { from: [130, 40], to: [190, 80], color: 'rgba(255, 85, 85, 0.7)', width: 2 },
+        { from: [60, 50], to: [140, 40], color: 'rgba(255, 85, 85, 0.8)', width: 2.5 },
+        { from: [140, 40], to: [210, 60], color: 'rgba(251, 191, 36, 0.7)', width: 2 },
+        { from: [60, 50], to: [110, 110], color: 'rgba(0, 229, 255, 0.7)', width: 2, dashed: true },
+        { from: [140, 40], to: [110, 110], color: 'rgba(255, 85, 85, 0.6)', width: 1.5, dashed: true },
+      ]
+    },
+    CLUSTER_NARCO_PIPELINE: {
+      name: 'CLUSTER_NARCO_PIPELINE [HEROIN & ARMS SMUGGLING]',
+      nodesCount: '620',
+      edgesCount: '1,490',
+      threatLevel: 'CRITICAL',
+      threatColor: '#FF5555',
+      nodes: [
+        { id: 'DN1', name: "ELENA 'CZAR' ROSTOVA", type: 'CARTEL_BOSS', x: 70, y: 70, r: 14, color: '#FF5555', clearance: 'INTERPOL_RED', risk: '96%', status: 'ARABIAN_SEA_CARGO' },
+        { id: 'DN2', name: 'PORT_TERMINAL_C_YARD', type: 'CONTAINER_INTERCEPT', x: 130, y: 40, r: 15, color: '#00E5FF', clearance: 'NCB_SEIZED', risk: '100%', status: '100KG_OPIOIDS' },
+        { id: 'DN3', name: 'STEYR_TMP_FIREARMS_CRATE', type: 'MILITARY_ARMS', x: 190, y: 80, r: 12, color: '#FBBF24', clearance: 'ARMS_TRAFFICKING', risk: '98%', status: 'CUSTOMS_HOLD' },
+      ],
+      edges: [
+        { from: [70, 70], to: [130, 40], color: 'rgba(0, 229, 255, 0.8)', width: 2.5 },
+        { from: [130, 40], to: [190, 80], color: 'rgba(251, 191, 36, 0.8)', width: 2 },
       ]
     }
   };
 
   const topInfluencers = [
-    { id: 'E1', name: 'NODE_X92_BETA', relevance: '98.5%', connections: '4,210', category: 'C2 Command', risk: 'CRITICAL', riskColor: '#FF5555' },
-    { id: 'E2', name: 'ALIAS_UNKNOWN_4494', relevance: '94.2%', connections: '3,845', category: 'Syndicate Boss', risk: 'CRITICAL', riskColor: '#FF5555' },
-    { id: 'E3', name: 'IP_ROUTE_77.9.XX', relevance: '88.7%', connections: '2,109', category: 'Cyber Infrastructure', risk: 'HIGH', riskColor: '#FF8800' },
-    { id: 'E4', name: 'APEX_GLOBAL_LOGISTICS', relevance: '82.1%', connections: '1,720', category: 'Front Shell Entity', risk: 'HIGH', riskColor: '#FF8800' },
-    { id: 'E5', name: 'ESCROW_WALLET_0x9C', relevance: '76.4%', connections: '940', category: 'Laundering Escrow', risk: 'MEDIUM', riskColor: '#FBBF24' },
+    { id: 'E1', name: "VIKRAM 'RAJA' MALHOTRA", relevance: '99.4%', connections: '4,210', category: 'Homicide / Contract Hitman', risk: 'CRITICAL', riskColor: '#FF5555' },
+    { id: 'E2', name: "MAHESH 'TIGER' KHAN", relevance: '98.5%', connections: '3,845', category: 'Syndicate Don / MCOCA', risk: 'CRITICAL', riskColor: '#FF5555' },
+    { id: 'E3', name: "DEVENDRA 'D-7' RAWAT", relevance: '99.8%', connections: '1,120', category: 'Serial Sexual Offender', risk: 'CRITICAL', riskColor: '#FF5555' },
+    { id: 'E4', name: "SAMEER 'GHOST' QURESHI", relevance: '92.4%', connections: '2,109', category: 'Armed Bank Heist Master', risk: 'HIGH', riskColor: '#FF8800' },
+    { id: 'E5', name: "ELENA 'CZAR' ROSTOVA", relevance: '96.0%', connections: '1,720', category: 'Narcotics & Arms Cartel', risk: 'CRITICAL', riskColor: '#FF5555' },
   ];
 
   const [recentLogs, setRecentLogs] = useState([
     {
       id: 101,
-      time: '2024-10-27 14:32:01',
-      type: 'NEW CONNECTION',
-      typeColor: 'var(--cyan-glow)',
-      entity: 'NODE_X92_BETA → ALIAS_UK_09',
-      severity: 'LOW',
-      severityBadge: 'LOW',
-      severityColor: 'var(--text-secondary)',
-      action: 'VIEW DETAILS',
-      rawPayload: 'Direct TCP handshake logged on port 8443 with encrypted payload size 12.4 KB.',
-      hash: 'sha256:4f8a91c78b66e...',
-      location: 'Frankfurt DE -> Zurich CH',
-      interceptType: 'NETWORK_TELEMETRY'
-    },
-    {
-      id: 102,
-      time: '2024-10-27 14:28:45',
-      type: 'ANOMALY DETECTED',
+      time: '2024-10-27 15:10:22',
+      type: 'BALLISTICS HIT',
       typeColor: '#FF5555',
-      entity: 'IP_ROUTE_77.9.XX',
+      entity: "CRIME SCENE #18 → VIKRAM 'RAJA' MALHOTRA",
       severity: '▲ CRITICAL',
       severityBadge: 'CRITICAL',
       severityColor: '#FF5555',
-      action: 'INVESTIGATE',
-      rawPayload: 'Surge of 400+ encrypted packets to known C2 server in under 12 seconds.',
-      hash: 'sha256:b93c8472ef910...',
-      location: 'Hong Kong SAR',
-      interceptType: 'SIGNALS_INTELLIGENCE'
+      action: 'DISPATCH STF',
+      rawPayload: 'FSL Forensic Ballistics match: 9mm cartridge casing recovered from Sector 18 double homicide fired from seized Beretta #92FS-881.',
+      hash: 'sha256:4f8a91c78b66e9921c',
+      location: 'Sector 18 Homicide Scene (28.5700° N, 77.3200° E)',
+      interceptType: 'FORENSIC_BALLISTICS'
+    },
+    {
+      id: 102,
+      time: '2024-10-27 14:48:15',
+      type: 'DNA MATCH ALERT',
+      typeColor: '#FF5555',
+      entity: "DEVENDRA 'D-7' RAWAT (Fugitive)",
+      severity: '▲ CRITICAL',
+      severityBadge: 'CRITICAL',
+      severityColor: '#FF5555',
+      action: 'APPREHEND',
+      rawPayload: 'Automated National DNA Registry hit: 100% STR profile match with evidence kit from Sector 14 highway abduction case.',
+      hash: 'sha256:b93c8472ef9104492a',
+      location: 'Special SIT Forensics Lab',
+      interceptType: 'DNA_FORENSICS'
     },
     {
       id: 103,
-      time: '2024-10-27 14:15:22',
-      type: 'DATA IMPORT',
-      typeColor: 'var(--text-muted)',
-      entity: 'BATCH_REQ_992 (450 records)',
-      severity: 'INFO',
-      severityBadge: 'INFO',
-      severityColor: 'var(--text-muted)',
-      action: 'VIEW LOG',
-      rawPayload: 'Batch bank transaction CSV ingested into unified knowledge graph. 32 new suspect links synthesized.',
-      hash: 'sha256:71de01488ca90...',
-      location: 'Internal Ingestion Pipeline',
-      interceptType: 'DATA_INGESTION'
-    },
-    {
-      id: 104,
-      time: '2024-10-27 14:02:18',
-      type: 'SUSPICIOUS TRANSFER',
+      time: '2024-10-27 14:22:40',
+      type: 'ANPR TOLL HIT',
       typeColor: '#FBBF24',
-      entity: 'SHELL_CORP_B → DUBAI_BULLION',
+      entity: 'ARMED HEIST GETAWAY (HR-26-XX-4902)',
       severity: 'HIGH',
       severityBadge: 'HIGH',
       severityColor: '#FBBF24',
-      action: 'INVESTIGATE',
-      rawPayload: 'Automated wire of $450,000 USD routed via three intermediate escrow accounts.',
-      hash: 'sha256:dd82910fa31b5...',
-      location: 'Dubai UAE',
-      interceptType: 'FINANCIAL_TRANSACTION'
-    },
-    {
-      id: 105,
-      time: '2024-10-27 13:54:10',
-      type: 'GEOLOCATION PING',
-      typeColor: 'var(--cyan-glow)',
-      entity: 'RAHUL_SHARMA_ALIAS (Burner #2)',
-      severity: 'MEDIUM',
-      severityBadge: 'MEDIUM',
-      severityColor: '#FBBF24',
-      action: 'VIEW DETAILS',
-      rawPayload: 'Triangulated cell tower handshake in Sector 29 Cyber Hub near financial district.',
-      hash: 'sha256:aa290192eef81...',
-      location: 'NCR 28.4595° N, 77.0266° E',
-      interceptType: 'GEOSPATIAL_VECTOR'
+      action: 'INTERCEPT',
+      rawPayload: 'Automatic Number Plate Recognition camera detected suspect Bolero vehicle used in Axis Bank gold heist heading towards Meerut Expressway.',
+      hash: 'sha256:71de01488ca901192b',
+      location: 'KMP Expressway Toll Gate #4',
+      interceptType: 'HIGHWAY_SURVEILLANCE'
     }
   ]);
+
+  // Load live data from backend
+  useEffect(() => {
+    async function loadDashboard() {
+      try {
+        const data = await api.dashboard.getOverview();
+        if (data && data.success) {
+          if (data.metrics) setMetrics(data.metrics);
+          if (data.logs && data.logs.length > 0) setRecentLogs(data.logs);
+        }
+      } catch (err) {
+        console.warn('Using local telemetry cache:', err);
+      }
+    }
+    loadDashboard();
+  }, []);
 
   // Toast notification helper
   const showToast = (msg) => {
@@ -548,11 +519,33 @@ export default function DashboardPage({ onNavigate }) {
           </button>
 
           <button
+            onClick={() => setIsAddCriminalModalOpen(true)}
+            style={{
+              backgroundColor: '#00E5FF',
+              color: '#07090E',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '7px 16px',
+              fontSize: '11.5px',
+              fontWeight: 800,
+              fontFamily: 'var(--font-mono, monospace)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)'
+            }}
+          >
+            <span>🚨</span>
+            <span>+ ADD CRIMINAL</span>
+          </button>
+
+          <button
             onClick={() => setIsNewQueryModalOpen(true)}
             className="btn-cyan"
             style={{ fontSize: '11.5px', padding: '7px 16px' }}
           >
-            + NEW TARGET QUERY
+            + TARGET DISPATCH
           </button>
         </div>
       </div>
@@ -1393,11 +1386,11 @@ export default function DashboardPage({ onNavigate }) {
             <form onSubmit={handleCreateNewQuery} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '11.5px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                  TARGET IDENTIFIER (NAME, PHONE, WALLET, IP, ALIAS):
+                  TARGET IDENTIFIER (SUSPECT NAME, FIR #, WEAPON, VEHICLE, PHONE):
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Rahul Sharma, +91-9876543210, 0x71C..."
+                  placeholder="e.g. Vikram Malhotra, FIR-2024-402, 9mm Beretta, HR-26-XX-4902..."
                   value={newQueryForm.identifier}
                   onChange={(e) => setNewQueryForm({ ...newQueryForm, identifier: e.target.value })}
                   style={{
@@ -1418,7 +1411,7 @@ export default function DashboardPage({ onNavigate }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                    TARGET CATEGORY:
+                    CRIME CLASSIFICATION:
                   </label>
                   <select
                     value={newQueryForm.targetType}
@@ -1435,11 +1428,12 @@ export default function DashboardPage({ onNavigate }) {
                       outline: 'none'
                     }}
                   >
-                    <option value="PERSON_OF_INTEREST">Person of Interest</option>
-                    <option value="PHONE_NUMBER">Burner / SIM Vector</option>
-                    <option value="BANK_ACCOUNT">Bank Account / Hawala</option>
-                    <option value="CRYPTO_WALLET">Crypto Wallet / DeFi</option>
-                    <option value="IP_ADDRESS">IP / C2 Server</option>
+                    <option value="HOMICIDE_MURDER">Homicide & Contract Murder (Sec 302/103)</option>
+                    <option value="SEXUAL_OFFENSE">Sexual Assault & Serial Rape (Sec 376D/64)</option>
+                    <option value="ARMED_ROBBERY">Armed Bank Robbery & Heist (Sec 392)</option>
+                    <option value="NARCOTICS_ARMS">Narcotics Cartel & Arms Smuggling (NDPS)</option>
+                    <option value="KIDNAPPING_EXTORTION">Kidnapping & Extortion Syndicate (MCOCA)</option>
+                    <option value="CYBER_FINANCIAL">Cyber Syndicate & Hawala Laundering</option>
                   </select>
                 </div>
 
@@ -1462,17 +1456,17 @@ export default function DashboardPage({ onNavigate }) {
                       outline: 'none'
                     }}
                   >
-                    <option value="CRITICAL">CRITICAL (Real-time Pings)</option>
-                    <option value="HIGH">HIGH (Standard Watchlist)</option>
-                    <option value="MEDIUM">MEDIUM (Periodic Polling)</option>
-                    <option value="LOW">LOW (Background Passive)</option>
+                    <option value="CRITICAL">▲ CRITICAL (Red Corner Alert)</option>
+                    <option value="HIGH">HIGH (Non-Bailable Warrant)</option>
+                    <option value="MEDIUM">MEDIUM (Active SIT Case)</option>
+                    <option value="LOW">LOW (Intelligence Surveillance)</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label style={{ display: 'block', fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                  JURISDICTION FEED:
+                  INVESTIGATIVE JURISDICTION / BRANCH:
                 </label>
                 <select
                   value={newQueryForm.jurisdiction}
@@ -1489,10 +1483,11 @@ export default function DashboardPage({ onNavigate }) {
                     outline: 'none'
                   }}
                 >
-                  <option value="DOMESTIC_SIGINT">Domestic Signals Intelligence (Telecom & ISP)</option>
-                  <option value="CROSS_BORDER_INTERPOL">Cross-Border INTERPOL Red Notices</option>
-                  <option value="DARKNET_MONITOR">Dark Web Forums & Telegram Channels</option>
-                  <option value="ALL_INTEGRATED_PIPELINES">All Integrated Neural Feeds</option>
+                  <option value="SPECIAL_CELL_HOMICIDE">Special Crime Branch (Homicide & STF)</option>
+                  <option value="WOMEN_SAFETY_SIT">Special SIT (Women & Child Safety / Rape)</option>
+                  <option value="ANTI_ROBBERY_SQUAD">Anti-Robbery & Dacoity Squad</option>
+                  <option value="NARCOTICS_CONTROL_BUREAU">Narcotics Control Bureau (NCB)</option>
+                  <option value="ORGANIZED_CRIME_DIVISION">Organized Crime & MCOCA Division</option>
                 </select>
               </div>
 
@@ -1634,6 +1629,16 @@ export default function DashboardPage({ onNavigate }) {
           </div>
         </div>
       )}
+
+      {/* Indian Police Criminal Intake Modal */}
+      <AddCriminalModal
+        isOpen={isAddCriminalModalOpen}
+        onClose={() => setIsAddCriminalModalOpen(false)}
+        onCriminalAdded={(newCrim) => {
+          showToast(`✓ Offender ${newCrim.name} (${newCrim.id}) registered in Police CCTNS database.`);
+          if (onNavigate) onNavigate('entities');
+        }}
+      />
     </div>
   );
 }

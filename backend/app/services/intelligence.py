@@ -12,66 +12,80 @@ class IntelligenceEngine:
     def process_query(self, message: str) -> AIChatResponse:
         q = message.lower().strip()
 
-        # Financial / Hawala / Wire analysis
-        if any(w in q for w in ["shell corp", "financial", "money", "wire", "transfer", "hawala", "bank"]):
+        # 1. Homicide / Murder & Ballistics Analysis
+        if any(w in q for w in ["murder", "homicide", "kill", "shot", "bullet", "ballistic", "hitman", "beretta", "vikram", "raja"]):
             return AIChatResponse(
-                text='Analyzing network connections for Shell Corp B: identified 12 direct transactions totaling $450,000 USD matching known criminal syndicate associates.',
+                text='HOMICIDE FORENSIC MATCH: Vikram "Raja" Malhotra (ID #CRM-9942) connected to Sector 18 double homicide. 9mm Beretta 92FS cartridge casings matched crime scene ballistics with 99.4% certainty. 3 active Non-Bailable Warrants pending under BNS Section 103 (IPC 302).',
                 entities=[
-                    EntityHighlight(label='TARGET: RAHUL SHARMA', type='target'),
-                    EntityHighlight(label='SUSPICIOUS TRANSFER: $450,000 via Shell Corp B', type='money'),
-                    EntityHighlight(label='DESTINATION: Dubai Bullion Exchange', type='location')
+                    EntityHighlight(label='SUSPECT: VIKRAM RAJA MALHOTRA', type='target'),
+                    EntityHighlight(label='WEAPON: 9mm Beretta 92FS Match', type='money'),
+                    EntityHighlight(label='SCENE: Sector 18 Homicide', type='location')
                 ],
-                note='Registered director of "Apex Global Logistics", a suspected front company in Hong Kong.',
-                confidence='98.2%'
+                note='Fugitive last spotted on CCTV at Meerut Highway riding black KTM Duke (unregistered). ₹5 Lakhs state bounty active.',
+                confidence='99.4%'
             )
 
-        # Primary suspect analysis
-        if any(w in q for w in ["rahul", "sharma", "suspect", "boss", "kingpin", "director"]):
+        # 2. Sexual Offenses / Rape & DNA Profile Analysis
+        if any(w in q for w in ["rape", "sexual", "assault", "pocso", "stalk", "rawat", "d-7", "dna"]):
             return AIChatResponse(
-                text='Target profile for RAHUL SHARMA (ID #ENT-8921): Risk Score 94.2/100 (CRITICAL). Connected to 3 burner SIMs, 2 offshore accounts, and 4 Hawala brokers in NCR.',
+                text='SEXUAL OFFENSE SIT DOSSIER: Devendra "D-7" Rawat (ID #CRM-7721) identified as prime suspect in Sector 14 serial highway abduction and sexual assault cases. Forensic DNA kit #FK-8821 yielded a 100% STR profile match in the National DNA Offender Registry.',
                 entities=[
-                    EntityHighlight(label='PRIMARY: RAHUL SHARMA', type='target'),
-                    EntityHighlight(label='HAWALA BROKER: Vikram Mehta', type='target'),
-                    EntityHighlight(label='BURNER: +91-98765-43210', type='money')
+                    EntityHighlight(label='FUGITIVE: DEVENDRA RAWAT (D-7)', type='target'),
+                    EntityHighlight(label='FORENSIC: 100% DNA STR Match', type='money'),
+                    EntityHighlight(label='CRIME: BNS Sec 64 / IPC 376D', type='location')
                 ],
-                note='Voiceprint matched in Wiretap Session #44 with 96.8% biometric certainty.',
-                confidence='96.8%'
+                note='Modus operandi: Fake commercial taxi with altered registration plates. Red Alert issued across inter-state border checkposts.',
+                confidence='100.0%'
             )
 
-        # Geospatial & tracking analysis
-        if any(w in q for w in ["location", "gps", "tower", "geofence", "tracking", "sector", "ping"]):
+        # 3. Armed Robbery / Theft / Heist Analysis
+        if any(w in q for w in ["robbery", "heist", "theft", "steal", "stolen", "vault", "bank", "gold", "sameer", "ghost", "shotgun"]):
             return AIChatResponse(
-                text='Geospatial vector analysis: Cell tower triangulated target signal at Sector 29 Cyber Hub (28.4595° N, 77.0266° E) at 13:54 UTC.',
+                text='ARMED ROBBERY INVESTIGATION: Axis Bank Vault Heist (FIR #103/2024). Safe-cracking specialist Sameer "Ghost" Qureshi (ID #CRM-8821) breached vault using thermal lance. 14 kg gold bullion stolen. ANPR camera logged getaway vehicle HR-26-XX-4902 on KMP Expressway.',
                 entities=[
-                    EntityHighlight(label='VECTOR: Sector 29 Cyber Hub', type='location'),
-                    EntityHighlight(label='DEVICE: IMEI 864201938472910', type='target')
+                    EntityHighlight(label='SUSPECT: SAMEER GHOST QURESHI', type='target'),
+                    EntityHighlight(label='SEIZED/STOLEN: 14 kg Gold Bullion', type='money'),
+                    EntityHighlight(label='HOTSPOT: KMP Expressway Toll #4', type='location')
                 ],
-                note='Target crossed geofence boundary within 15 minutes of wire transfer dispatch.',
-                confidence='92.0%'
+                note='Thermal lance tool marks and glove DNA match retrieved from bank vault safety deposit cage.',
+                confidence='94.8%'
             )
 
-        # Cyber & Darknet analysis
-        if any(w in q for w in ["darknet", "tor", "crypto", "bitcoin", "usdt", "wallet", "c2", "botnet", "ip"]):
+        # 4. Narcotics & Arms Trafficking Analysis
+        if any(w in q for w in ["narco", "drug", "heroin", "meth", "ndps", "arms", "weapon", "elena", "rostova", "port"]):
             return AIChatResponse(
-                text='Darknet relay & C2 telemetry analysis: Outlier burst of 400+ encrypted packets identified on Frankfurt exit relay connected to USDT mixer pool 0x8f9...',
+                text='NARCOTICS & ARMS CARTEL: Elena "Czar" Rostova (ID #CRM-5512) syndicate intercepted. 100 kg synthetic heroin and 12 Steyr submachine guns seized at Port Container Terminal C. Network supplies inter-state distribution hubs across Delhi-NCR and Punjab.',
                 entities=[
-                    EntityHighlight(label='RELAY: Tor Exit Node #88', type='target'),
-                    EntityHighlight(label='MIXER POOL: 0x8F9C...44A', type='money'),
-                    EntityHighlight(label='SEVERITY: CRITICAL ANOMALY', type='location')
+                    EntityHighlight(label='CARTEL HEAD: ELENA ROSTOVA', type='target'),
+                    EntityHighlight(label='SEIZURE: 100kg Heroin + Submachine Guns', type='money'),
+                    EntityHighlight(label='CORRIDOR: Port Terminal C Maritime Yard', type='location')
                 ],
-                note='Automated firewall quarantine vector dispatched.',
-                confidence='97.1%'
+                note='Interpol Red Notice active. Cross-border maritime shipping route identified from Arabian Sea.',
+                confidence='97.2%'
+            )
+
+        # 5. Gangster Syndicate / Extortion / Kidnapping
+        if any(w in q for w in ["gang", "extort", "kidnap", "ransom", "mahesh", "khan", "tiger", "don", "syndicate"]):
+            return AIChatResponse(
+                text='ORGANIZED GANG INTELLIGENCE: Mahesh "Tiger" Khan (ID #CRM-0014) syndicate active under MCOCA Act. Coordinates inter-state extortion, contract assassinations, and illicit arms smuggling. Demanded ₹50 Lakhs ransom from Gurugram infrastructure firm.',
+                entities=[
+                    EntityHighlight(label='GANGSTER KINGPIN: MAHESH KHAN', type='target'),
+                    EntityHighlight(label='RACKET: ₹5 Cr Monthly Extortion', type='money'),
+                    EntityHighlight(label='JURISDICTION: NCR Organized Crime SIT', type='location')
+                ],
+                note='Voiceprint matched extortion wiretap recording with 99.1% biometric certainty. ₹25 Lakhs reward on arrest.',
+                confidence='99.1%'
             )
 
         # Generic investigative resolution
         return AIChatResponse(
-            text=f'CrimeLens Neural Copilot analyzed query: "{message}". Scanned 12,458 indexed entities across 4 active syndicates. Zero conflicting alibis found.',
+            text=f'CrimeLens Police Intelligence Engine analyzed query: "{message}". Scanned 12,458 indexed criminal records across Homicide, Sexual Offenses, Armed Robbery, Kidnapping, Narcotics, and Gang Syndicates. FIR databases synchronized.',
             entities=[
-                EntityHighlight(label='CLUSTER: Alpha 9 Syndicate Core', type='target'),
-                EntityHighlight(label='SECURITY CLEARANCE: Level 4 Active', type='money')
+                EntityHighlight(label='CRIME DATABASE: National Police Network', type='target'),
+                EntityHighlight(label='CLEARANCE: Law Enforcement Level 4', type='money')
             ],
-            note='Cross-referenced against SIGINT domestic wire logs and INTERPOL Red Notices.',
-            confidence='94.0%'
+            note='Cross-referenced against CCTNS, State Police STF databases, and Forensic Ballistics registries.',
+            confidence='95.0%'
         )
 
 intelligence_engine = IntelligenceEngine()
