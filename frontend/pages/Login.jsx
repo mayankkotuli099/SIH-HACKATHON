@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IdCard, KeyRound, LogIn, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo.jsx'
 import { api } from '../src/services/api.js'
+import { getInitialTheme, toggleTheme } from '../src/utils/theme.js'
 import './Login.css'
 
 const FOOTER_LINKS = [
@@ -31,6 +32,7 @@ function Login() {
   const navigate = useNavigate()
   const [tab, setTab] = useState('signin')
   const [loading, setLoading] = useState(false)
+  const [theme, setTheme] = useState(getInitialTheme)
   const [form, setForm] = useState({
     id: '',
     password: '',
@@ -39,6 +41,12 @@ function Login() {
   })
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+
+  useEffect(() => {
+    const handleTheme = (e) => setTheme(e.detail || getInitialTheme());
+    window.addEventListener('crimelens-theme-change', handleTheme);
+    return () => window.removeEventListener('crimelens-theme-change', handleTheme);
+  }, []);
 
   const isSignIn = tab === 'signin'
   const set = (key) => (event) => {
@@ -103,10 +111,34 @@ function Login() {
         <div style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
           <Logo size={25} />
         </div>
-        <span className="auth-status">
-          <i className="dot" />
-          System Online
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <button
+            type="button"
+            onClick={() => {
+              const next = toggleTheme();
+              setTheme(next);
+            }}
+            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--panel)',
+              border: '1px solid var(--border)',
+              color: 'var(--cyan)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+          <span className="auth-status">
+            <i className="dot" />
+            System Online
+          </span>
+        </div>
       </header>
 
       <main className="auth-main">

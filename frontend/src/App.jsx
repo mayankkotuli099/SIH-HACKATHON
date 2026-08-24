@@ -61,7 +61,7 @@ export default function App({ initialPage = 'home' }) {
             flex: 1,
             minWidth: 0,
             overflowY: 'auto',
-            backgroundColor: '#07090E',
+            backgroundColor: 'var(--bg-dark)',
             display: 'flex',
             flexDirection: 'column',
             position: 'relative'
