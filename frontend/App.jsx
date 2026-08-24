@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 // The landing / dashboard / timeline / settings app (state-routed internally).
-import SiteApp from '../src/App.jsx'
+import SiteApp from './src/App.jsx'
 import Login from './pages/Login.jsx'
 import Reports from './pages/Reports.jsx'
 

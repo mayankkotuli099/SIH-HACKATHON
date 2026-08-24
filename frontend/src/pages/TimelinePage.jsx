@@ -59,175 +59,12 @@ export default function TimelinePage({ onNavigate }) {
 
   return (
     <div style={{
-      display: 'flex',
-      minHeight: 'calc(100vh - 68px)',
-      backgroundColor: '#07090E',
-      color: '#FFFFFF',
-      fontFamily: 'var(--font-sans)',
-      position: 'relative'
+      flex: 1,
+      padding: '2rem 2.5rem 3rem 2.5rem',
+      maxWidth: '1440px',
+      margin: '0 auto',
+      width: '100%'
     }}>
-      {/* Left Sidebar */}
-      <aside style={{
-        width: '240px',
-        borderRight: '1px solid rgba(0, 229, 255, 0.1)',
-        backgroundColor: 'rgba(11, 15, 23, 0.95)',
-        padding: '1.5rem 1rem',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        flexShrink: 0
-      }}>
-        <div>
-          {/* Operator Profile */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '10px',
-            backgroundColor: 'rgba(0, 229, 255, 0.05)',
-            border: '1px solid rgba(0, 229, 255, 0.15)',
-            borderRadius: '6px',
-            marginBottom: '2rem'
-          }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '4px',
-              backgroundColor: 'rgba(0, 229, 255, 0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--cyan-glow)'
-            }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </div>
-            <div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, letterSpacing: '1px', color: '#FFFFFF' }}>
-                OPERATOR_01
-              </div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9.5px', color: 'var(--cyan-glow)' }}>
-                LEVEL 4 ACCESS
-              </div>
-            </div>
-          </div>
-
-          {/* Nav Links */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <button
-              onClick={() => onNavigate && onNavigate('home')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '10px 14px',
-                background: 'rgba(0, 229, 255, 0.05)',
-                border: '1px solid rgba(0, 229, 255, 0.2)',
-                borderRadius: '4px',
-                color: 'var(--cyan-glow)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '11.5px',
-                fontWeight: 600,
-                letterSpacing: '1px',
-                cursor: 'pointer',
-                textAlign: 'left'
-              }}
-            >
-              <span>🏠</span>
-              HOME / OVERVIEW
-            </button>
-            {[
-              { id: 'timeline', label: 'TIMELINE (ACTIVE)', icon: '⏱' },
-              { id: 'anomalies', label: 'ANOMALIES', icon: '⚡' },
-              { id: 'location', label: 'LOCATION', icon: '📍' },
-              { id: 'influencers', label: 'INFLUENCERS', icon: '🕸' },
-              { id: 'ai_assistant', label: 'AI ASSISTANT', icon: '🤖' }
-            ].map((menu) => (
-              <button
-                key={menu.id}
-                onClick={() => onNavigate && onNavigate(menu.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '10px 14px',
-                  background: 'none',
-                  border: 'none',
-                  borderRadius: '4px',
-                  color: 'var(--text-secondary)',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11.5px',
-                  fontWeight: 500,
-                  letterSpacing: '1px',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.08)';
-                  e.currentTarget.style.color = 'var(--cyan-glow)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = 'var(--text-secondary)';
-                }}
-              >
-                <span>{menu.icon}</span>
-                {menu.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom Sidebar */}
-        <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <button
-            onClick={() => onNavigate && onNavigate('settings')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '8px 12px',
-              background: 'none',
-              border: 'none',
-              borderRadius: '4px',
-              color: 'var(--text-secondary)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11.5px',
-              cursor: 'pointer'
-            }}
-          >
-            ⚙️ SETTINGS
-          </button>
-          <button
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '8px 12px',
-              background: 'none',
-              border: 'none',
-              borderRadius: '4px',
-              color: 'var(--text-muted)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11.5px',
-              cursor: 'pointer'
-            }}
-          >
-            ❓ HELP
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main style={{
-        flex: 1,
-        padding: '2.5rem 3rem',
-        overflowY: 'auto',
-        maxWidth: '1200px'
-      }}>
         {/* Header */}
         <div style={{ marginBottom: '2.5rem' }}>
           <h1 style={{
@@ -548,7 +385,6 @@ export default function TimelinePage({ onNavigate }) {
             </button>
           </div>
         </div>
-      </main>
     </div>
   );
 }
