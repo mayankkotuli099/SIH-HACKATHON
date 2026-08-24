@@ -18,6 +18,7 @@ export default function App({ initialPage = 'home' }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
 
   // Derive current page directly from URL location path
   const getCurrentPage = () => {
@@ -31,13 +32,17 @@ export default function App({ initialPage = 'home' }) {
     if (path.startsWith('settings')) return 'settings';
     if (path.startsWith('anomalies')) return 'anomalies';
     if (path.startsWith('location')) return 'location';
-    if (path.startsWith('ai_assistant')) return 'ai_assistant';
     return initialPage || 'home';
   };
 
   const currentPage = getCurrentPage();
 
   const handleNavigate = (page) => {
+    if (page === 'ai_assistant') {
+      setIsAIChatOpen(true);
+      window.dispatchEvent(new CustomEvent('crimelens:open-ai-chat'));
+      return;
+    }
     if (page === 'reports') {
       navigate('/reports');
     } else if (page === 'home') {
@@ -60,7 +65,10 @@ export default function App({ initialPage = 'home' }) {
       {/* When on Home Page: Clean full-width landing layout without sidebar */}
       {currentPage === 'home' ? (
         <main style={{ flex: 1 }}>
-          <Hero onExplore={() => handleNavigate('dashboard')} />
+          <Hero
+            onExplore={() => handleNavigate('dashboard')}
+            onNavigate={handleNavigate}
+          />
           <CoreEngine />
           <OperationalWorkflow />
           <Footer onNavigate={handleNavigate} />
@@ -210,7 +218,11 @@ export default function App({ initialPage = 'home' }) {
       )}
 
       {/* Global AI Intelligence Chatbot Widget */}
-      <AIChatbotWidget />
+      <AIChatbotWidget
+        isOpen={isAIChatOpen}
+        onToggle={setIsAIChatOpen}
+        onClose={() => setIsAIChatOpen(false)}
+      />
     </div>
   );
 }

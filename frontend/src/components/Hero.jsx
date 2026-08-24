@@ -1,6 +1,26 @@
 import React from 'react';
 
-export default function Hero() {
+export default function Hero({ onExplore, onNavigate }) {
+  const handleViewNetwork = (e) => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate('dashboard');
+    } else if (onExplore) {
+      onExplore();
+    }
+  };
+
+  const handleExplore = (e) => {
+    const el = document.getElementById('explore');
+    if (el) {
+      e.preventDefault();
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else if (onNavigate) {
+      e.preventDefault();
+      onNavigate('dashboard');
+    }
+  };
+
   return (
     <section style={{
       position: 'relative',
@@ -77,7 +97,7 @@ export default function Hero() {
         justifyContent: 'center',
         gap: '1rem'
       }}>
-        <a href="#explore" className="btn-cyan">
+        <a href="#explore" onClick={handleExplore} className="btn-cyan">
           EXPLORE PLATFORM
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
@@ -85,7 +105,7 @@ export default function Hero() {
           </svg>
         </a>
 
-        <a href="#network" className="btn-outline-cyan">
+        <button onClick={handleViewNetwork} className="btn-outline-cyan" style={{ cursor: 'pointer' }}>
           VIEW NETWORK
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="18" cy="5" r="3"></circle>
@@ -94,7 +114,7 @@ export default function Hero() {
             <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
           </svg>
-        </a>
+        </button>
       </div>
     </section>
   );

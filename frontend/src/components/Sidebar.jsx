@@ -33,11 +33,9 @@ export default function Sidebar({
       ]
     },
     {
-      group: 'THREAT DETECTION',
+      group: 'THREAT DETECTION & AI',
       items: [
         { id: 'network', label: 'GANG NETWORK', icon: '🕸️', badge: null, desc: 'Cluster & Node Linkage' },
-        { id: 'anomalies', label: 'ANOMALIES', icon: '⚡', badge: '3 NEW', badgeColor: '#FF5555', desc: 'Neural Outlier Alerts' },
-        { id: 'location', label: 'GEO TRACKING', icon: '📍', badge: null, desc: 'Spatial Heatmaps & Geofence' },
         { id: 'ai_assistant', label: 'AI COPILOT', icon: '🤖', badge: 'GPT-4.5', badgeColor: '#A855F7', desc: 'Neural Investigation Agent' }
       ]
     }
