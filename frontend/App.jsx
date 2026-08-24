@@ -29,11 +29,7 @@ function App() {
           page from whichever route mounted first. */}
       <Route
         path="/"
-        element={
-          <ProtectedRoute>
-            <SiteApp key="home" initialPage="home" />
-          </ProtectedRoute>
-        }
+        element={<SiteApp key="home" initialPage="home" />}
       />
       <Route
         path="/dashboard"
