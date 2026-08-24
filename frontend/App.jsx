@@ -4,43 +4,87 @@ import SiteApp from './src/App.jsx'
 import Login from './pages/Login.jsx'
 import Reports from './pages/Reports.jsx'
 
+function ProtectedRoute({ children }) {
+  const isAuthenticated = Boolean(localStorage.getItem('crimelens_token'))
+
+  return isAuthenticated ? children : <Navigate to="/login" replace />
+}
+
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/reports" element={<Reports />} />
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute>
+            <Reports />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Deep links into the state-routed site app.
           Distinct `key`s force a remount so initialPage is re-read —
           without them React reuses the instance and useState keeps the
           page from whichever route mounted first. */}
-      <Route path="/" element={<SiteApp key="home" initialPage="home" />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <SiteApp key="home" initialPage="home" />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/dashboard"
-        element={<SiteApp key="dashboard" initialPage="dashboard" />}
+        element={
+          <ProtectedRoute>
+            <SiteApp key="dashboard" initialPage="dashboard" />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/cases"
-        element={<SiteApp key="cases" initialPage="cases" />}
+        element={
+          <ProtectedRoute>
+            <SiteApp key="cases" initialPage="cases" />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/entities"
-        element={<SiteApp key="entities" initialPage="entities" />}
+        element={
+          <ProtectedRoute>
+            <SiteApp key="entities" initialPage="entities" />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/timeline"
-        element={<SiteApp key="timeline" initialPage="timeline" />}
+        element={
+          <ProtectedRoute>
+            <SiteApp key="timeline" initialPage="timeline" />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/network"
-        element={<SiteApp key="network" initialPage="network" />}
+        element={
+          <ProtectedRoute>
+            <SiteApp key="network" initialPage="network" />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/settings"
-        element={<SiteApp key="settings" initialPage="settings" />}
+        element={
+          <ProtectedRoute>
+            <SiteApp key="settings" initialPage="settings" />
+          </ProtectedRoute>
+        }
       />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )
 }

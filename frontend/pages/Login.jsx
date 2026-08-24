@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { IdCard, KeyRound, LogIn, User } from 'lucide-react'
+import { IdCard, KeyRound, LogIn } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo.jsx'
 import { api } from '../src/services/api.js'
@@ -30,14 +30,11 @@ function Field({ label, icon, right, ...props }) {
 
 function Login() {
   const navigate = useNavigate()
-  const [tab, setTab] = useState('signin')
   const [loading, setLoading] = useState(false)
   const [theme, setTheme] = useState(getInitialTheme)
   const [form, setForm] = useState({
     id: '',
     password: '',
-    name: '',
-    confirm: '',
   })
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
@@ -48,7 +45,6 @@ function Login() {
     return () => window.removeEventListener('crimelens-theme-change', handleTheme);
   }, []);
 
-  const isSignIn = tab === 'signin'
   const set = (key) => (event) => {
     setForm((prev) => ({ ...prev, [key]: event.target.value }))
     setError('')
@@ -66,26 +62,10 @@ function Login() {
       return
     }
 
-    if (!isSignIn) {
-      if (!form.name.trim()) {
-        setError('Full name is required to register.')
-        return
-      }
-      if (form.password !== form.confirm) {
-        setError('Passwords do not match.')
-        return
-      }
-    }
-
     setLoading(true)
     try {
-      if (isSignIn) {
-        await api.auth.login(investigatorId, form.password)
-        setSuccessMsg('✓ Clearance Level 4 Verified. Redirecting to Dashboard...')
-      } else {
-        await api.auth.register(investigatorId, form.name.trim(), form.password)
-        setSuccessMsg('✓ Account registered successfully. Redirecting to Dashboard...')
-      }
+      await api.auth.login(investigatorId, form.password)
+      setSuccessMsg('✓ Clearance Level 4 Verified. Redirecting to Dashboard...')
 
       setTimeout(() => {
         navigate('/dashboard')
@@ -99,87 +79,25 @@ function Login() {
     }
   }
 
-  function switchTab(next) {
-    setTab(next)
-    setError('')
-    setSuccessMsg('')
-  }
-
   return (
     <div className="auth">
-      <header className="auth-bar">
-        <div style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+      <main className="auth-main">
+        <div className="auth-logo" onClick={() => navigate('/')}>
           <Logo size={25} />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <button
-            type="button"
-            onClick={() => {
-              const next = toggleTheme();
-              setTheme(next);
-            }}
-            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--panel)',
-              border: '1px solid var(--border)',
-              color: 'var(--cyan)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer'
-            }}
-          >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
-          <span className="auth-status">
-            <i className="dot" />
-            System Online
-          </span>
-        </div>
-      </header>
-
-      <main className="auth-main">
-        <h1 className="auth-title">{isSignIn ? 'Secure Login' : 'Register Operator'}</h1>
+        <button
+          type="button"
+          onClick={() => setTheme(toggleTheme())}
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+          className="auth-theme-toggle"
+        >
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
+        <h1 className="auth-title">Secure Login</h1>
         <p className="auth-warn">Unauthorized access strictly prohibited</p>
 
         <div className="auth-card panel">
-          <div className="tabs" role="tablist">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={isSignIn}
-              className={`tab ${isSignIn ? 'active' : ''}`}
-              onClick={() => switchTab('signin')}
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={!isSignIn}
-              className={`tab ${!isSignIn ? 'active' : ''}`}
-              onClick={() => switchTab('create')}
-            >
-              Create Account
-            </button>
-          </div>
-
           <form className="auth-form" onSubmit={handleSubmit}>
-            {!isSignIn && (
-              <Field
-                label="Full Name"
-                icon={<User size={16} strokeWidth={2} />}
-                placeholder="Agent Jane Doe"
-                autoComplete="name"
-                value={form.name}
-                onChange={set('name')}
-                required
-              />
-            )}
-
             <Field
               label="Investigator ID"
               icon={<IdCard size={16} strokeWidth={2} />}
@@ -195,39 +113,24 @@ function Login() {
               icon={<KeyRound size={16} strokeWidth={2} />}
               type="password"
               placeholder="••••••••"
-              autoComplete={isSignIn ? 'current-password' : 'new-password'}
+              autoComplete="current-password"
               value={form.password}
               onChange={set('password')}
               required
               right={
-                isSignIn && (
-                  <span
-                    className="forgot"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      setForm(prev => ({ ...prev, id: 'OP_01', password: 'password123' }))
-                      setError('')
-                      setSuccessMsg('Sample investigator credentials filled (OP_01)')
-                    }}
-                  >
-                    Quick Demo ID?
-                  </span>
-                )
+                <span
+                  className="forgot"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setForm(prev => ({ ...prev, id: 'OP_01', password: 'password123' }))
+                    setError('')
+                    setSuccessMsg('Sample investigator credentials filled (OP_01)')
+                  }}
+                >
+                  Quick Demo ID?
+                </span>
               }
             />
-
-            {!isSignIn && (
-              <Field
-                label="Confirm Password"
-                icon={<KeyRound size={16} strokeWidth={2} />}
-                type="password"
-                placeholder="••••••••"
-                autoComplete="new-password"
-                value={form.confirm}
-                onChange={set('confirm')}
-                required
-              />
-            )}
 
             {error && (
               <p className="auth-error" role="alert" style={{ color: '#FF5555', fontSize: '13px', fontWeight: 600 }}>
@@ -243,7 +146,7 @@ function Login() {
 
             <button type="submit" className="auth-submit" disabled={loading} style={{ cursor: loading ? 'wait' : 'pointer' }}>
               <LogIn size={17} strokeWidth={2.4} />
-              {loading ? 'Authenticating Clearance...' : (isSignIn ? 'Access System' : 'Create & Access System')}
+              {loading ? 'Authenticating Clearance...' : 'Access System'}
             </button>
           </form>
         </div>
