@@ -457,39 +457,52 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
     return matchesSearch && matchesCategory && matchesCriminal;
   });
 
-  // Initialize and Update Map
+  // 1. Initialize Map on Mount with proper cleanup
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    if (!mapContainerRef.current) return undefined;
 
-    if (!mapInstanceRef.current) {
-      const map = L.map(mapContainerRef.current, {
-        center: [28.5500, 77.1800],
-        zoom: 9,
-        zoomControl: true,
-        scrollWheelZoom: true
-      });
+    const map = L.map(mapContainerRef.current, {
+      center: [28.5500, 77.1800],
+      zoom: 9,
+      zoomControl: true,
+      scrollWheelZoom: true
+    });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap &copy; CARTO'
-      }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap &copy; CARTO'
+    }).addTo(map);
 
-      markersGroupRef.current = L.featureGroup().addTo(map);
-      mapInstanceRef.current = map;
-    }
+    const markersGroup = L.featureGroup().addTo(map);
+    markersGroupRef.current = markersGroup;
+    mapInstanceRef.current = map;
 
+    // Force tile recalculation
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+      markersGroupRef.current = null;
+    };
+  }, []);
+
+  // 2. Reactively Update Markers & Pan whenever filteredStations change
+  useEffect(() => {
     const map = mapInstanceRef.current;
     const markersGroup = markersGroupRef.current;
 
-    if (markersGroup) {
-      markersGroup.clearLayers();
-    }
+    if (!map || !markersGroup) return;
+
+    markersGroup.clearLayers();
 
     if (filteredStations.length === 0) return;
 
     filteredStations.forEach((stn) => {
       const marker = L.circleMarker([stn.lat, stn.lng], {
-        radius: 9,
+        radius: 10,
         color: '#FFFFFF',
         weight: 2,
         fillColor: stn.color || '#00E5FF',
@@ -497,7 +510,7 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
       });
 
       const popupContent = `
-        <div style="font-family: sans-serif; min-width: 220px; color: #07090E; padding: 2px;">
+        <div style="font-family: sans-serif; min-width: 220px; color: #07090E; padding: 4px;">
           <div style="font-size: 11px; font-weight: 800; color: #0284C7; letter-spacing: 0.5px; margin-bottom: 2px;">
             🏛️ POLICE STATION JURISDICTION
           </div>
@@ -507,13 +520,13 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
           <div style="font-size: 11px; color: #475569; margin-bottom: 6px;">
             📍 ${stn.city}
           </div>
-          <div style="background: #F1F5F9; border-left: 3px solid ${stn.color || '#00E5FF'}; padding: 6px 8px; border-radius: 3px; font-size: 11px; margin-bottom: 6px;">
+          <div style="background: #F1F5F9; border-left: 3px solid ${stn.color || '#00E5FF'}; padding: 6px 8px; border-radius: 4px; font-size: 11px; margin-bottom: 6px;">
             <div><strong>Suspect:</strong> <span style="color: #DC2626; font-weight: 800;">${stn.criminalName}</span></div>
             <div><strong>FIR No:</strong> <span style="color: #0284C7; font-weight: 700;">${stn.firNumber}</span></div>
             <div><strong>Sections:</strong> ${stn.sections}</div>
             <div><strong>IO:</strong> ${stn.ioOfficer}</div>
           </div>
-          <div style="font-size: 10px; font-weight: 800; color: #16A34A; background: #DCFCE7; padding: 2px 6px; border-radius: 3px; display: inline-block;">
+          <div style="font-size: 10px; font-weight: 800; color: #16A34A; background: #DCFCE7; padding: 3px 6px; border-radius: 3px; display: inline-block;">
             STATUS: ${stn.status}
           </div>
         </div>
@@ -522,7 +535,7 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
       marker.bindPopup(popupContent);
       marker.on('click', () => {
         setSelectedStation(stn);
-        showToast(`📍 Selected Police Station: ${stn.stationName} (${stn.firNumber})`);
+        showToast(`📍 Selected: ${stn.stationName} (${stn.firNumber})`);
       });
 
       markersGroup.addLayer(marker);
@@ -530,11 +543,15 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
 
     try {
       if (filteredStations.length > 0) {
-        map.fitBounds(markersGroup.getBounds(), { padding: [40, 40], maxZoom: 12 });
+        map.fitBounds(markersGroup.getBounds(), { padding: [50, 50], maxZoom: 12 });
       }
     } catch {
       // ignore
     }
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
   }, [filteredStations]);
 
   // Load timeline data from backend

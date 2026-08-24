@@ -57,66 +57,99 @@ export default function CasesPage() {
 
   // Initialize Map
   useEffect(() => {
-    if (!mapElement.current || mapInstance.current) return undefined;
+    if (!mapElement.current) return undefined;
 
     const map = L.map(mapElement.current, {
       zoomControl: false,
       attributionControl: true
-    }).setView([22.5937, 78.9629], 5);
+    }).setView([28.5500, 77.1800], 8);
 
     L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: '&copy; OpenStreetMap &copy; CARTO'
     }).addTo(map);
 
-    // Multi-Crime Police Tactical Incident Markers
-    const targetHomicide = L.circleMarker([28.5700, 77.3200], {
-      radius: 11,
-      color: '#ffd1cd',
-      weight: 2.5,
-      fillColor: '#ff5555',
-      fillOpacity: 0.95
-    }).addTo(map).bindPopup('<strong>CRIME SCENE: TRIPLE HOMICIDE</strong><br/>Sector 18 • Suspect: Mayank Kotoli<br/>Ballistics Match: 9mm Beretta 92FS');
-
-    const targetRapeSIT = L.circleMarker([28.4720, 77.0350], {
-      radius: 11,
-      color: '#e9d5ff',
-      weight: 2.5,
-      fillColor: '#a855f7',
-      fillOpacity: 0.95
-    }).addTo(map).bindPopup('<strong>SPECIAL SIT: HIGHWAY SEXUAL ASSAULT</strong><br/>Sector 14 • Suspect: Devendra Rawat (D-7)<br/>DNA Match FK-8821 Active');
-
-    const targetHeist = L.circleMarker([19.0760, 72.8777], {
-      radius: 10,
-      color: '#fef08a',
-      weight: 2,
-      fillColor: '#f59e0b',
-      fillOpacity: 0.9
-    }).addTo(map).bindPopup('<strong>ARMED BANK HEIST SCENE</strong><br/>Axis Bank Vault • Suspect: Sameer "Ghost" Qureshi<br/>14 kg Gold Stolen');
-
-    const targetPortNarco = L.circleMarker([18.9400, 72.8350], {
-      radius: 10,
-      color: '#9dffff',
-      weight: 2,
-      fillColor: '#00e5ff',
-      fillOpacity: 0.9
-    }).addTo(map).bindPopup('<strong>PORT TERMINAL C: 100KG NARCO SEIZURE</strong><br/>NCB Intercept • Elena Rostova Cartel');
-
-    targetHomicide.on('click', () => setAssetStatus('HOMICIDE INVESTIGATION ACTIVE'));
-    targetRapeSIT.on('click', () => setAssetStatus('WOMEN SAFETY SIT MANHUNT'));
-    targetHeist.on('click', () => setAssetStatus('BANK HEIST ANPR INTERCEPT'));
-    targetPortNarco.on('click', () => setAssetStatus('NCB NARCOTICS SEIZURE'));
-
-    markersRef.current = [targetHomicide, targetRapeSIT, targetHeist, targetPortNarco];
+    const markersGroup = L.featureGroup().addTo(map);
+    markersRef.current = markersGroup;
     mapInstance.current = map;
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
 
     return () => {
       map.remove();
       mapInstance.current = null;
+      markersRef.current = null;
     };
   }, []);
+
+  // Update Map Markers on filtered cases or search
+  useEffect(() => {
+    const map = mapInstance.current;
+    const markersGroup = markersRef.current;
+    if (!map || !markersGroup) return;
+
+    markersGroup.clearLayers();
+
+    const POLICE_FIR_STATIONS = [
+      { name: 'Mayank Kotoli', fir: 'FIR-2024-402', station: 'PS Sector 18 Crime Branch', city: 'Gurugram', lat: 28.4721, lng: 77.0392, color: '#FF5555', desc: 'Triple Homicide Sec 103 (9mm Beretta match)' },
+      { name: 'Mayank Kotoli', fir: 'FIR-2023-881', station: 'PS Civil Lines Special Cell', city: 'Meerut', lat: 28.9845, lng: 77.7064, color: '#FF5555', desc: 'Attempt to Murder Sec 307' },
+      { name: 'Mayank Kotoli', fir: 'FIR-2022-119', station: 'PS Sadar Faridabad', city: 'Faridabad', lat: 28.4089, lng: 77.3178, color: '#FF5555', desc: 'Illegal Firearms Possession' },
+      { name: 'Mayank Kotoli', fir: 'FIR-2024-911', station: 'Special Cell STF HQ Lodhi Road', city: 'Delhi', lat: 28.5880, lng: 77.2220, color: '#FF5555', desc: 'MCOCA Gang Syndicate Hit' },
+      { name: "Devendra 'D-7' Rawat", fir: 'FIR-2024-102', station: 'Women Safety PS Sector 14', city: 'Gurugram', lat: 28.4595, lng: 77.0266, color: '#C084FC', desc: 'Serial Sexual Assault (100% STR DNA Match)' },
+      { name: "Devendra 'D-7' Rawat", fir: 'FIR-2024-089', station: 'PS IFFCO Chowk', city: 'Gurugram', lat: 28.4750, lng: 77.0650, color: '#C084FC', desc: 'Aggravated Assault Sec 376D' },
+      { name: "Sameer 'Ghost' Qureshi", fir: 'FIR-2024-103', station: 'PS Sadar Bazar Anti-Robbery', city: 'Gurugram', lat: 28.4600, lng: 77.0300, color: '#FB923C', desc: 'Axis Bank Vault 14kg Gold Heist' },
+      { name: "Sameer 'Ghost' Qureshi", fir: 'FIR-2023-662', station: 'PS Manesar Highway Unit', city: 'Manesar', lat: 28.3580, lng: 76.9380, color: '#FB923C', desc: 'Jewelry Logistics Burglary' },
+      { name: "Mahesh 'Tiger' Khan", fir: 'FIR-2024-001', station: 'Special Cell Organized Crime Unit', city: 'Delhi', lat: 28.5700, lng: 77.2400, color: '#FBBF24', desc: 'MCOCA Builder ₹50L Extortion' },
+      { name: "Elena 'Czar' Rostova", fir: 'FIR-2024-104', station: 'NCB Zonal HQ Mumbai Port', city: 'Mumbai', lat: 18.9500, lng: 72.9500, color: '#4ADE80', desc: '100kg Synthetic Heroin Port Seizure' }
+    ];
+
+    const q = searchQuery.toLowerCase().trim();
+    const stationsToShow = POLICE_FIR_STATIONS.filter(s =>
+      !q || s.name.toLowerCase().includes(q) || s.fir.toLowerCase().includes(q) || s.station.toLowerCase().includes(q) || s.city.toLowerCase().includes(q)
+    );
+
+    stationsToShow.forEach(stn => {
+      const marker = L.circleMarker([stn.lat, stn.lng], {
+        radius: 10,
+        color: '#FFFFFF',
+        weight: 2,
+        fillColor: stn.color,
+        fillOpacity: 0.95
+      });
+
+      marker.bindPopup(`
+        <div style="font-family: sans-serif; min-width: 200px; color: #07090E; padding: 2px;">
+          <div style="font-size: 10.5px; font-weight: 800; color: #0284C7;">🏛️ POLICE STATION FIR</div>
+          <div style="font-size: 13px; font-weight: 800; color: #0F172A;">${stn.station}</div>
+          <div style="font-size: 11px; color: #475569; margin-bottom: 4px;">📍 ${stn.city}</div>
+          <div style="background: #F1F5F9; padding: 5px 7px; border-radius: 4px; font-size: 11px;">
+            <div><strong>Suspect:</strong> <span style="color: #DC2626; font-weight: 800;">${stn.name}</span></div>
+            <div><strong>FIR:</strong> <span style="color: #0284C7; font-weight: 700;">${stn.fir}</span></div>
+            <div>${stn.desc}</div>
+          </div>
+        </div>
+      `);
+
+      marker.on('click', () => setAssetStatus(`FIR FILED: ${stn.station} (${stn.fir})`));
+      markersGroup.addLayer(marker);
+    });
+
+    try {
+      if (stationsToShow.length > 0) {
+        map.fitBounds(markersGroup.getBounds(), { padding: [50, 50], maxZoom: 12 });
+      }
+    } catch {
+      // ignore
+    }
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+  }, [searchQuery, filteredCases]);
 
   // Handle New Case Submission to Backend
   const handleCreateCase = async (e) => {
