@@ -4,16 +4,79 @@ import 'leaflet/dist/leaflet.css';
 import { api } from '../services/api.js';
 import './CasesPage.css';
 
+const DEFAULT_CASES = [
+  {
+    id: 'CASE-2024-101',
+    title: 'Operation Falcon Hunt: Triple Homicide & Contract Hit',
+    leadSuspect: 'Mayank Kotoli',
+    status: 'ACTIVE_MANHUNT',
+    priority: 'CRITICAL',
+    assignedOfficer: 'ACP Rajesh Verma (Special Crime Branch)',
+    openedDate: '2024-10-12',
+    evidenceCount: 58,
+    description: 'Triple homicide execution at Sector 18. Ballistics matched 9mm Beretta; DNA evidence recovered from crime scene vehicle.',
+    tags: ['HOMICIDE', 'MURDER_SEC_103', 'CONTRACT_KILLING', 'BALLISTICS_MATCH']
+  },
+  {
+    id: 'CASE-2024-102',
+    title: 'Special SIT: Serial Sexual Violence & Kidnapping',
+    leadSuspect: "Devendra 'D-7' Rawat",
+    status: 'SPECIAL_INVESTIGATION',
+    priority: 'CRITICAL',
+    assignedOfficer: 'DCP Priya Sharma (Women & Child Safety SIT)',
+    openedDate: '2024-10-04',
+    evidenceCount: 34,
+    description: 'Serial sexual assault and highway abduction case. Forensic DNA matched profile FK-8821 in National DNA Registry.',
+    tags: ['RAPE_SEC_64', 'POCSO', 'SERIAL_OFFENDER', 'DNA_MATCH']
+  },
+  {
+    id: 'CASE-2024-103',
+    title: 'Operation Gold Vault: Axis Commercial Bank Armed Heist',
+    leadSuspect: "Sameer 'Ghost' Qureshi",
+    status: 'SURVEILLANCE',
+    priority: 'HIGH',
+    assignedOfficer: 'Inspector Sandeep Hooda (Anti-Robbery Cell)',
+    openedDate: '2024-09-28',
+    evidenceCount: 41,
+    description: '14 kg gold bullion armed heist; vault thermal breach; getaway truck route triangulated on National Highway toll gate.',
+    tags: ['ARMED_ROBBERY', 'DACOITY_SEC_310', 'WEAPONS', 'ANPR_HIT']
+  },
+  {
+    id: 'CASE-2024-104',
+    title: 'Operation NarcoGrid: Inter-State Heroin Smuggling Network',
+    leadSuspect: "Elena 'Czar' Rostova",
+    status: 'CONTAINER_SEALED',
+    priority: 'HIGH',
+    assignedOfficer: 'Zonal Director K. Nair (Narcotics Control Bureau)',
+    openedDate: '2024-09-15',
+    evidenceCount: 62,
+    description: '100 kg high-grade synthetic opioids intercepted at Port Terminal C container yard alongside military-grade submachine guns.',
+    tags: ['NARCOTICS_NDPS', 'ARMS_TRAFFICKING', 'PORT_SEIZURE']
+  },
+  {
+    id: 'CASE-2024-105',
+    title: 'Syndicate Extortion & Gangster Racket (MCOCA Case #88)',
+    leadSuspect: "Mahesh 'Tiger' Khan",
+    status: 'WARRANT_ACTIVE',
+    priority: 'CRITICAL',
+    assignedOfficer: 'Joint CP Anirudh Saxena (Organized Crime Division)',
+    openedDate: '2024-08-20',
+    evidenceCount: 79,
+    description: 'MCOCA gang syndicate running extortion rings targeting builders and transport companies across NCR with armed enforcers.',
+    tags: ['MCOCA_ACT', 'EXTORTION', 'ORGANIZED_GANG', 'INTERPOL_BLUE']
+  }
+];
+
 export default function CasesPage() {
   const [tracking, setTracking] = useState(true);
-  const [casesList, setCasesList] = useState([]);
-  const [selectedCase, setSelectedCase] = useState(null);
+  const [casesList, setCasesList] = useState(DEFAULT_CASES);
+  const [selectedCase, setSelectedCase] = useState(DEFAULT_CASES[0]);
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('ALL');
   const [isNewCaseModalOpen, setIsNewCaseModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const [assetStatus, setAssetStatus] = useState('ACTIVE');
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
 
   // New Case Form State
   const [newCaseForm, setNewCaseForm] = useState({
@@ -38,14 +101,15 @@ export default function CasesPage() {
     try {
       setLoading(true);
       const data = await api.cases.getAll();
-      if (data && data.cases) {
+      if (data && data.cases && data.cases.length > 0) {
         setCasesList(data.cases);
-        if (!selectedCase && data.cases.length > 0) {
+        if (!selectedCase) {
           setSelectedCase(data.cases[0]);
         }
       }
-    } catch (err) {
+    } catch {
       console.warn('Using local cases cache');
+      setCasesList(DEFAULT_CASES);
     } finally {
       setLoading(false);
     }
