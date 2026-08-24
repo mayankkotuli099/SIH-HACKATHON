@@ -457,9 +457,71 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
     return matchesSearch && matchesCategory && matchesCriminal;
   });
 
-  // 1. Initialize Map on Mount with proper cleanup
+  // Function to render markers onto the map safely
+  const renderMapMarkers = (map, markersGroup, stations) => {
+    if (!map || !markersGroup) return;
+    markersGroup.clearLayers();
+
+    if (stations.length === 0) return;
+
+    stations.forEach((stn) => {
+      const marker = L.circleMarker([stn.lat, stn.lng], {
+        radius: 10,
+        color: '#FFFFFF',
+        weight: 2,
+        fillColor: stn.color || '#00E5FF',
+        fillOpacity: 0.95
+      });
+
+      const popupContent = `
+        <div style="font-family: sans-serif; min-width: 210px; color: #07090E; padding: 4px;">
+          <div style="font-size: 10.5px; font-weight: 800; color: #0284C7; letter-spacing: 0.5px; margin-bottom: 2px;">
+            🏛️ POLICE STATION JURISDICTION
+          </div>
+          <div style="font-size: 13.5px; font-weight: 800; color: #0F172A; margin-bottom: 3px;">
+            ${stn.stationName}
+          </div>
+          <div style="font-size: 11px; color: #475569; margin-bottom: 5px;">
+            📍 ${stn.city}
+          </div>
+          <div style="background: #F1F5F9; border-left: 3px solid ${stn.color || '#00E5FF'}; padding: 6px 8px; border-radius: 4px; font-size: 11px; margin-bottom: 5px;">
+            <div><strong>Suspect:</strong> <span style="color: #DC2626; font-weight: 800;">${stn.criminalName}</span></div>
+            <div><strong>FIR No:</strong> <span style="color: #0284C7; font-weight: 700;">${stn.firNumber}</span></div>
+            <div><strong>Sections:</strong> ${stn.sections}</div>
+            <div><strong>IO:</strong> ${stn.ioOfficer}</div>
+          </div>
+          <div style="font-size: 10px; font-weight: 800; color: #16A34A; background: #DCFCE7; padding: 2px 6px; border-radius: 3px; display: inline-block;">
+            STATUS: ${stn.status}
+          </div>
+        </div>
+      `;
+
+      marker.bindPopup(popupContent);
+      marker.on('click', () => {
+        setSelectedStation(stn);
+        showToast(`📍 Station: ${stn.stationName} (${stn.firNumber})`);
+      });
+
+      markersGroup.addLayer(marker);
+    });
+
+    try {
+      if (stations.length > 0) {
+        map.fitBounds(markersGroup.getBounds(), { padding: [50, 50], maxZoom: 12 });
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  // Safe Leaflet lifecycle mounting
   useEffect(() => {
     if (!mapContainerRef.current) return undefined;
+
+    // Clear any previous leaflet instance from DOM element
+    if (mapContainerRef.current._leaflet_id) {
+      mapContainerRef.current._leaflet_id = null;
+    }
 
     const map = L.map(mapContainerRef.current, {
       center: [28.5500, 77.1800],
@@ -477,82 +539,36 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
     markersGroupRef.current = markersGroup;
     mapInstanceRef.current = map;
 
-    // Force tile recalculation
+    // Render initial markers
+    renderMapMarkers(map, markersGroup, filteredStations);
+
     setTimeout(() => {
       map.invalidateSize();
     }, 200);
 
     return () => {
-      map.remove();
+      try {
+        map.remove();
+      } catch {
+        // ignore
+      }
       mapInstanceRef.current = null;
       markersGroupRef.current = null;
+      if (mapContainerRef.current) {
+        mapContainerRef.current._leaflet_id = null;
+      }
     };
   }, []);
 
-  // 2. Reactively Update Markers & Pan whenever filteredStations change
+  // Update markers and pan on filter changes
   useEffect(() => {
-    const map = mapInstanceRef.current;
-    const markersGroup = markersGroupRef.current;
-
-    if (!map || !markersGroup) return;
-
-    markersGroup.clearLayers();
-
-    if (filteredStations.length === 0) return;
-
-    filteredStations.forEach((stn) => {
-      const marker = L.circleMarker([stn.lat, stn.lng], {
-        radius: 10,
-        color: '#FFFFFF',
-        weight: 2,
-        fillColor: stn.color || '#00E5FF',
-        fillOpacity: 0.95
-      });
-
-      const popupContent = `
-        <div style="font-family: sans-serif; min-width: 220px; color: #07090E; padding: 4px;">
-          <div style="font-size: 11px; font-weight: 800; color: #0284C7; letter-spacing: 0.5px; margin-bottom: 2px;">
-            🏛️ POLICE STATION JURISDICTION
-          </div>
-          <div style="font-size: 13.5px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">
-            ${stn.stationName}
-          </div>
-          <div style="font-size: 11px; color: #475569; margin-bottom: 6px;">
-            📍 ${stn.city}
-          </div>
-          <div style="background: #F1F5F9; border-left: 3px solid ${stn.color || '#00E5FF'}; padding: 6px 8px; border-radius: 4px; font-size: 11px; margin-bottom: 6px;">
-            <div><strong>Suspect:</strong> <span style="color: #DC2626; font-weight: 800;">${stn.criminalName}</span></div>
-            <div><strong>FIR No:</strong> <span style="color: #0284C7; font-weight: 700;">${stn.firNumber}</span></div>
-            <div><strong>Sections:</strong> ${stn.sections}</div>
-            <div><strong>IO:</strong> ${stn.ioOfficer}</div>
-          </div>
-          <div style="font-size: 10px; font-weight: 800; color: #16A34A; background: #DCFCE7; padding: 3px 6px; border-radius: 3px; display: inline-block;">
-            STATUS: ${stn.status}
-          </div>
-        </div>
-      `;
-
-      marker.bindPopup(popupContent);
-      marker.on('click', () => {
-        setSelectedStation(stn);
-        showToast(`📍 Selected: ${stn.stationName} (${stn.firNumber})`);
-      });
-
-      markersGroup.addLayer(marker);
-    });
-
-    try {
-      if (filteredStations.length > 0) {
-        map.fitBounds(markersGroup.getBounds(), { padding: [50, 50], maxZoom: 12 });
-      }
-    } catch {
-      // ignore
+    if (mapInstanceRef.current && markersGroupRef.current) {
+      renderMapMarkers(mapInstanceRef.current, markersGroupRef.current, filteredStations);
+      setTimeout(() => {
+        mapInstanceRef.current?.invalidateSize();
+      }, 100);
     }
-
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 150);
-  }, [filteredStations]);
+  }, [searchQuery, activeCriminalFilter]);
 
   // Load timeline data from backend
   useEffect(() => {
@@ -575,9 +591,17 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
   const handleSelectCriminalFilter = (name) => {
     setActiveCriminalFilter(name);
     if (name === 'ALL') {
-      showToast('Showing FIR Police Stations for all criminals.');
+      showToast('Showing all registered Police Station FIRs.');
     } else {
       showToast(`Showing all Police Stations where FIRs registered for: ${name}`);
+    }
+  };
+
+  const handleFocusStation = (stn) => {
+    setSelectedStation(stn);
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.setView([stn.lat, stn.lng], 13, { animate: true });
+      showToast(`📍 Focused on: ${stn.stationName}`);
     }
   };
 
@@ -636,17 +660,17 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
             marginBottom: '4px'
           }}>
             <span>🇮🇳</span>
-            <span>POLICE INVESTIGATION &amp; CRIME TRAIL // SECTION 65B BSA CERTIFIED</span>
+            <span>INDIAN POLICE INVESTIGATION // SECTION 65B BSA CERTIFIED</span>
           </div>
           <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 4px 0', letterSpacing: '0.5px' }}>
-            CRIMINAL TIMELINE &amp; POLICE STATIONS FIR MAP
+            CRIMINAL FIR POLICE STATIONS MAP &amp; TIMELINE
           </h1>
           <p style={{ margin: 0, fontSize: '13px', color: '#94A3B8' }}>
-            Search any criminal to visualize all Police Stations where FIRs are registered across jurisdictions with live forensic chain of custody.
+            Search any criminal to instantly plot all Police Stations where FIRs are registered across state jurisdictions.
           </p>
         </div>
 
-        {/* Live Tracking Indicator */}
+        {/* Live Active Indicator */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -665,12 +689,12 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
             display: 'inline-block'
           }}></span>
           <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 700 }}>
-            {filteredStations.length} FIR JURISDICTIONS ACTIVE
+            {filteredStations.length} POLICE STATIONS PLOTTED
           </span>
         </div>
       </div>
 
-      {/* Search & Criminal Quick Select Bar */}
+      {/* Search & Criminal Quick Selector */}
       <div style={{
         backgroundColor: 'rgba(12, 17, 26, 0.9)',
         border: '1px solid rgba(0, 229, 255, 0.2)',
@@ -686,7 +710,7 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
           <div style={{ flex: '1', minWidth: '280px', position: 'relative' }}>
             <input
               type="text"
-              placeholder="🔍 Search Criminal Name, FIR Number, Police Station, or City..."
+              placeholder="🔍 Search Criminal Name (e.g. Mayank Kotoli, Devendra Rawat, Sameer Qureshi)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -720,7 +744,7 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
           )}
         </div>
 
-        {/* Quick Criminal Filter Pills */}
+        {/* Quick Suspect Filter Pills */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: '#94A3B8', fontWeight: 700 }}>
             SEARCH BY SUSPECT:
@@ -758,32 +782,32 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
         </div>
       </div>
 
-      {/* Interactive Police Stations Geospatial Map */}
+      {/* Geospatial Map Container */}
       <div style={{
         backgroundColor: 'rgba(12, 17, 26, 0.95)',
         border: '1.5px solid rgba(0, 229, 255, 0.3)',
         borderRadius: '8px',
         padding: '1.25rem',
-        marginBottom: '1.75rem',
+        marginBottom: '1.5rem',
         boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
           <div>
             <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 800 }}>
-              🗺️ GEOSPATIAL CRIME MAP // POLICE STATIONS WITH REGISTERED FIRS
+              🗺️ POLICE STATIONS FIR GEOSPATIAL RADAR
             </span>
             <div style={{ fontSize: '12px', color: '#94A3B8' }}>
-              Showing <strong style={{ color: '#FFFFFF' }}>{filteredStations.length}</strong> Police Station FIR records for{' '}
-              <strong style={{ color: '#00E5FF' }}>{activeCriminalFilter === 'ALL' ? 'All Suspects' : activeCriminalFilter}</strong>
+              Showing <strong style={{ color: '#FFFFFF' }}>{filteredStations.length}</strong> Police Stations where FIRs are registered for{' '}
+              <strong style={{ color: '#00E5FF' }}>{activeCriminalFilter === 'ALL' ? (searchQuery || 'All Suspects') : activeCriminalFilter}</strong>
             </div>
           </div>
 
           <div style={{ fontSize: '11px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>
-            Click on any map pin to view full FIR details &amp; IO officer
+            Click pins on map or cards below to inspect
           </div>
         </div>
 
-        {/* Map Container */}
+        {/* Map View Element */}
         <div
           ref={mapContainerRef}
           style={{
@@ -791,7 +815,8 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
             height: '380px',
             borderRadius: '6px',
             backgroundColor: '#070A10',
-            border: '1px solid rgba(0, 229, 255, 0.2)'
+            border: '1px solid rgba(0, 229, 255, 0.2)',
+            zIndex: 1
           }}
         />
 
@@ -811,12 +836,12 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
           }}>
             <div>
               <span style={{ fontSize: '10px', color: '#00E5FF', fontFamily: 'monospace', fontWeight: 700 }}>
-                SELECTED POLICE STATION:
+                SELECTED JURISDICTION:
               </span>
-              <div style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>
+              <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#FFFFFF' }}>
                 🏛️ {selectedStation.stationName} — {selectedStation.city}
               </div>
-              <div style={{ fontSize: '11.5px', color: '#CBD5E1', marginTop: '2px' }}>
+              <div style={{ fontSize: '12px', color: '#CBD5E1', marginTop: '2px' }}>
                 <strong>Suspect:</strong> <span style={{ color: '#FF8888' }}>{selectedStation.criminalName}</span> |{' '}
                 <strong>FIR:</strong> <span style={{ color: '#00E5FF' }}>{selectedStation.firNumber}</span> |{' '}
                 <strong>Sections:</strong> {selectedStation.sections} |{' '}
@@ -840,6 +865,82 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
             </button>
           </div>
         )}
+      </div>
+
+      {/* Police Station Cards Grid */}
+      <div style={{ marginBottom: '1.75rem' }}>
+        <div style={{
+          fontSize: '11px',
+          fontWeight: 700,
+          color: '#00E5FF',
+          fontFamily: 'var(--font-mono, monospace)',
+          marginBottom: '10px',
+          letterSpacing: '1px'
+        }}>
+          🏛️ REGISTERED POLICE STATIONS DIRECTORY ({filteredStations.length} STATIONS FOUND)
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '0.85rem'
+        }}>
+          {filteredStations.map((stn) => (
+            <div
+              key={stn.id}
+              onClick={() => handleFocusStation(stn)}
+              style={{
+                backgroundColor: 'rgba(12, 17, 26, 0.9)',
+                border: selectedStation?.id === stn.id ? '1.5px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                padding: '12px 14px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+                boxShadow: selectedStation?.id === stn.id ? '0 0 20px rgba(0, 229, 255, 0.2)' : 'none'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 800 }}>
+                  {stn.firNumber}
+                </span>
+                <span style={{
+                  fontSize: '9.5px',
+                  backgroundColor: 'rgba(255, 85, 85, 0.15)',
+                  color: '#FF8888',
+                  padding: '2px 6px',
+                  borderRadius: '3px',
+                  fontWeight: 700
+                }}>
+                  {stn.status.split('/')[0]}
+                </span>
+              </div>
+
+              <div style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>
+                🏛️ {stn.stationName}
+              </div>
+
+              <div style={{ fontSize: '11px', color: '#94A3B8' }}>
+                📍 {stn.city}
+              </div>
+
+              <div style={{ fontSize: '11.5px', color: '#CBD5E1', marginTop: '2px' }}>
+                <strong>Accused:</strong> <span style={{ color: '#FF8888', fontWeight: 700 }}>{stn.criminalName}</span>
+              </div>
+
+              <div style={{ fontSize: '10.5px', color: '#FBBF24', fontFamily: 'monospace' }}>
+                ⚖️ {stn.sections}
+              </div>
+
+              <div style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px solid rgba(255, 255, 255, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '10.5px', color: '#94A3B8' }}>IO: {stn.ioOfficer}</span>
+                <span style={{ fontSize: '10.5px', color: '#00E5FF', fontWeight: 700 }}>📍 Focus on Map →</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Category Pills for Timeline */}
@@ -902,7 +1003,7 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
 
         {filteredEvents.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2.5rem', color: '#94A3B8' }}>
-            No forensic events found matching your current search and filter criteria.
+            No forensic events found matching your current search criteria.
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative' }}>
