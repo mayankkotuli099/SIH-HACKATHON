@@ -15,7 +15,7 @@ let telemetryLogs = [
     time: '2024-10-27 15:10:22',
     type: 'BALLISTICS HIT',
     typeColor: '#FF5555',
-    entity: "CRIME SCENE #18 → VIKRAM 'RAJA' MALHOTRA",
+    entity: "CRIME SCENE #18 → MAYANK KOTOLI",
     severity: '▲ CRITICAL',
     severityBadge: 'CRITICAL',
     severityColor: '#FF5555',

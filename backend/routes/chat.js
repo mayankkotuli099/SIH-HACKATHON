@@ -18,11 +18,11 @@ router.post('/query', (req, res) => {
     confidence: '95.4%'
   };
 
-  if (q.includes('murder') || q.includes('homicide') || q.includes('kill') || q.includes('shot') || q.includes('bullet') || q.includes('vikram') || q.includes('raja')) {
+  if (q.includes('murder') || q.includes('homicide') || q.includes('kill') || q.includes('shot') || q.includes('bullet') || q.includes('mayank') || q.includes('kotoli') || q.includes('vikram')) {
     aiResponse = {
-      text: 'HOMICIDE FORENSIC MATCH: Vikram "Raja" Malhotra (ID #CRM-9942) connected to Sector 18 double homicide. 9mm Beretta 92FS cartridge casings matched crime scene ballistics with 99.4% certainty. 3 active Non-Bailable Warrants pending under BNS Section 103 (IPC 302).',
+      text: 'HOMICIDE FORENSIC MATCH: Mayank Kotoli (ID #CRM-9942) connected to Sector 18 double homicide. 9mm Beretta 92FS cartridge casings matched crime scene ballistics with 99.4% certainty. 3 active Non-Bailable Warrants pending under BNS Section 103 (IPC 302).',
       entities: [
-        { label: 'SUSPECT: VIKRAM RAJA MALHOTRA', type: 'target' },
+        { label: 'SUSPECT: MAYANK KOTOLI', type: 'target' },
         { label: 'WEAPON: 9mm Beretta 92FS Match', type: 'money' },
         { label: 'SCENE: Sector 18 Homicide', type: 'location' }
       ],

@@ -16,8 +16,8 @@ export default function EntityPage() {
   const DEFAULT_SEED = [
     {
       id: "CRM-9942",
-      name: "VIKRAM 'RAJA' MALHOTRA",
-      aliases: ["Raja Bhai", "The Trigger", "VK-99"],
+      name: "MAYANK KOTOLI",
+      aliases: ["Kotoli", "The Trigger", "MK-99"],
       crimeType: "HOMICIDE & CONTRACT KILLING",
       firNumbers: ["FIR-2024-402 (Murder BNS 103 / IPC 302)", "FIR-2023-881 (Attempted Murder)"],
       weaponSignature: "9mm Beretta 92FS / .32 Desi Katta",
@@ -34,7 +34,7 @@ export default function EntityPage() {
         nationality: "Indian (Interpol Blue Notice)",
         scarsAndMarks: "Deep scar across left jawline; Cobra tattoo on right forearm",
         voiceprintConfidence: "98.9%",
-        facialVectorId: "FV-99420-VK"
+        facialVectorId: "FV-99420-MK"
       },
       knownAssociates: [
         { id: "CRM-0014", name: "Mahesh 'Tiger' Khan", relation: "Gang Syndicate Boss", risk: "CRITICAL" },
@@ -74,7 +74,7 @@ export default function EntityPage() {
       },
       knownAssociates: [
         { id: "CRM-3310", name: "Raju 'Mechanic' Verma", relation: "Fake Number Plate Supplier", risk: "HIGH" },
-        { id: "CRM-9942", name: "Vikram Malhotra", relation: "Former Inmate / Gang Link", risk: "CRITICAL" }
+        { id: "CRM-9942", name: "Mayank Kotoli", relation: "Former Inmate / Gang Link", risk: "CRITICAL" }
       ],
       financialAccounts: [
         { bank: "Punjab National Bank", accNo: "****-8821", balance: "₹1.8 Lakhs (Monitored)" }
@@ -138,7 +138,7 @@ export default function EntityPage() {
         facialVectorId: "FV-00145-MK"
       },
       knownAssociates: [
-        { id: "CRM-9942", name: "Vikram 'Raja' Malhotra", relation: "Lead Hitman", risk: "CRITICAL" }
+        { id: "CRM-9942", name: "Mayank Kotoli", relation: "Lead Hitman", risk: "CRITICAL" }
       ],
       financialAccounts: [
         { bank: "Dubai Bullion Vault", accNo: "****-9102", balance: "$1.8M Gold Bullion" }

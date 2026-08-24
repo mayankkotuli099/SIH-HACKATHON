@@ -5,8 +5,8 @@ const router = express.Router();
 const entitiesData = [
   {
     id: 'CRM-9942',
-    name: "VIKRAM 'RAJA' MALHOTRA",
-    aliases: ['Raja Bhai', 'The Trigger', 'VK-99'],
+    name: "MAYANK KOTOLI",
+    aliases: ['Kotoli', 'The Trigger', 'MK-99'],
     crimeType: 'HOMICIDE & CONTRACT KILLING',
     firNumbers: ['FIR-2024-402 (Murder Sec 302/103)', 'FIR-2023-881 (Attempted Murder)', 'FIR-2022-119 (Illegal Arms)'],
     weaponSignature: '9mm Beretta 92FS / .32 Desi Katta',
@@ -22,7 +22,7 @@ const entitiesData = [
       nationality: 'Indian (Interpol Blue Notice)',
       scarsAndMarks: 'Deep scar across left jawline; Cobra tattoo on right forearm',
       voiceprintConfidence: '98.9%',
-      facialVectorId: 'FV-99420-VK'
+      facialVectorId: 'FV-99420-MK'
     },
     knownAssociates: [
       { id: 'CRM-0014', name: "Mahesh 'Tiger' Khan", relation: 'Gang Syndicate Boss', risk: 'CRITICAL' },
@@ -61,7 +61,7 @@ const entitiesData = [
     },
     knownAssociates: [
       { id: 'CRM-3310', name: "Raju 'Mechanic' Verma", relation: 'Fake Number Plate Supplier', risk: 'HIGH' },
-      { id: 'CRM-9942', name: 'Vikram Malhotra', relation: 'Former Inmate / Gang Link', risk: 'CRITICAL' }
+      { id: 'CRM-9942', name: 'Mayank Kotoli', relation: 'Former Inmate / Gang Link', risk: 'CRITICAL' }
     ],
     financialAccounts: [
       { bank: 'Punjab National Bank', accNo: '****-8821', balance: '₹1.8 Lakhs (Monitored)' }
@@ -92,7 +92,7 @@ const entitiesData = [
       facialVectorId: 'FV-00145-MK'
     },
     knownAssociates: [
-      { id: 'CRM-9942', name: "Vikram 'Raja' Malhotra", relation: 'Lead Hitman', risk: 'CRITICAL' },
+      { id: 'CRM-9942', name: "Mayank Kotoli", relation: 'Lead Hitman', risk: 'CRITICAL' },
       { id: 'CRM-5512', name: "Elena 'Czar' Rostova", relation: 'Narcotics Supply Partner', risk: 'CRITICAL' },
       { id: 'CRM-8821', name: 'Sameer Qureshi', relation: 'Heist Specialist', risk: 'HIGH' }
     ],
@@ -159,7 +159,7 @@ const entitiesData = [
     },
     knownAssociates: [
       { id: 'CRM-0014', name: 'Mahesh Khan', relation: 'Distribution Partner', risk: 'CRITICAL' },
-      { id: 'CRM-9942', name: 'Vikram Malhotra', relation: 'Enforcer', risk: 'CRITICAL' }
+      { id: 'CRM-9942', name: 'Mayank Kotoli', relation: 'Enforcer', risk: 'CRITICAL' }
     ],
     financialAccounts: [
       { bank: 'HSBC HK Maritime Trust', accNo: '****-9921', balance: '$4.2M USD (Frozen)' }
