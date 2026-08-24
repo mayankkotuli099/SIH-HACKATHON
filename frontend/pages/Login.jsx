@@ -38,20 +38,26 @@ function Login() {
     confirm: '',
   })
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
 
   const isSignIn = tab === 'signin'
   const set = (key) => (event) => {
     setForm((prev) => ({ ...prev, [key]: event.target.value }))
     setError('')
+    setSuccessMsg('')
   }
 
   async function handleSubmit(event) {
     event.preventDefault()
+    setError('')
+    setSuccessMsg('')
 
-    if (!form.id.trim() || !form.password) {
+    const investigatorId = form.id.trim()
+    if (!investigatorId || !form.password) {
       setError('Investigator ID and password are required.')
       return
     }
+
     if (!isSignIn) {
       if (!form.name.trim()) {
         setError('Full name is required to register.')
@@ -66,28 +72,37 @@ function Login() {
     setLoading(true)
     try {
       if (isSignIn) {
-        await api.auth.login(form.id.trim(), form.password)
+        await api.auth.login(investigatorId, form.password)
+        setSuccessMsg('✓ Clearance Level 4 Verified. Redirecting to Dashboard...')
       } else {
-        await api.auth.register(form.id.trim(), form.name.trim(), form.password)
+        await api.auth.register(investigatorId, form.name.trim(), form.password)
+        setSuccessMsg('✓ Account registered successfully. Redirecting to Dashboard...')
       }
-      navigate('/dashboard')
+
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 400)
     } catch (err) {
-      setError(err.message || 'Authentication error. Continuing in offline clearance mode.')
-      navigate('/dashboard')
+      setError(err.message || 'Authentication error. Please verify credentials.')
     } finally {
-      setLoading(false)
+      setTimeout(() => {
+        setLoading(false)
+      }, 600)
     }
   }
 
   function switchTab(next) {
     setTab(next)
     setError('')
+    setSuccessMsg('')
   }
 
   return (
     <div className="auth">
       <header className="auth-bar">
-        <Logo size={25} />
+        <div style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+          <Logo size={25} />
+        </div>
         <span className="auth-status">
           <i className="dot" />
           System Online
@@ -95,8 +110,8 @@ function Login() {
       </header>
 
       <main className="auth-main">
-        <h1 className="auth-title">Secure Login</h1>
-        <p className="auth-warn">Unauthorized access prohibited</p>
+        <h1 className="auth-title">{isSignIn ? 'Secure Login' : 'Register Operator'}</h1>
+        <p className="auth-warn">Unauthorized access strictly prohibited</p>
 
         <div className="auth-card panel">
           <div className="tabs" role="tablist">
@@ -125,20 +140,22 @@ function Login() {
               <Field
                 label="Full Name"
                 icon={<User size={16} strokeWidth={2} />}
-                placeholder="Jane Doe"
+                placeholder="Agent Jane Doe"
                 autoComplete="name"
                 value={form.name}
                 onChange={set('name')}
+                required
               />
             )}
 
             <Field
               label="Investigator ID"
               icon={<IdCard size={16} strokeWidth={2} />}
-              placeholder="ID-0000"
+              placeholder="e.g. OP_01 or ID-8921"
               autoComplete="username"
               value={form.id}
               onChange={set('id')}
+              required
             />
 
             <Field
@@ -149,11 +166,20 @@ function Login() {
               autoComplete={isSignIn ? 'current-password' : 'new-password'}
               value={form.password}
               onChange={set('password')}
+              required
               right={
                 isSignIn && (
-                  <a className="forgot" href="#reset">
-                    Forgot Password?
-                  </a>
+                  <span
+                    className="forgot"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      setForm(prev => ({ ...prev, id: 'OP_01', password: 'password123' }))
+                      setError('')
+                      setSuccessMsg('Sample investigator credentials filled (OP_01)')
+                    }}
+                  >
+                    Quick Demo ID?
+                  </span>
                 )
               }
             />
@@ -167,18 +193,25 @@ function Login() {
                 autoComplete="new-password"
                 value={form.confirm}
                 onChange={set('confirm')}
+                required
               />
             )}
 
             {error && (
-              <p className="auth-error" role="alert">
-                {error}
+              <p className="auth-error" role="alert" style={{ color: '#FF5555', fontSize: '13px', fontWeight: 600 }}>
+                ⚠️ {error}
               </p>
             )}
 
-            <button type="submit" className="auth-submit">
+            {successMsg && (
+              <p className="auth-success" role="status" style={{ color: '#00E676', fontSize: '13px', fontWeight: 600 }}>
+                {successMsg}
+              </p>
+            )}
+
+            <button type="submit" className="auth-submit" disabled={loading} style={{ cursor: loading ? 'wait' : 'pointer' }}>
               <LogIn size={17} strokeWidth={2.4} />
-              {isSignIn ? 'Access System' : 'Request Access'}
+              {loading ? 'Authenticating Clearance...' : (isSignIn ? 'Access System' : 'Create & Access System')}
             </button>
           </form>
         </div>

@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "server": "node backend/server.js",
+    "server": "cd backend && python run.py",
+    "server:py": "cd backend && python run.py",
+    "server:node": "node backend/server.js",
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview"
