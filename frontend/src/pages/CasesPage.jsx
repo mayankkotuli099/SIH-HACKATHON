@@ -14,6 +14,8 @@ const DEFAULT_CASES = [
     assignedOfficer: 'ACP Rajesh Verma (Special Crime Branch)',
     openedDate: '2024-10-12',
     evidenceCount: 58,
+    policeStation: 'PS Sector 18 Crime Branch',
+    firNumber: 'FIR-2024-402',
     description: 'Triple homicide execution at Sector 18. Ballistics matched 9mm Beretta; DNA evidence recovered from crime scene vehicle.',
     tags: ['HOMICIDE', 'MURDER_SEC_103', 'CONTRACT_KILLING', 'BALLISTICS_MATCH']
   },
@@ -26,6 +28,8 @@ const DEFAULT_CASES = [
     assignedOfficer: 'DCP Priya Sharma (Women & Child Safety SIT)',
     openedDate: '2024-10-04',
     evidenceCount: 34,
+    policeStation: 'Women Safety PS Sector 14',
+    firNumber: 'FIR-2024-102',
     description: 'Serial sexual assault and highway abduction case. Forensic DNA matched profile FK-8821 in National DNA Registry.',
     tags: ['RAPE_SEC_64', 'POCSO', 'SERIAL_OFFENDER', 'DNA_MATCH']
   },
@@ -38,6 +42,8 @@ const DEFAULT_CASES = [
     assignedOfficer: 'Inspector Sandeep Hooda (Anti-Robbery Cell)',
     openedDate: '2024-09-28',
     evidenceCount: 41,
+    policeStation: 'PS Sadar Bazar Anti-Robbery',
+    firNumber: 'FIR-2024-103',
     description: '14 kg gold bullion armed heist; vault thermal breach; getaway truck route triangulated on National Highway toll gate.',
     tags: ['ARMED_ROBBERY', 'DACOITY_SEC_310', 'WEAPONS', 'ANPR_HIT']
   },
@@ -50,6 +56,8 @@ const DEFAULT_CASES = [
     assignedOfficer: 'Zonal Director K. Nair (Narcotics Control Bureau)',
     openedDate: '2024-09-15',
     evidenceCount: 62,
+    policeStation: 'NCB Zonal HQ Mumbai Port',
+    firNumber: 'FIR-2024-104',
     description: '100 kg high-grade synthetic opioids intercepted at Port Terminal C container yard alongside military-grade submachine guns.',
     tags: ['NARCOTICS_NDPS', 'ARMS_TRAFFICKING', 'PORT_SEIZURE']
   },
@@ -62,9 +70,24 @@ const DEFAULT_CASES = [
     assignedOfficer: 'Joint CP Anirudh Saxena (Organized Crime Division)',
     openedDate: '2024-08-20',
     evidenceCount: 79,
+    policeStation: 'Special Cell STF Lodhi Road',
+    firNumber: 'FIR-2024-001',
     description: 'MCOCA gang syndicate running extortion rings targeting builders and transport companies across NCR with armed enforcers.',
     tags: ['MCOCA_ACT', 'EXTORTION', 'ORGANIZED_GANG', 'INTERPOL_BLUE']
   }
+];
+
+const POLICE_FIR_STATIONS = [
+  { name: 'Mayank Kotoli', fir: 'FIR-2024-402', station: 'PS Sector 18 Crime Branch', city: 'Gurugram', lat: 28.4721, lng: 77.0392, color: '#FF5555', desc: 'Triple Homicide Sec 103 (9mm Beretta match)' },
+  { name: 'Mayank Kotoli', fir: 'FIR-2023-881', station: 'PS Civil Lines Special Cell', city: 'Meerut', lat: 28.9845, lng: 77.7064, color: '#FF5555', desc: 'Attempt to Murder Sec 307' },
+  { name: 'Mayank Kotoli', fir: 'FIR-2022-119', station: 'PS Sadar Faridabad', city: 'Faridabad', lat: 28.4089, lng: 77.3178, color: '#FF5555', desc: 'Illegal Firearms Possession' },
+  { name: 'Mayank Kotoli', fir: 'FIR-2024-911', station: 'Special Cell STF HQ Lodhi Road', city: 'Delhi', lat: 28.5880, lng: 77.2220, color: '#FF5555', desc: 'MCOCA Gang Syndicate Hit' },
+  { name: "Devendra 'D-7' Rawat", fir: 'FIR-2024-102', station: 'Women Safety PS Sector 14', city: 'Gurugram', lat: 28.4595, lng: 77.0266, color: '#C084FC', desc: 'Serial Sexual Assault (100% STR DNA Match)' },
+  { name: "Devendra 'D-7' Rawat", fir: 'FIR-2024-089', station: 'PS IFFCO Chowk', city: 'Gurugram', lat: 28.4750, lng: 77.0650, color: '#C084FC', desc: 'Aggravated Assault Sec 376D' },
+  { name: "Sameer 'Ghost' Qureshi", fir: 'FIR-2024-103', station: 'PS Sadar Bazar Anti-Robbery', city: 'Gurugram', lat: 28.4600, lng: 77.0300, color: '#FB923C', desc: 'Axis Bank Vault 14kg Gold Heist' },
+  { name: "Sameer 'Ghost' Qureshi", fir: 'FIR-2023-662', station: 'PS Manesar Highway Unit', city: 'Manesar', lat: 28.3580, lng: 76.9380, color: '#FB923C', desc: 'Jewelry Logistics Burglary' },
+  { name: "Mahesh 'Tiger' Khan", fir: 'FIR-2024-001', station: 'Special Cell Organized Crime Unit', city: 'Delhi', lat: 28.5700, lng: 77.2400, color: '#FBBF24', desc: 'MCOCA Builder ₹50L Extortion' },
+  { name: "Elena 'Czar' Rostova", fir: 'FIR-2024-104', station: 'NCB Zonal HQ Mumbai Port', city: 'Mumbai', lat: 18.9500, lng: 72.9500, color: '#4ADE80', desc: '100kg Synthetic Heroin Port Seizure' }
 ];
 
 export default function CasesPage() {
@@ -75,8 +98,7 @@ export default function CasesPage() {
   const [priorityFilter, setPriorityFilter] = useState('ALL');
   const [isNewCaseModalOpen, setIsNewCaseModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
-  const [assetStatus, setAssetStatus] = useState('ACTIVE');
-  const [_loading, setLoading] = useState(false);
+  const [assetStatus, setAssetStatus] = useState('ACTIVE TRACKING');
 
   // New Case Form State
   const [newCaseForm, setNewCaseForm] = useState({
@@ -89,29 +111,25 @@ export default function CasesPage() {
 
   const mapElement = useRef(null);
   const mapInstance = useRef(null);
-  const markersRef = useRef([]);
+  const markersRef = useRef(null);
 
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Load cases from backend
+  // Load cases from backend or local storage
   const loadCases = async () => {
     try {
-      setLoading(true);
       const data = await api.cases.getAll();
-      if (data && data.cases && data.cases.length > 0) {
+      if (data && Array.isArray(data.cases) && data.cases.length > 0) {
         setCasesList(data.cases);
         if (!selectedCase) {
           setSelectedCase(data.cases[0]);
         }
       }
     } catch {
-      console.warn('Using local cases cache');
-      setCasesList(DEFAULT_CASES);
-    } finally {
-      setLoading(false);
+      // Keep default seed
     }
   };
 
@@ -119,7 +137,7 @@ export default function CasesPage() {
     loadCases();
   }, []);
 
-  // Initialize Map
+  // Safe Leaflet Initialization
   useEffect(() => {
     if (!mapElement.current) return undefined;
 
@@ -145,11 +163,14 @@ export default function CasesPage() {
       markersRef.current = markersGroup;
       mapInstance.current = map;
 
+      // Render initial markers
+      renderMapMarkers(map, markersGroup);
+
       setTimeout(() => {
         map?.invalidateSize();
       }, 200);
     } catch (err) {
-      console.warn('Map initialization note:', err);
+      console.warn('Map initialization notice:', err);
     }
 
     return () => {
@@ -168,38 +189,27 @@ export default function CasesPage() {
     };
   }, []);
 
-  // Update Map Markers on filtered cases or search
-  useEffect(() => {
-    const map = mapInstance.current;
-    const markersGroup = markersRef.current;
+  // Safe marker renderer
+  const renderMapMarkers = (map, markersGroup) => {
     if (!map || !markersGroup) return;
-
     markersGroup.clearLayers();
 
-    const POLICE_FIR_STATIONS = [
-      { name: 'Mayank Kotoli', fir: 'FIR-2024-402', station: 'PS Sector 18 Crime Branch', city: 'Gurugram', lat: 28.4721, lng: 77.0392, color: '#FF5555', desc: 'Triple Homicide Sec 103 (9mm Beretta match)' },
-      { name: 'Mayank Kotoli', fir: 'FIR-2023-881', station: 'PS Civil Lines Special Cell', city: 'Meerut', lat: 28.9845, lng: 77.7064, color: '#FF5555', desc: 'Attempt to Murder Sec 307' },
-      { name: 'Mayank Kotoli', fir: 'FIR-2022-119', station: 'PS Sadar Faridabad', city: 'Faridabad', lat: 28.4089, lng: 77.3178, color: '#FF5555', desc: 'Illegal Firearms Possession' },
-      { name: 'Mayank Kotoli', fir: 'FIR-2024-911', station: 'Special Cell STF HQ Lodhi Road', city: 'Delhi', lat: 28.5880, lng: 77.2220, color: '#FF5555', desc: 'MCOCA Gang Syndicate Hit' },
-      { name: "Devendra 'D-7' Rawat", fir: 'FIR-2024-102', station: 'Women Safety PS Sector 14', city: 'Gurugram', lat: 28.4595, lng: 77.0266, color: '#C084FC', desc: 'Serial Sexual Assault (100% STR DNA Match)' },
-      { name: "Devendra 'D-7' Rawat", fir: 'FIR-2024-089', station: 'PS IFFCO Chowk', city: 'Gurugram', lat: 28.4750, lng: 77.0650, color: '#C084FC', desc: 'Aggravated Assault Sec 376D' },
-      { name: "Sameer 'Ghost' Qureshi", fir: 'FIR-2024-103', station: 'PS Sadar Bazar Anti-Robbery', city: 'Gurugram', lat: 28.4600, lng: 77.0300, color: '#FB923C', desc: 'Axis Bank Vault 14kg Gold Heist' },
-      { name: "Sameer 'Ghost' Qureshi", fir: 'FIR-2023-662', station: 'PS Manesar Highway Unit', city: 'Manesar', lat: 28.3580, lng: 76.9380, color: '#FB923C', desc: 'Jewelry Logistics Burglary' },
-      { name: "Mahesh 'Tiger' Khan", fir: 'FIR-2024-001', station: 'Special Cell Organized Crime Unit', city: 'Delhi', lat: 28.5700, lng: 77.2400, color: '#FBBF24', desc: 'MCOCA Builder ₹50L Extortion' },
-      { name: "Elena 'Czar' Rostova", fir: 'FIR-2024-104', station: 'NCB Zonal HQ Mumbai Port', city: 'Mumbai', lat: 18.9500, lng: 72.9500, color: '#4ADE80', desc: '100kg Synthetic Heroin Port Seizure' }
-    ];
-
-    const q = searchQuery.toLowerCase().trim();
-    const stationsToShow = POLICE_FIR_STATIONS.filter(s =>
-      !q || s.name.toLowerCase().includes(q) || s.fir.toLowerCase().includes(q) || s.station.toLowerCase().includes(q) || s.city.toLowerCase().includes(q)
-    );
+    const q = (searchQuery || '').toLowerCase().trim();
+    const stationsToShow = POLICE_FIR_STATIONS.filter(s => {
+      if (!s) return false;
+      const sName = (s.name || '').toLowerCase();
+      const sFir = (s.fir || '').toLowerCase();
+      const sStation = (s.station || '').toLowerCase();
+      const sCity = (s.city || '').toLowerCase();
+      return !q || sName.includes(q) || sFir.includes(q) || sStation.includes(q) || sCity.includes(q);
+    });
 
     stationsToShow.forEach(stn => {
       const marker = L.circleMarker([stn.lat, stn.lng], {
         radius: 10,
         color: '#FFFFFF',
         weight: 2,
-        fillColor: stn.color,
+        fillColor: stn.color || '#00E5FF',
         fillOpacity: 0.95
       });
 
@@ -227,11 +237,17 @@ export default function CasesPage() {
     } catch {
       // ignore
     }
+  };
 
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 150);
-  }, [searchQuery, filteredCases]);
+  // Update Map Markers on search query change
+  useEffect(() => {
+    if (mapInstance.current && markersRef.current) {
+      renderMapMarkers(mapInstance.current, markersRef.current);
+      setTimeout(() => {
+        mapInstance.current?.invalidateSize();
+      }, 150);
+    }
+  }, [searchQuery]);
 
   // Handle New Case Submission to Backend
   const handleCreateCase = async (e) => {
@@ -263,7 +279,21 @@ export default function CasesPage() {
         setIsNewCaseModalOpen(false);
         await loadCases();
       } else {
-        showToast('✓ Case registered locally in session memory.');
+        const newLocalCase = {
+          id: `CASE-2024-${Math.floor(100 + Math.random() * 900)}`,
+          title: newCaseForm.title,
+          leadSuspect: newCaseForm.leadSuspect || 'Mayank Kotoli',
+          priority: newCaseForm.priority,
+          status: 'ACTIVE_INVESTIGATION',
+          assignedOfficer: 'Crime Branch Special Cell',
+          openedDate: new Date().toISOString().split('T')[0],
+          evidenceCount: 12,
+          description: newCaseForm.description || 'Active FIR registered in criminal dossier.',
+          tags: tagsArray
+        };
+        setCasesList(prev => [newLocalCase, ...prev]);
+        setSelectedCase(newLocalCase);
+        showToast('✓ Case registered successfully.');
         setIsNewCaseModalOpen(false);
       }
     } catch (err) {
@@ -271,13 +301,23 @@ export default function CasesPage() {
     }
   };
 
-  const filteredCases = casesList.filter((c) => {
-    const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.leadSuspect.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.id.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesPriority = priorityFilter === 'ALL' || c.priority.toUpperCase() === priorityFilter.toUpperCase();
+  const filteredCases = (casesList || []).filter((c) => {
+    if (!c) return false;
+    const title = (c.title || '').toLowerCase();
+    const leadSuspect = (c.leadSuspect || '').toLowerCase();
+    const id = (c.id || '').toLowerCase();
+    const q = (searchQuery || '').toLowerCase().trim();
+    const matchesSearch = !q || title.includes(q) || leadSuspect.includes(q) || id.includes(q);
+    const priority = (c.priority || 'HIGH').toUpperCase();
+    const matchesPriority = priorityFilter === 'ALL' || priority === priorityFilter.toUpperCase();
     return matchesSearch && matchesPriority;
   });
+
+  const getTagsArray = (tags) => {
+    if (Array.isArray(tags)) return tags;
+    if (typeof tags === 'string') return tags.split(',').map(t => t.trim()).filter(Boolean);
+    return ['CRIME_DOSSIER', 'FORENSICS'];
+  };
 
   return (
     <div className="cases-screen">
@@ -350,7 +390,7 @@ export default function CasesPage() {
         <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem' }}>
           <input
             type="text"
-            placeholder="Search cases or suspects..."
+            placeholder="Search cases or suspects (e.g. Mayank Kotoli)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
@@ -411,15 +451,15 @@ export default function CasesPage() {
                     color: item.priority === 'CRITICAL' ? '#FF5555' : 'var(--cyan-glow)',
                     fontWeight: 700
                   }}>
-                    {item.priority}
+                    {item.priority || 'HIGH'}
                   </span>
                 </div>
                 <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#FFFFFF', margin: '0 0 4px 0' }}>
                   {item.title}
                 </h3>
                 <div style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Suspect: <strong style={{ color: '#E2E8F0' }}>{item.leadSuspect}</strong></span>
-                  <span>📁 {item.evidenceCount} items</span>
+                  <span>Suspect: <strong style={{ color: '#FF8888' }}>{item.leadSuspect}</strong></span>
+                  <span>📁 {item.evidenceCount || 10} items</span>
                 </div>
               </div>
             );
@@ -427,27 +467,32 @@ export default function CasesPage() {
         </div>
 
         {/* Selected Case Detail / Anomaly Card */}
-        <article className="anomaly-card">
-          <div className="card-kicker">
-            ACTIVE CASE FILE <em>{selectedCase ? selectedCase.status : 'HIGH PRIORITY'}</em>
-          </div>
-          <h2>{selectedCase ? selectedCase.title : 'UNAUTHORIZED MOVEMENT DETECTED'}</h2>
-          <p>{selectedCase ? selectedCase.description : 'Target TGT_ALPHA_99 deviated from projected route by 4.2km in Sector 7G.'}</p>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px' }}>
-            {(selectedCase?.tags || ['HAWALA', 'HIGH_RISK']).map(t => (
-              <span key={t} style={{
-                fontSize: '10px',
-                padding: '2px 8px',
-                backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                border: '1px solid rgba(0, 229, 255, 0.3)',
-                borderRadius: '3px',
-                color: 'var(--cyan-glow)'
-              }}>
-                #{t}
-              </span>
-            ))}
-          </div>
-        </article>
+        {selectedCase && (
+          <article className="anomaly-card">
+            <div className="card-kicker">
+              ACTIVE CASE FILE <em>{selectedCase.status || 'HIGH PRIORITY'}</em>
+            </div>
+            <h2>{selectedCase.title}</h2>
+            <p>{selectedCase.description}</p>
+            <div style={{ fontSize: '12px', color: '#94A3B8', marginTop: '6px' }}>
+              <strong>Investigating Officer:</strong> {selectedCase.assignedOfficer || 'Crime Branch STF'}
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px' }}>
+              {getTagsArray(selectedCase.tags).map(t => (
+                <span key={t} style={{
+                  fontSize: '10px',
+                  padding: '2px 8px',
+                  backgroundColor: 'rgba(0, 229, 255, 0.1)',
+                  border: '1px solid rgba(0, 229, 255, 0.3)',
+                  borderRadius: '3px',
+                  color: 'var(--cyan-glow)'
+                }}>
+                  #{t}
+                </span>
+              ))}
+            </div>
+          </article>
+        )}
 
         {/* Asset Status */}
         <article className="asset-card">
@@ -513,130 +558,105 @@ export default function CasesPage() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Operation Falcon Intercept"
+                  placeholder="e.g. Operation Hawk: Inter-State Narcotics Syndicate"
                   value={newCaseForm.title}
                   onChange={(e) => setNewCaseForm({ ...newCaseForm, title: e.target.value })}
                   style={{
                     width: '100%',
-                    padding: '10px 12px',
-                    backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                    padding: '8px 12px',
+                    backgroundColor: 'rgba(7, 10, 16, 0.8)',
                     border: '1px solid rgba(0, 229, 255, 0.3)',
                     borderRadius: '4px',
                     color: '#FFFFFF',
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '13px'
+                    fontSize: '12px'
                   }}
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
-                    Lead Suspect / Entity
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Rahul Sharma"
-                    value={newCaseForm.leadSuspect}
-                    onChange={(e) => setNewCaseForm({ ...newCaseForm, leadSuspect: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      backgroundColor: 'rgba(7, 10, 16, 0.9)',
-                      border: '1px solid rgba(0, 229, 255, 0.3)',
-                      borderRadius: '4px',
-                      color: '#FFFFFF',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '13px'
-                    }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
-                    Priority Clearance
-                  </label>
-                  <select
-                    value={newCaseForm.priority}
-                    onChange={(e) => setNewCaseForm({ ...newCaseForm, priority: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      backgroundColor: 'rgba(7, 10, 16, 0.9)',
-                      border: '1px solid rgba(0, 229, 255, 0.3)',
-                      borderRadius: '4px',
-                      color: '#FFFFFF',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '13px'
-                    }}
-                  >
-                    <option value="CRITICAL">CRITICAL</option>
-                    <option value="HIGH">HIGH</option>
-                    <option value="MEDIUM">MEDIUM</option>
-                    <option value="LOW">LOW</option>
-                  </select>
-                </div>
-              </div>
-
               <div>
                 <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
-                  Tags (comma separated)
+                  Lead Suspect Name
                 </label>
                 <input
                   type="text"
-                  placeholder="HAWALA, CYBER, SHELL_CORP"
-                  value={newCaseForm.tags}
-                  onChange={(e) => setNewCaseForm({ ...newCaseForm, tags: e.target.value })}
+                  placeholder="e.g. Mayank Kotoli"
+                  value={newCaseForm.leadSuspect}
+                  onChange={(e) => setNewCaseForm({ ...newCaseForm, leadSuspect: e.target.value })}
                   style={{
                     width: '100%',
-                    padding: '10px 12px',
-                    backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                    padding: '8px 12px',
+                    backgroundColor: 'rgba(7, 10, 16, 0.8)',
                     border: '1px solid rgba(0, 229, 255, 0.3)',
                     borderRadius: '4px',
                     color: '#FFFFFF',
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '13px'
+                    fontSize: '12px'
                   }}
                 />
               </div>
 
               <div>
                 <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
-                  Case Brief & Description
+                  Threat Priority
+                </label>
+                <select
+                  value={newCaseForm.priority}
+                  onChange={(e) => setNewCaseForm({ ...newCaseForm, priority: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    backgroundColor: 'rgba(7, 10, 16, 0.8)',
+                    border: '1px solid rgba(0, 229, 255, 0.3)',
+                    borderRadius: '4px',
+                    color: '#FFFFFF',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '12px'
+                  }}
+                >
+                  <option value="CRITICAL">CRITICAL (Red Alert)</option>
+                  <option value="HIGH">HIGH (Active Surveillance)</option>
+                  <option value="MEDIUM">MEDIUM (Standard Investigation)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                  Case Description &amp; Summary
                 </label>
                 <textarea
                   rows="3"
-                  placeholder="Provide tactical context, suspected syndicate links, or intercept summaries..."
+                  placeholder="Provide incident details, forensic tags, IPC/BNS sections..."
                   value={newCaseForm.description}
                   onChange={(e) => setNewCaseForm({ ...newCaseForm, description: e.target.value })}
                   style={{
                     width: '100%',
-                    padding: '10px 12px',
-                    backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                    padding: '8px 12px',
+                    backgroundColor: 'rgba(7, 10, 16, 0.8)',
                     border: '1px solid rgba(0, 229, 255, 0.3)',
                     borderRadius: '4px',
                     color: '#FFFFFF',
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: '13px',
-                    resize: 'none'
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '12px'
                   }}
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '0.5rem' }}>
                 <button
                   type="button"
                   onClick={() => setIsNewCaseModalOpen(false)}
                   className="btn-outline-cyan"
-                  style={{ padding: '10px 16px', fontSize: '13px' }}
+                  style={{ padding: '8px 16px', fontSize: '12px' }}
                 >
-                  CANCEL
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="btn-cyan"
-                  style={{ padding: '10px 20px', fontSize: '13px' }}
+                  style={{ padding: '8px 16px', fontSize: '12px' }}
                 >
-                  REGISTER CASE
+                  Register Case
                 </button>
               </div>
             </form>
