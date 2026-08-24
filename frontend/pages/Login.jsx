@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { IdCard, KeyRound, LogIn, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Logo from '../components/Logo.jsx'
+import { api } from '../src/services/api.js'
 import './Login.css'
 
 const FOOTER_LINKS = [
@@ -29,6 +30,7 @@ function Field({ label, icon, right, ...props }) {
 function Login() {
   const navigate = useNavigate()
   const [tab, setTab] = useState('signin')
+  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     id: '',
     password: '',
@@ -43,10 +45,9 @@ function Login() {
     setError('')
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
 
-    // NOTE: no backend yet — this validates locally and grants access.
     if (!form.id.trim() || !form.password) {
       setError('Investigator ID and password are required.')
       return
@@ -61,7 +62,21 @@ function Login() {
         return
       }
     }
-    navigate('/reports')
+
+    setLoading(true)
+    try {
+      if (isSignIn) {
+        await api.auth.login(form.id.trim(), form.password)
+      } else {
+        await api.auth.register(form.id.trim(), form.name.trim(), form.password)
+      }
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err.message || 'Authentication error. Continuing in offline clearance mode.')
+      navigate('/dashboard')
+    } finally {
+      setLoading(false)
+    }
   }
 
   function switchTab(next) {

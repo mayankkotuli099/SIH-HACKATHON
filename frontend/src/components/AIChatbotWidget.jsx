@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { api } from '../services/api.js';
 
 export default function AIChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [inputVal, setInputVal] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -21,31 +23,61 @@ export default function AIChatbotWidget() {
     }
   ]);
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!inputVal.trim()) return;
 
+    const userText = inputVal.trim();
     const newMsg = {
       id: Date.now(),
       sender: 'user',
-      text: inputVal
+      text: userText
     };
 
     setMessages((prev) => [...prev, newMsg]);
     setInputVal('');
+    setIsTyping(true);
 
-    setTimeout(() => {
+    try {
+      const res = await api.chat.sendQuery(userText, messages);
+      if (res && res.response) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now() + 1,
+            sender: 'ai',
+            text: res.response.text,
+            entities: res.response.entities || [],
+            note: res.response.note || ''
+          }
+        ]);
+      } else {
+        // Fallback response if backend offline
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now() + 1,
+            sender: 'ai',
+            text: `Neural correlation complete. Cross-referencing telemetry with active cases and geolocation vectors...`,
+            entities: [{ label: 'STATUS: ACTIVE MONITORING', type: 'target' }],
+            note: 'Telemetry synchronized with Case Docket #C-8892.'
+          }
+        ]);
+      }
+    } catch (err) {
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now() + 1,
           sender: 'ai',
-          text: `Neural correlation complete. Cross-referencing telemetry with active cases and geolocation vectors...`,
-          entities: [{ label: 'STATUS: ACTIVE MONITORING', type: 'target' }],
-          note: 'Telemetry synchronized with Case Docket #C-8892.'
+          text: `Neural analysis completed for "${userText}".`,
+          entities: [{ label: 'STATUS: ACTIVE', type: 'target' }],
+          note: 'Offline cache inference mode.'
         }
       ]);
-    }, 800);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (

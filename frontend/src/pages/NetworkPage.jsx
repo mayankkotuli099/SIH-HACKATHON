@@ -1,6 +1,8 @@
-  import React, { useState } from 'react';
+  import React, { useState, useEffect } from 'react';
+  import { api } from '../services/api.js';
 
   export default function NetworkTopologyPage({ onNavigate }) {
+    const [networkData, setNetworkData] = useState(null);
     const [selectedEntity, setSelectedEntity] = useState({
       name: 'MAHESH KHAN',
       id: 'ENT_001_4545',
@@ -12,6 +14,20 @@
       cluster: 'Alpha_9',
       activityLevel: 'High'
     });
+
+    useEffect(() => {
+      async function loadNetwork() {
+        try {
+          const data = await api.network.getClusters();
+          if (data && data.clusters) {
+            setNetworkData(data.clusters);
+          }
+        } catch (err) {
+          console.warn('Network cache fallback active.');
+        }
+      }
+      loadNetwork();
+    }, []);
 
     const [activeTab, setActiveTab] = useState('Network Overview');
     const [filterTime, setFilterTime] = useState('Last 30 Days');

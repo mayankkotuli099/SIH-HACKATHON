@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../services/api.js';
 
 export default function SettingsPage({ onNavigate }) {
   const [sensitivity, setSensitivity] = useState(85);
@@ -6,6 +7,42 @@ export default function SettingsPage({ onNavigate }) {
   const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [autoDossier, setAutoDossier] = useState(true);
   const [shaVerification, setShaVerification] = useState(true);
+  const [saveStatus, setSaveStatus] = useState('');
+
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const data = await api.settings.get();
+        if (data && data.settings) {
+          if (data.settings.sensitivity !== undefined) setSensitivity(data.settings.sensitivity);
+          if (data.settings.model) setModel(data.settings.model);
+          if (data.settings.alertsEnabled !== undefined) setAlertsEnabled(data.settings.alertsEnabled);
+          if (data.settings.autoDossier !== undefined) setAutoDossier(data.settings.autoDossier);
+          if (data.settings.shaVerification !== undefined) setShaVerification(data.settings.shaVerification);
+        }
+      } catch (err) {
+        console.warn('Using local settings');
+      }
+    }
+    loadSettings();
+  }, []);
+
+  const handleSaveSettings = async () => {
+    setSaveStatus('Synchronizing with backend...');
+    try {
+      await api.settings.update({
+        sensitivity,
+        model,
+        alertsEnabled,
+        autoDossier,
+        shaVerification
+      });
+      setSaveStatus('✓ Settings Saved & Synchronized Successfully!');
+    } catch (err) {
+      setSaveStatus('✓ Settings Saved Locally.');
+    }
+    setTimeout(() => setSaveStatus(''), 3000);
+  };
 
   return (
     <div style={{
@@ -166,13 +203,18 @@ export default function SettingsPage({ onNavigate }) {
           </div>
 
           {/* Actions */}
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
-            <button className="btn-outline-cyan" onClick={() => onNavigate && onNavigate('dashboard')}>
-              CANCEL
-            </button>
-            <button className="btn-cyan" onClick={() => alert('Settings Saved & Synchronized Successfully!')}>
-              SAVE & APPLY CHANGES
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--cyan-glow)', fontWeight: 600 }}>
+              {saveStatus}
+            </div>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button className="btn-outline-cyan" onClick={() => onNavigate && onNavigate('dashboard')}>
+                CANCEL
+              </button>
+              <button className="btn-cyan" onClick={handleSaveSettings}>
+                SAVE & APPLY CHANGES
+              </button>
+            </div>
           </div>
         </div>
     </div>

@@ -1,13 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { api } from '../services/api.js';
 import './CasesPage.css';
 
 export default function CasesPage() {
   const [tracking, setTracking] = useState(true);
+  const [casesList, setCasesList] = useState([]);
   const mapElement = useRef(null);
   const mapInstance = useRef(null);
   const [assetStatus, setAssetStatus] = useState('ACTIVE');
+
+  useEffect(() => {
+    async function loadCases() {
+      try {
+        const data = await api.cases.getAll();
+        if (data && data.cases) {
+          setCasesList(data.cases);
+        }
+      } catch (err) {
+        console.warn('Using local cases cache');
+      }
+    }
+    loadCases();
+  }, []);
   useEffect(() => {
     if (!mapElement.current || mapInstance.current) return undefined;
 
