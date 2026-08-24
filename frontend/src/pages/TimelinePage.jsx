@@ -1,8 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../services/api.js';
 
 export default function TimelinePage({ onNavigate }) {
   const [filterType, setFilterType] = useState('ALL');
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [backendEvents, setBackendEvents] = useState([]);
+
+  useEffect(() => {
+    async function loadTimeline() {
+      try {
+        const data = await api.timeline.getEvents();
+        if (data && data.events) {
+          setBackendEvents(data.events);
+        }
+      } catch (err) {
+        console.warn('Timeline offline cache mode active.');
+      }
+    }
+    loadTimeline();
+  }, []);
 
   const timelineEvents = [
     {

@@ -1,8 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../services/api.js';
 
 export default function EntityPage({ onNavigate }) {
   const [exportNotification, setExportNotification] = useState(false);
   const [freezeNotification, setFreezeNotification] = useState(false);
+  const [entitiesList, setEntitiesList] = useState([]);
+
+  useEffect(() => {
+    async function loadEntities() {
+      try {
+        const data = await api.entities.getAll();
+        if (data && data.entities) {
+          setEntitiesList(data.entities);
+        }
+      } catch (err) {
+        console.warn('Entity fallback mode active.');
+      }
+    }
+    loadEntities();
+  }, []);
 
   const handleExport = () => {
     setExportNotification(true);

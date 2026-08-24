@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api } from '../services/api.js';
 
 export default function DashboardPage({ onNavigate }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -10,6 +11,22 @@ export default function DashboardPage({ onNavigate }) {
   const [showAllInfluencersModal, setShowAllInfluencersModal] = useState(false);
   const [isLiveFeedActive, setIsLiveFeedActive] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Load live data from backend
+  useEffect(() => {
+    async function loadDashboard() {
+      try {
+        const data = await api.dashboard.getOverview();
+        if (data && data.success) {
+          if (data.metrics) setMetrics(data.metrics);
+          if (data.logs && data.logs.length > 0) setRecentLogs(data.logs);
+        }
+      } catch (err) {
+        console.warn('Using local telemetry cache:', err);
+      }
+    }
+    loadDashboard();
+  }, []);
 
   // New query state
   const [newQueryForm, setNewQueryForm] = useState({
@@ -339,7 +356,7 @@ export default function DashboardPage({ onNavigate }) {
   };
 
   // Handle Submit New Query
-  const handleCreateNewQuery = (e) => {
+  const handleCreateNewQuery = async (e) => {
     e.preventDefault();
     if (!newQueryForm.identifier.trim()) {
       showToast('⚠️ Target identifier cannot be empty');
@@ -367,6 +384,14 @@ export default function DashboardPage({ onNavigate }) {
 
     setRecentLogs((prev) => [newQueryLog, ...prev]);
     setIsNewQueryModalOpen(false);
+
+    // Also persist query to backend
+    try {
+      await api.dashboard.dispatchQuery(newQueryForm);
+    } catch (err) {
+      console.warn('Persisted locally.');
+    }
+
     setNewQueryForm({
       targetType: 'PERSON_OF_INTEREST',
       identifier: '',
