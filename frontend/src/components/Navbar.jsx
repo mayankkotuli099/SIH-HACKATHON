@@ -1,10 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../services/api.js';
 
 export default function Navbar({ activePage = 'home', onNavigate }) {
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('crimelens_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Sync user state on storage change or mount
+  useEffect(() => {
+    const syncUser = () => {
+      try {
+        const stored = localStorage.getItem('crimelens_user');
+        setCurrentUser(stored ? JSON.parse(stored) : null);
+      } catch {
+        setCurrentUser(null);
+      }
+    };
+    syncUser();
+    window.addEventListener('storage', syncUser);
+    return () => window.removeEventListener('storage', syncUser);
+  }, []);
 
   const allNavItems = [
     { id: 'dashboard', label: 'DASHBOARD' },
@@ -157,13 +181,16 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
 
         {/* Right Section: CTA Button + Profile Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative' }}>
-          {/* Main Action Button */}
-          <button
-            onClick={() => navigate('/login')}
-            className="btn-outline-cyan"
-          >
-            SIGN IN
-          </button>
+          {/* Show SIGN IN button only if NOT signed in */}
+          {!currentUser ? (
+            <button
+              onClick={() => navigate('/login')}
+              className="btn-outline-cyan"
+            >
+              SIGN IN
+            </button>
+          ) : null}
+
           <button
             onClick={() => onNavigate && onNavigate(activePage === 'home' ? 'dashboard' : 'home')}
             className="btn-cyan"
@@ -185,7 +212,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '5px 10px 5px 6px',
+                padding: '5px 12px 5px 6px',
                 backgroundColor: profileOpen ? 'rgba(0, 229, 255, 0.15)' : 'rgba(16, 22, 34, 0.85)',
                 border: profileOpen ? '1px solid var(--cyan-glow)' : '1px solid rgba(0, 229, 255, 0.25)',
                 borderRadius: '20px',
@@ -248,7 +275,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
                 color: '#FFFFFF',
                 letterSpacing: '0.5px'
               }}>
-                OP_01
+                {currentUser ? (currentUser.name || currentUser.id) : 'OPERATOR'}
               </span>
 
               {/* Dropdown Chevron */}
@@ -301,9 +328,14 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
                       fontSize: '12px',
                       fontWeight: 800,
                       color: '#FFFFFF',
-                      letterSpacing: '1px'
+                      letterSpacing: '1px',
+                      textTransform: 'uppercase',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      maxWidth: '160px'
                     }}>
-                      OPERATOR_01
+                      {currentUser ? (currentUser.name || currentUser.id) : 'OPERATOR_01'}
                     </span>
                     <span style={{
                       fontFamily: 'var(--font-mono)',
@@ -324,7 +356,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
                     color: 'var(--cyan-glow)',
                     letterSpacing: '0.5px'
                   }}>
-                    SECURITY LEVEL 4 // ID: #CL-8921
+                    {currentUser?.clearance || 'SECURITY LEVEL 4'} // ID: {currentUser?.badgeId || currentUser?.id || '#CL-8921'}
                   </div>
                 </div>
 
@@ -475,8 +507,10 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
                 }}>
                   <button
                     onClick={() => {
+                      api.auth.logout();
+                      setCurrentUser(null);
                       setProfileOpen(false);
-                      alert('Terminal session locked. Re-authenticate to access Level 4 assets.');
+                      navigate('/login');
                     }}
                     style={{
                       width: '100%',
@@ -505,7 +539,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
                     }}
                   >
                     <span>🔒</span>
-                    <span>LOCK TERMINAL</span>
+                    <span>LOGOUT & LOCK TERMINAL</span>
                   </button>
                 </div>
               </div>
