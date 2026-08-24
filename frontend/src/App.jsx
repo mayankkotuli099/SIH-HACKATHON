@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Hero from './components/Hero';
@@ -14,11 +15,28 @@ import CasesPage from './pages/CasesPage';
 import NetworkPage from './pages/NetworkPage';
 
 export default function App({ initialPage = 'home' }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  useEffect(() => {
+    if (initialPage) {
+      setCurrentPage(initialPage);
+    }
+  }, [initialPage, location.pathname]);
+
   const handleNavigate = (page) => {
+    if (page === 'reports') {
+      navigate('/reports');
+      return;
+    }
     setCurrentPage(page);
+    try {
+      window.history.pushState(null, '', page === 'home' ? '/' : `/${page}`);
+    } catch {
+      // ignore
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
