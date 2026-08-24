@@ -1,8 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api.js';
 
-export default function AIChatbotWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onClose }) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const inputRef = useRef(null);
+
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+
+  const setIsOpen = (val) => {
+    if (onToggle) {
+      onToggle(val);
+    }
+    if (!val && onClose) {
+      onClose();
+    }
+    setInternalIsOpen(val);
+  };
+
+  useEffect(() => {
+    const handleOpen = () => {
+      setIsOpen(true);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    };
+    window.addEventListener('crimelens:open-ai-chat', handleOpen);
+    return () => window.removeEventListener('crimelens:open-ai-chat', handleOpen);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [isOpen]);
+
   const [inputVal, setInputVal] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
@@ -343,6 +376,7 @@ export default function AIChatbotWidget() {
             }}
           >
             <input
+              ref={inputRef}
               type="text"
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
