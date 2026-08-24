@@ -523,28 +523,33 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
       mapContainerRef.current._leaflet_id = null;
     }
 
-    const map = L.map(mapContainerRef.current, {
-      center: [28.5500, 77.1800],
-      zoom: 9,
-      zoomControl: true,
-      scrollWheelZoom: true
-    });
+    let map = null;
+    try {
+      map = L.map(mapContainerRef.current, {
+        center: [28.5500, 77.1800],
+        zoom: 9,
+        zoomControl: true,
+        scrollWheelZoom: true
+      });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap &copy; CARTO'
-    }).addTo(map);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap &copy; CARTO'
+      }).addTo(map);
 
-    const markersGroup = L.featureGroup().addTo(map);
-    markersGroupRef.current = markersGroup;
-    mapInstanceRef.current = map;
+      const markersGroup = L.featureGroup().addTo(map);
+      markersGroupRef.current = markersGroup;
+      mapInstanceRef.current = map;
 
-    // Render initial markers
-    renderMapMarkers(map, markersGroup, filteredStations);
+      // Render initial markers
+      renderMapMarkers(map, markersGroup, filteredStations);
 
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 200);
+      setTimeout(() => {
+        map?.invalidateSize();
+      }, 200);
+    } catch (err) {
+      console.warn('Map initialization notice:', err);
+    }
 
     return () => {
       try {
