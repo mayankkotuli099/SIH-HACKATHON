@@ -59,30 +59,48 @@ export default function CasesPage() {
   useEffect(() => {
     if (!mapElement.current) return undefined;
 
-    const map = L.map(mapElement.current, {
-      zoomControl: false,
-      attributionControl: true
-    }).setView([28.5500, 77.1800], 8);
+    if (mapElement.current._leaflet_id) {
+      mapElement.current._leaflet_id = null;
+    }
 
-    L.control.zoom({ position: 'bottomleft' }).addTo(map);
+    let map = null;
+    try {
+      map = L.map(mapElement.current, {
+        zoomControl: false,
+        attributionControl: true
+      }).setView([28.5500, 77.1800], 8);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap &copy; CARTO'
-    }).addTo(map);
+      L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-    const markersGroup = L.featureGroup().addTo(map);
-    markersRef.current = markersGroup;
-    mapInstance.current = map;
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap &copy; CARTO'
+      }).addTo(map);
 
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 200);
+      const markersGroup = L.featureGroup().addTo(map);
+      markersRef.current = markersGroup;
+      mapInstance.current = map;
+
+      setTimeout(() => {
+        map?.invalidateSize();
+      }, 200);
+    } catch (err) {
+      console.warn('Map initialization note:', err);
+    }
 
     return () => {
-      map.remove();
+      try {
+        if (map) {
+          map.remove();
+        }
+      } catch {
+        // ignore
+      }
       mapInstance.current = null;
       markersRef.current = null;
+      if (mapElement.current) {
+        mapElement.current._leaflet_id = null;
+      }
     };
   }, []);
 
