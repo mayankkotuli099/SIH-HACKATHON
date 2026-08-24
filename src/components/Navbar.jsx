@@ -6,7 +6,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
 
-  const navItems = [
+  const allNavItems = [
     { id: 'dashboard', label: 'DASHBOARD' },
     { id: 'network', label: 'NETWORK' },
     { id: 'timeline', label: 'TIMELINE' },
@@ -15,6 +15,10 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
     { id: 'reports', label: 'REPORTS' },
     { id: 'settings', label: 'SETTINGS' },
   ];
+
+  const navItems = activePage === 'home'
+    ? allNavItems
+    : allNavItems.filter((item) => item.id !== 'settings');
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -72,7 +76,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        {/* Brand Logo & Kavach AI text (Acts as Home Button) */}
+        {/* Brand Logo & CrimeLens text (Acts as Home Button) */}
         <div
           onClick={() => onNavigate && onNavigate('home')}
           style={{
@@ -82,7 +86,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
             cursor: 'pointer',
             userSelect: 'none'
           }}
-          title="Kavach AI - Return to Home Page"
+          title="CrimeLens - Return to Home Page"
         >
           <div style={{
             width: '30px',
@@ -106,9 +110,9 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
             color: '#FFFFFF',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px'
+            gap: '0px'
           }}>
-            KAVACH <span style={{ color: 'var(--cyan-glow)', textShadow: '0 0 10px rgba(0,229,255,0.6)' }}>AI</span>
+            CRIME<span style={{ color: 'var(--cyan-glow)', textShadow: '0 0 10px rgba(0,229,255,0.6)' }}>LENS</span>
           </span>
         </div>
 
@@ -320,7 +324,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
                     color: 'var(--cyan-glow)',
                     letterSpacing: '0.5px'
                   }}>
-                    SECURITY LEVEL 4 // ID: #KV-8921
+                    SECURITY LEVEL 4 // ID: #CL-8921
                   </div>
                 </div>
 

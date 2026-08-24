@@ -6,7 +6,7 @@ function Logo({ size = 25 }) {
     <span className="logo">
       <Shield size={size * 0.86} fill="currentColor" strokeWidth={1.5} />
       <span className="logo-text" style={{ fontSize: size }}>
-        KAVACH <em>AI</em>
+        CRIME<em>LENS</em>
       </span>
     </span>
   )

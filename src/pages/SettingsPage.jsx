@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 export default function SettingsPage({ onNavigate }) {
   const [sensitivity, setSensitivity] = useState(85);
-  const [model, setModel] = useState('kavach-titan-4.2');
+  const [model, setModel] = useState('crimelens-titan-4.2');
   const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [autoDossier, setAutoDossier] = useState(true);
   const [shaVerification, setShaVerification] = useState(true);
@@ -74,9 +74,9 @@ export default function SettingsPage({ onNavigate }) {
                     outline: 'none'
                   }}
                 >
-                  <option value="kavach-titan-4.2">Kavach-Titan v4.2 [Multimodal Entity Graph + Audio Forensics] (Recommended)</option>
-                  <option value="kavach-sentinel-ultra">Kavach-Sentinel Ultra [Real-time Financial Nexus & SIGINT Stream]</option>
-                  <option value="kavach-airgap-local">Kavach-AirGap Local [On-Premise Encrypted Offline Inference]</option>
+                  <option value="crimelens-titan-4.2">CrimeLens-Titan v4.2 [Multimodal Entity Graph + Audio Forensics] (Recommended)</option>
+                  <option value="crimelens-sentinel-ultra">CrimeLens-Sentinel Ultra [Real-time Financial Nexus & SIGINT Stream]</option>
+                  <option value="crimelens-airgap-local">CrimeLens-AirGap Local [On-Premise Encrypted Offline Inference]</option>
                 </select>
               </div>
 
