@@ -57,25 +57,16 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
   }, []);
 
   const handleNavClick = (id) => {
-    if (id === 'reports') {
-      // Reports lives on its own route (frontend/pages/Reports.jsx)
-      navigate('/reports');
-    } else if (id === 'dashboard') {
-      onNavigate && onNavigate('dashboard');
-    } else if (id === 'network') {
-      onNavigate && onNavigate('network');
-    } else if (id === 'cases') {
-      onNavigate && onNavigate('cases');
-    } else if (id === 'timeline') {
-      onNavigate && onNavigate('timeline');
-    } else if (id === 'entities') {
-      onNavigate && onNavigate('entities');
+    if (onNavigate) {
+      onNavigate(id);
     } else {
-      onNavigate && onNavigate('home');
-      setTimeout(() => {
-        const el = document.getElementById('explore') || document.getElementById('workflow');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 50);
+      if (id === 'reports') {
+        navigate('/reports');
+      } else if (id === 'home') {
+        navigate('/');
+      } else {
+        navigate(`/${id}`);
+      }
     }
   };
 

@@ -17,25 +17,33 @@ import NetworkPage from './pages/NetworkPage';
 export default function App({ initialPage = 'home' }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentPage, setCurrentPage] = useState(initialPage);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  useEffect(() => {
-    if (initialPage) {
-      setCurrentPage(initialPage);
-    }
-  }, [initialPage, location.pathname]);
+  // Derive current page directly from URL location path
+  const getCurrentPage = () => {
+    const path = location.pathname.replace(/^\//, '').toLowerCase().trim();
+    if (!path) return initialPage || 'home';
+    if (path.startsWith('cases')) return 'cases';
+    if (path.startsWith('entities')) return 'entities';
+    if (path.startsWith('timeline')) return 'timeline';
+    if (path.startsWith('dashboard')) return 'dashboard';
+    if (path.startsWith('network')) return 'network';
+    if (path.startsWith('settings')) return 'settings';
+    if (path.startsWith('anomalies')) return 'anomalies';
+    if (path.startsWith('location')) return 'location';
+    if (path.startsWith('ai_assistant')) return 'ai_assistant';
+    return initialPage || 'home';
+  };
+
+  const currentPage = getCurrentPage();
 
   const handleNavigate = (page) => {
     if (page === 'reports') {
       navigate('/reports');
-      return;
-    }
-    setCurrentPage(page);
-    try {
-      window.history.pushState(null, '', page === 'home' ? '/' : `/${page}`);
-    } catch {
-      // ignore
+    } else if (page === 'home') {
+      navigate('/');
+    } else {
+      navigate(`/${page}`);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
