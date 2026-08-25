@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 const INITIAL_NODES = [
-  { id: 'MK', name: 'MAHESH KHAN', risk: 'HIGH RISK', riskScore: 98.5, type: 'Individual', color: '#ff4d4d' },
+  { id: 'MK', name: 'MAYANK KOTOLI', risk: 'HIGH RISK', riskScore: 99.4, type: 'Lead Hitman / Gang Enforcer', color: '#ff4d4d' },
   { id: 'SA', name: 'SAMEER ALI', risk: 'MEDIUM RISK', riskScore: 65.0, type: 'Individual', color: '#ff9900' },
   { id: 'RV', name: 'RAHUL VERMA', risk: 'MEDIUM RISK', riskScore: 58.2, type: 'Individual', color: '#ff9900' },
   { id: 'VS', name: 'VIKRAM SINGH', risk: 'MEDIUM RISK', riskScore: 62.1, type: 'Individual', color: '#ff9900' },
@@ -220,7 +220,7 @@ export default function NetworkTopologyPage({ onNavigate }) {
                 <g className="node-group" onClick={() => setSelectedEntity(INITIAL_NODES[0])}>
                   <circle cx="300" cy="180" r="22" fill="rgba(255, 77, 77, 0.2)" stroke="#ff4d4d" className="pulse-ring" />
                   <circle cx="300" cy="180" r="14" fill="#ff4d4d" />
-                  <text x="300" y="210" fill="#ffffff" fontSize="10" textAnchor="middle" fontWeight="800">MAHESH KHAN</text>
+                  <text x="300" y="210" fill="#ffffff" fontSize="10" textAnchor="middle" fontWeight="800">MAYANK KOTOLI</text>
                 </g>
               </svg>
             </div>

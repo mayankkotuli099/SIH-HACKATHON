@@ -37,7 +37,7 @@ export default function App({ initialPage = 'home' }) {
 
   const currentPage = getCurrentPage();
 
-  const handleNavigate = (page) => {
+  const handleNavigate = (page, extra) => {
     if (page === 'ai_assistant') {
       setIsAIChatOpen(true);
       window.dispatchEvent(new CustomEvent('crimelens:open-ai-chat'));
@@ -47,6 +47,10 @@ export default function App({ initialPage = 'home' }) {
       navigate('/reports');
     } else if (page === 'home') {
       navigate('/');
+    } else if (extra && extra.suspect) {
+      navigate(`/${page}?suspect=${encodeURIComponent(extra.suspect)}`);
+    } else if (typeof extra === 'string') {
+      navigate(`/${page}?${extra}`);
     } else {
       navigate(`/${page}`);
     }
@@ -122,10 +126,6 @@ export default function App({ initialPage = 'home' }) {
 
             {currentPage === 'cases' && (
               <CasesPage />
-            )}
-
-            {currentPage === 'network' && (
-              <NetworkPage onNavigate={handleNavigate} />
             )}
 
             {/* Tactical Fallbacks / Modules for Network, Anomalies, Location, Influencers, Cases */}

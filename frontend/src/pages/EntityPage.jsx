@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../services/api.js';
 import AddCriminalModal from '../components/AddCriminalModal.jsx';
 
-export default function EntityPage() {
+export default function EntityPage({ onNavigate }) {
   const [exportNotification, setExportNotification] = useState(false);
   const [freezeNotification, setFreezeNotification] = useState(false);
   const [warrantNotification, setWarrantNotification] = useState(false);
@@ -765,6 +765,33 @@ export default function EntityPage() {
           </div>
 
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => {
+                if (onNavigate) {
+                  onNavigate('network', { suspect: active.name });
+                }
+              }}
+              className="interactive-btn"
+              style={{
+                backgroundColor: 'rgba(0, 229, 255, 0.15)',
+                border: '1.5px solid #00E5FF',
+                color: '#00E5FF',
+                borderRadius: '5px',
+                padding: '9px 14px',
+                fontWeight: 800,
+                fontSize: '11.5px',
+                fontFamily: 'var(--font-mono, monospace)',
+                cursor: 'pointer',
+                boxShadow: '0 0 15px rgba(0, 229, 255, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span>🕸️</span>
+              <span>VIEW GANG NETWORK</span>
+            </button>
+
             <button
               onClick={handleWarrant}
               style={{
