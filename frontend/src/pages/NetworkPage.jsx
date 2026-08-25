@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { api } from '../services/api.js';
+import AddCriminalModal from '../components/AddCriminalModal.jsx';
 
 // Comprehensive Database of Known Gang Networks
 const PREDEFINED_SUSPECT_NETWORKS = {
@@ -172,50 +173,165 @@ const PREDEFINED_SUSPECT_NETWORKS = {
   }
 };
 
-// Procedural Gang Network Generator for ANY custom suspect name
-function generateCustomSuspectNetwork(suspectName) {
-  const cleanName = suspectName.trim().toUpperCase();
-  const idHash = Math.abs(cleanName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 9000) + 1000;
-  const riskNum = (85 + (idHash % 150) / 10).toFixed(1);
+// Procedurally and contextually build a full Gang Network for ANY criminal
+export function buildCriminalGangNetwork(criminal) {
+  const cleanName = (criminal.name || 'UNKNOWN OFFENDER').trim().toUpperCase();
+  const id = criminal.id || `CRM-${Math.floor(1000 + Math.random() * 9000)}`;
+  const riskNum = Number(criminal.riskScore) || (criminal.threatLevel === 'CRITICAL' ? 98.4 : 92.0);
+  const threatLevel = criminal.threatLevel || (riskNum > 90 ? 'CRITICAL' : 'HIGH');
+  const crimeType = criminal.crimeType || criminal.category || 'Organized Gang Activity';
+  const alias = (criminal.aliases && criminal.aliases.length > 0) ? criminal.aliases.join(' / ') : `Code ${cleanName.split(' ')[0]}-X`;
+  const firList = Array.isArray(criminal.firNumbers) ? criminal.firNumbers : (criminal.firNumbers ? [criminal.firNumbers] : []);
+  const firText = firList.length > 0 ? firList[0] : `FIR-2024-${id.replace(/[^0-9]/g, '') || '402'}`;
+  const policeStation = criminal.policeStation || 'Special Crime Branch / State STF';
+  const weapon = criminal.weaponSignature || 'Country-made Firearm / Edged Weapon';
+  const modus = criminal.modusOperandi || `Active suspect under STF surveillance for ${crimeType}.`;
+
+  const nodes = [
+    {
+      id: 'N_CENTER',
+      label: cleanName,
+      type: 'PRIMARY_SUSPECT',
+      role: 'Central Target / Operative',
+      risk: threatLevel,
+      riskScore: `${riskNum}%`,
+      x: 300,
+      y: 190,
+      r: 18,
+      color: threatLevel === 'CRITICAL' ? '#FF5555' : '#FF9900',
+      status: criminal.status || 'ACTIVE_WARRANT',
+      details: `ID: ${id} | Wanted under ${firText}. Modus: ${modus}`
+    },
+    {
+      id: 'N_WEAPON',
+      label: weapon.length > 25 ? `${weapon.slice(0, 23)}...` : weapon,
+      type: 'ARMS_SUPPLIER',
+      role: 'Weaponry & Ballistics Signature',
+      risk: 'HIGH',
+      riskScore: '92.0%',
+      x: 430,
+      y: 100,
+      r: 13,
+      color: '#FBBF24',
+      status: 'BALLISTICS_MATCH',
+      details: `Forensic ballistic match: ${weapon}. Striation characteristics catalogued in police archive.`
+    },
+    {
+      id: 'N_JURISDICTION',
+      label: policeStation.length > 26 ? `${policeStation.slice(0, 24)}...` : policeStation,
+      type: 'CRIME_SCENE',
+      role: 'Jurisdiction & FIR Crime Scene',
+      risk: 'CRITICAL',
+      riskScore: '98.0%',
+      x: 140,
+      y: 220,
+      r: 12,
+      color: '#FF5555',
+      status: 'SCENE_CORDONED',
+      details: `Primary FIRs: ${firList.length > 0 ? firList.join(', ') : firText} at ${policeStation}.`
+    },
+    {
+      id: 'N_ASSOCIATE',
+      label: (criminal.knownAssociates && criminal.knownAssociates.length > 0)
+        ? criminal.knownAssociates[0].name
+        : "MAHESH 'TIGER' KHAN",
+      type: 'GANG_BOSS',
+      role: (criminal.knownAssociates && criminal.knownAssociates.length > 0)
+        ? criminal.knownAssociates[0].relation
+        : 'Syndicate Network Link',
+      risk: 'CRITICAL',
+      riskScore: '98.5%',
+      x: 170,
+      y: 100,
+      r: 14,
+      color: '#FF5555',
+      status: 'MCOCA_FLAGGED',
+      details: 'Command nexus coordinating regional sleeper cells, contract dispatch, and cross-border hideouts.'
+    },
+    {
+      id: 'N_FINANCIAL',
+      label: (criminal.financialAccounts && criminal.financialAccounts.length > 0)
+        ? `${criminal.financialAccounts[0].bank}`
+        : 'BENAMI HAWALA CONDUIT',
+      type: 'FINANCIAL',
+      role: 'Illicit Hawala & Asset Conduit',
+      risk: 'HIGH',
+      riskScore: '89.5%',
+      x: 460,
+      y: 220,
+      r: 12,
+      color: '#A855F7',
+      status: 'AUDIT_FROZEN',
+      details: (criminal.financialAccounts && criminal.financialAccounts.length > 0)
+        ? `Account: ${criminal.financialAccounts[0].accNo} - Balance: ${criminal.financialAccounts[0].balance}`
+        : 'Benami cash channels routed to finance safehouses and legal defense escrows.'
+    },
+    {
+      id: 'N_TRANSIT',
+      label: 'SURVEILLED TRANSIT VECTOR',
+      type: 'VEHICLE',
+      role: 'Getaway & Transport Vector',
+      risk: 'MEDIUM',
+      riskScore: '82.5%',
+      x: 210,
+      y: 310,
+      r: 11,
+      color: '#00E676',
+      status: 'ANPR_FLAGGED',
+      details: `Getaway transport logged crossing regional highway toll checkpoints post incident.`
+    },
+    {
+      id: 'N_SIGINT',
+      label: criminal.phone
+        ? `BURNER ${criminal.phone}`
+        : ((criminal.burnerDevices && criminal.burnerDevices.length > 0) ? `IMEI ${criminal.burnerDevices[0].imei.slice(0, 8)}...` : 'ENCRYPTED SIGINT BEACON'),
+      type: 'SIGINT',
+      role: 'Active Cellular & IMSI Intercept',
+      risk: 'MEDIUM',
+      riskScore: '86.0%',
+      x: 390,
+      y: 310,
+      r: 11,
+      color: '#00E5FF',
+      status: 'TRIANGULATED',
+      details: `Cell tower triangulation and packet intercepts logged under Section 65B BSA.`
+    }
+  ];
+
+  const edges = [
+    { from: 'N_ASSOCIATE', to: 'N_CENTER', label: 'OPERATIONAL COMMAND', type: 'COMMAND', color: '#FF5555', width: 2.4, dashed: false },
+    { from: 'N_WEAPON', to: 'N_CENTER', label: 'WEAPONS LOGISTICS', type: 'WEAPON', color: '#FBBF24', width: 2.0, dashed: true },
+    { from: 'N_CENTER', to: 'N_JURISDICTION', label: 'INCIDENT HOTSPOT', type: 'FORENSIC', color: '#FF5555', width: 2.2, dashed: false },
+    { from: 'N_CENTER', to: 'N_FINANCIAL', label: 'HAWALA CAPITAL FLOW', type: 'FINANCIAL', color: '#A855F7', width: 1.8, dashed: false },
+    { from: 'N_CENTER', to: 'N_TRANSIT', label: 'GETAWAY TRANSIT', type: 'TRANSIT', color: '#00E676', width: 1.8, dashed: true },
+    { from: 'N_CENTER', to: 'N_SIGINT', label: 'SIGINT WIREPING', type: 'COMMUNICATION', color: '#00E5FF', width: 1.8, dashed: true }
+  ];
 
   return {
     name: cleanName,
-    id: `CRM-${idHash}`,
-    alias: `Code ${cleanName.split(' ')[0]}-X`,
-    risk: riskNum > 90 ? 'CRITICAL' : 'HIGH',
+    id: id,
+    alias: alias,
+    risk: threatLevel,
     riskScore: `${riskNum}%`,
-    type: 'Suspected Syndicate Operative',
-    cluster: `CLUSTER_SYNTHETIC_${cleanName.replace(/\s+/g, '_')}`,
-    category: 'Syndicate Affiliation & Inter-state Network',
-    firstSeen: '01 Jan 2024',
-    connections: 16 + (idHash % 12),
-    activityLevel: 'Under Intelligence Surveillance',
-    policeStation: 'State Intelligence Bureau / Special Task Force',
-    description: `Procedurally generated gang network topology for suspect "${cleanName}". Neural graph engine correlated active phone records, known co-defendants, vehicle ANPR sightings, and financial transaction links.`,
-    nodes: [
-      { id: 'N_CENTER', label: cleanName, type: 'PRIMARY_SUSPECT', role: 'Target Suspect Node', risk: riskNum > 90 ? 'CRITICAL' : 'HIGH', riskScore: `${riskNum}%`, x: 300, y: 190, r: 18, color: '#FF5555', status: 'SURVEILLED', details: `Indexed under Central Police Crime Database. Subject of active intelligence inquiries.` },
-      { id: 'N_ASSOCIATE_1', label: `LIEUTENANT (${cleanName.slice(0, 3)}-CELL)`, type: 'GANG_MEMBER', role: 'Key Sub-Lieutenant', risk: 'HIGH', riskScore: '88.5%', x: 170, y: 100, r: 13, color: '#FF9900', status: 'ACTIVE_MONITORING', details: `Coordinates ground logistical execution and field recruit dispatch.` },
-      { id: 'N_SUPPLIER', label: 'ILLEGAL WEAPONRY CONDUIT', type: 'ARMS_SUPPLIER', role: 'Armorer / Firearms Nexus', risk: 'HIGH', riskScore: '92.0%', x: 430, y: 100, r: 13, color: '#FBBF24', status: 'STF_WATCHLIST', details: `Linked to illicit firearm procurement channels and unlicensed ammunition trade.` },
-      { id: 'N_SAFEHOUSE', label: 'NCR BORDER SAFEHOUSE', type: 'INFRASTRUCTURE', role: 'Triangulated Shelter', risk: 'MEDIUM', riskScore: '81.4%', x: 140, y: 220, r: 12, color: '#00E676', status: 'SURVEILLED', details: `Tactical rendezvous point identified via recurring cellular tower handoffs.` },
-      { id: 'N_FINANCIAL', label: 'BENAMI UPI / HAWALA LEDGER', type: 'FINANCIAL', role: 'Illicit Capital Flow', risk: 'HIGH', riskScore: '89.0%', x: 460, y: 220, r: 12, color: '#A855F7', status: 'AUDIT_FLAGGED', details: `Suspicious high-velocity split transactions detected across benami accounts.` },
-      { id: 'N_TRANSIT', label: 'SURVEILLED TRANSIT VECTOR', type: 'VEHICLE', role: 'Getaway & Transport', risk: 'MEDIUM', riskScore: '78.5%', x: 210, y: 310, r: 11, color: '#00E5FF', status: 'ANPR_FLAGGED', details: `Registered to proxy owner; captured near key crime incident hotspots.` },
-      { id: 'N_COMM', label: 'BURNING SIM TELEMETRY', type: 'SIGINT', role: 'Encrypted Comms Hub', risk: 'MEDIUM', riskScore: '84.0%', x: 390, y: 310, r: 11, color: '#00E5FF', status: 'INTERCEPT_ACTIVE', details: `Signal analysis shows burner swaps every 14 days to evade long-term wiretapping.` },
-    ],
-    edges: [
-      { from: 'N_CENTER', to: 'N_ASSOCIATE_1', label: 'DIRECT INSTRUCTION', type: 'COMMAND', color: '#FF5555', width: 2.2, dashed: false },
-      { from: 'N_SUPPLIER', to: 'N_CENTER', label: 'EQUIPMENT SUPPLY', type: 'WEAPON', color: '#FBBF24', width: 2.0, dashed: true },
-      { from: 'N_CENTER', to: 'N_SAFEHOUSE', label: 'FREQUENT VISITATION', type: 'INFRASTRUCTURE', color: '#00E676', width: 1.8, dashed: false },
-      { from: 'N_CENTER', to: 'N_FINANCIAL', label: 'FUNDS TRANSIT', type: 'FINANCIAL', color: '#A855F7', width: 2.0, dashed: true },
-      { from: 'N_CENTER', to: 'N_TRANSIT', label: 'TRANSIT CORRIDOR', type: 'LOGISTICS', color: '#00E5FF', width: 1.8, dashed: false },
-      { from: 'N_CENTER', to: 'N_COMM', label: 'ENCRYPTED SIGNAL', type: 'COMMUNICATION', color: '#00E5FF', width: 1.8, dashed: true },
-    ]
+    type: `Gang Operative (${crimeType.split(' ')[0]})`,
+    cluster: `CLUSTER_${cleanName.replace(/[^A-Z0-9]/g, '_')} [GANG SYNDICATE]`,
+    category: crimeType,
+    firstSeen: '2024 CCTNS Register',
+    connections: 18 + (cleanName.length % 15),
+    activityLevel: criminal.status || 'Active Surveillance',
+    policeStation: policeStation,
+    description: `${cleanName} (${id}) is catalogued under ${firText}. ${modus}`,
+    isCustom: true,
+    nodes,
+    edges
   };
 }
 
-export default function NetworkTopologyPage({ onNavigate }) {
+export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSuspectKey, setActiveSuspectKey] = useState('MAYANK KOTOLI');
+  const [allNetworksMap, setAllNetworksMap] = useState(PREDEFINED_SUSPECT_NETWORKS);
   const [currentNetwork, setCurrentNetwork] = useState(PREDEFINED_SUSPECT_NETWORKS['MAYANK KOTOLI']);
   const [selectedNode, setSelectedNode] = useState(PREDEFINED_SUSPECT_NETWORKS['MAYANK KOTOLI'].nodes[0]);
   const [toastMessage, setToastMessage] = useState(null);
@@ -223,53 +339,91 @@ export default function NetworkTopologyPage({ onNavigate }) {
   const [filterType, setFilterType] = useState('All Connections');
   const [activeTab, setActiveTab] = useState('Network Overview');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Show Toast
-  const showToast = (msg) => {
+  const showToast = useCallback((msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
-  };
+  }, []);
+
+  // Synchronize all networks with local custom criminals & backend API
+  const loadAllNetworks = useCallback(async (preferredSuspectName = null) => {
+    let customList = [];
+    try {
+      const stored = localStorage.getItem('crimelens_custom_criminals');
+      if (stored) customList = JSON.parse(stored);
+    } catch {
+      customList = [];
+    }
+
+    let backendEntities = [];
+    try {
+      const data = await api.entities.getAll();
+      if (data && data.entities) {
+        backendEntities = data.entities;
+      }
+    } catch {
+      backendEntities = [];
+    }
+
+    const mergedNetworks = { ...PREDEFINED_SUSPECT_NETWORKS };
+
+    // Process backend and custom entities
+    [...backendEntities, ...customList].forEach((criminal) => {
+      if (criminal && criminal.name) {
+        const upper = criminal.name.trim().toUpperCase();
+        if (!mergedNetworks[upper]) {
+          mergedNetworks[upper] = buildCriminalGangNetwork(criminal);
+        }
+      }
+    });
+
+    setAllNetworksMap(mergedNetworks);
+
+    // If preferred suspect provided
+    if (preferredSuspectName) {
+      const upperQuery = preferredSuspectName.trim().toUpperCase();
+      const matchKey = Object.keys(mergedNetworks).find(
+        key => key === upperQuery ||
+               key.includes(upperQuery) ||
+               mergedNetworks[key].name.toUpperCase().includes(upperQuery) ||
+               mergedNetworks[key].id.toUpperCase().includes(upperQuery)
+      );
+
+      if (matchKey && mergedNetworks[matchKey]) {
+        const net = mergedNetworks[matchKey];
+        setCurrentNetwork(net);
+        setSelectedNode(net.nodes[0]);
+        setActiveSuspectKey(matchKey);
+        setSearchQuery(net.name);
+        return;
+      }
+    }
+  }, []);
 
   // Helper to load or map suspect network
-  const loadSuspectNetwork = (name) => {
+  const loadSuspectNetwork = useCallback((name) => {
     if (!name || !name.trim()) return;
     const query = name.trim();
     const upperQuery = query.toUpperCase();
 
-    // Check if matches predefined key or alias
-    let foundKey = Object.keys(PREDEFINED_SUSPECT_NETWORKS).find(
+    // Check if matches key in allNetworksMap
+    let foundKey = Object.keys(allNetworksMap).find(
       key => key === upperQuery || 
-             PREDEFINED_SUSPECT_NETWORKS[key].name.toUpperCase().includes(upperQuery) ||
-             PREDEFINED_SUSPECT_NETWORKS[key].alias.toUpperCase().includes(upperQuery) ||
-             PREDEFINED_SUSPECT_NETWORKS[key].id.toUpperCase().includes(upperQuery)
+             allNetworksMap[key].name.toUpperCase().includes(upperQuery) ||
+             allNetworksMap[key].alias.toUpperCase().includes(upperQuery) ||
+             allNetworksMap[key].id.toUpperCase().includes(upperQuery)
     );
 
     let network;
     if (foundKey) {
-      network = PREDEFINED_SUSPECT_NETWORKS[foundKey];
+      network = allNetworksMap[foundKey];
       setActiveSuspectKey(foundKey);
     } else {
-      // Check partial match
-      if (upperQuery.includes('MAYANK') || upperQuery.includes('KOTOLI')) {
-        network = PREDEFINED_SUSPECT_NETWORKS['MAYANK KOTOLI'];
-        setActiveSuspectKey('MAYANK KOTOLI');
-      } else if (upperQuery.includes('MAHESH') || upperQuery.includes('KHAN') || upperQuery.includes('TIGER')) {
-        network = PREDEFINED_SUSPECT_NETWORKS['MAHESH KHAN'];
-        setActiveSuspectKey('MAHESH KHAN');
-      } else if (upperQuery.includes('DEVENDRA') || upperQuery.includes('RAWAT') || upperQuery.includes('D-7')) {
-        network = PREDEFINED_SUSPECT_NETWORKS['DEVENDRA RAWAT'];
-        setActiveSuspectKey('DEVENDRA RAWAT');
-      } else if (upperQuery.includes('SAMEER') || upperQuery.includes('QURESHI') || upperQuery.includes('GHOST')) {
-        network = PREDEFINED_SUSPECT_NETWORKS['SAMEER QURESHI'];
-        setActiveSuspectKey('SAMEER QURESHI');
-      } else if (upperQuery.includes('ELENA') || upperQuery.includes('ROSTOVA') || upperQuery.includes('CZAR')) {
-        network = PREDEFINED_SUSPECT_NETWORKS['ELENA ROSTOVA'];
-        setActiveSuspectKey('ELENA ROSTOVA');
-      } else {
-        // Generate procedural dynamic gang network
-        network = generateCustomSuspectNetwork(query);
-        setActiveSuspectKey(query.toUpperCase());
-      }
+      // Procedurally build custom network for unknown query
+      network = buildCriminalGangNetwork({ name: query });
+      setActiveSuspectKey(query.toUpperCase());
     }
 
     setCurrentNetwork(network);
@@ -277,16 +431,26 @@ export default function NetworkTopologyPage({ onNavigate }) {
     setSearchQuery(network.name);
     setIsDropdownOpen(false);
     showToast(`🕸️ Gang network mapped successfully for ${network.name}`);
-  };
+  }, [allNetworksMap, showToast]);
 
-  // Sync with URL query parameter on mount if provided (e.g. ?suspect=Mahesh+Khan)
+  // Initial load and URL query sync
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const suspectParam = params.get('suspect');
-    if (suspectParam) {
-      loadSuspectNetwork(suspectParam);
-    }
-  }, [location.search]);
+    const suspectParam = params.get('suspect') || params.get('id');
+    loadAllNetworks(suspectParam);
+
+    // Listen for global criminal added event
+    const handleCriminalAdded = (e) => {
+      const newCrim = e.detail;
+      if (newCrim && newCrim.name) {
+        showToast(`✓ New Criminal "${newCrim.name}" added to Gang Network.`);
+        loadAllNetworks(newCrim.name);
+      }
+    };
+
+    window.addEventListener('crimelens:criminal-added', handleCriminalAdded);
+    return () => window.removeEventListener('crimelens:criminal-added', handleCriminalAdded);
+  }, [location.search, loadAllNetworks, showToast]);
 
   // Handle Search Input submit
   const handleSearchSubmit = (e) => {
@@ -298,28 +462,34 @@ export default function NetworkTopologyPage({ onNavigate }) {
     loadSuspectNetwork(searchQuery);
   };
 
-  // Quick Suspect Preset List for instant chip selection
-  const quickSuspectChips = [
-    { label: '🔴 Mayank Kotoli (Hitman)', key: 'MAYANK KOTOLI', color: '#FF5555' },
-    { label: '🔵 Mahesh Khan (Kingpin)', key: 'MAHESH KHAN', color: '#00E5FF' },
-    { label: '🟠 Devendra Rawat (Predator)', key: 'DEVENDRA RAWAT', color: '#FF9900' },
-    { label: '🟡 Sameer Qureshi (Heist)', key: 'SAMEER QURESHI', color: '#FBBF24' },
-    { label: '🟣 Elena Rostova (Cartel)', key: 'ELENA ROSTOVA', color: '#A855F7' }
-  ];
+  // Quick Suspect Preset List for instant chip selection (all networks)
+  const quickSuspectChips = useMemo(() => {
+    return Object.values(allNetworksMap).map((net) => {
+      const isCritical = net.risk === 'CRITICAL';
+      const color = isCritical ? '#FF5555' : (net.color || '#00E5FF');
+      return {
+        label: `${net.isCustom ? '✨ ' : ''}${net.name} (${net.type.split(' ')[0]})`,
+        key: net.name.toUpperCase(),
+        color,
+        isCustom: Boolean(net.isCustom),
+        rawName: net.name
+      };
+    });
+  }, [allNetworksMap]);
 
   // Suggestions for autocomplete dropdown
   const filteredSuggestions = useMemo(() => {
     if (!searchQuery || searchQuery.trim().length === 0) {
-      return Object.values(PREDEFINED_SUSPECT_NETWORKS);
+      return Object.values(allNetworksMap);
     }
     const q = searchQuery.toLowerCase();
-    return Object.values(PREDEFINED_SUSPECT_NETWORKS).filter(item =>
+    return Object.values(allNetworksMap).filter(item =>
       item.name.toLowerCase().includes(q) ||
       item.alias.toLowerCase().includes(q) ||
       item.id.toLowerCase().includes(q) ||
       item.category.toLowerCase().includes(q)
     );
-  }, [searchQuery]);
+  }, [allNetworksMap, searchQuery]);
 
   // Map nodes to coordinates lookup for edge drawing
   const nodeCoordsMap = useMemo(() => {
@@ -475,8 +645,31 @@ export default function NetworkTopologyPage({ onNavigate }) {
             </h1>
           </div>
 
-          {/* Quick Metrics Badge */}
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          {/* Quick Metrics Badge and Add Criminal Button */}
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(true)}
+              style={{
+                backgroundColor: 'var(--cyan-glow)',
+                border: 'none',
+                color: '#07090E',
+                borderRadius: '6px',
+                padding: '7px 14px',
+                fontSize: '11.5px',
+                fontWeight: 800,
+                fontFamily: 'monospace',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)'
+              }}
+            >
+              <span>🚨</span>
+              <span>+ ADD CRIMINAL TO GANG MAP</span>
+            </button>
+
             <div style={{
               backgroundColor: 'rgba(0, 229, 255, 0.08)',
               border: '1px solid rgba(0, 229, 255, 0.25)',
@@ -1280,6 +1473,18 @@ export default function NetworkTopologyPage({ onNavigate }) {
           {toastMessage}
         </div>
       )}
+
+      {/* Add Criminal Modal */}
+      <AddCriminalModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onCriminalAdded={(newCrim) => {
+          if (newCrim) {
+            showToast(`✓ Offender ${newCrim.name} mapped into Gang Network.`);
+            loadAllNetworks(newCrim.name);
+          }
+        }}
+      />
     </div>
   );
 }
