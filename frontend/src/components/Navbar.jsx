@@ -520,8 +520,8 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
       <AddCriminalModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onCriminalAdded={() => {
-          if (onNavigate) onNavigate('entities');
+        onCriminalAdded={(newCrim) => {
+          if (onNavigate) onNavigate('entities', { suspect: newCrim?.name });
         }}
       />
     </header>

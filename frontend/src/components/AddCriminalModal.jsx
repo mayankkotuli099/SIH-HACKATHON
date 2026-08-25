@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { api } from '../services/api.js';
 
-export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded }) {
+export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -27,42 +27,76 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded }) {
 
     setLoading(true);
     try {
+      const newId = `CRM-${Math.floor(1000 + Math.random() * 9000)}`;
+      const aliasList = formData.aliases
+        ? formData.aliases.split(',').map(a => a.trim()).filter(Boolean)
+        : [`Alias ${formData.name.trim().split(' ')[0]}`];
+
+      const firList = formData.firNumbers
+        ? formData.firNumbers.split(',').map(f => f.trim()).filter(Boolean)
+        : [`FIR-2024-${Math.floor(100 + Math.random() * 900)} (${formData.policeStation})`];
+
       const payload = {
-        name: formData.name.trim(),
-        aliases: formData.aliases ? formData.aliases.split(',').map(a => a.trim()) : [],
+        id: newId,
+        name: formData.name.trim().toUpperCase(),
+        aliases: aliasList,
         crimeType: formData.crimeType,
-        firNumbers: formData.firNumbers ? formData.firNumbers.split(',').map(f => f.trim()) : [`FIR-2024-${Math.floor(100 + Math.random() * 900)} (${formData.policeStation})`],
+        firNumbers: firList,
+        policeStation: formData.policeStation || 'State Crime Branch',
         weaponSignature: formData.weaponSignature || 'Unlicensed Firearm / Country-made Pistol',
         modusOperandi: formData.modusOperandi || 'Repeat violent offender tracked by State Police STF.',
-        wantedReward: formData.wantedReward || '₹100,000 INR',
-        scarsAndMarks: formData.scarsAndMarks || 'Identification marks catalogued in police records.',
+        wantedReward: formData.wantedReward || '₹200,000 INR',
+        dnaProfileMatch: 'Indexed in Police Biometrics Archive',
+        scarsAndMarks: formData.scarsAndMarks || 'Identification marks catalogued in CCTNS records.',
         phone: formData.phone || '',
         threatLevel: formData.threatLevel,
-        riskScore: Number(formData.riskScore) || 90
+        riskScore: Number(formData.riskScore) || 92,
+        status: 'ACTIVE_WARRANT',
+        category: formData.crimeType,
+        biometrics: {
+          dob: '1990-01-01',
+          nationality: 'Indian',
+          scarsAndMarks: formData.scarsAndMarks || 'Identification marks catalogued in police records.',
+          voiceprintConfidence: '95.2%',
+          facialVectorId: `FV-${newId}`
+        },
+        knownAssociates: [
+          { id: 'CRM-0014', name: "Mahesh 'Tiger' Khan", relation: 'Syndicate Network Link', risk: 'CRITICAL' }
+        ],
+        financialAccounts: [
+          { bank: 'Benami Cash Ledger', accNo: 'SECTOR-CASH-DROP', balance: '₹5.5 Lakhs (Flagged)' }
+        ],
+        burnerDevices: formData.phone ? [
+          { imei: `86420193847${Math.floor(1000 + Math.random() * 9000)}`, number: formData.phone, status: 'Active Signal Surveillance' }
+        ] : []
       };
 
-      const res = await api.entities.create(payload);
-      if (res && res.success) {
-        if (onCriminalAdded) onCriminalAdded(res.entity);
-      } else {
-        // Local fallback
-        const mockEntity = {
-          id: `CRM-${Math.floor(1000 + Math.random() * 9000)}`,
-          ...payload,
-          status: 'ACTIVE_WARRANT',
-          biometrics: {
-            dob: '1990-01-01',
-            nationality: 'Indian',
-            scarsAndMarks: payload.scarsAndMarks,
-            voiceprintConfidence: 'Recorded',
-            facialVectorId: `FV-NEW`
-          },
-          knownAssociates: [],
-          financialAccounts: [],
-          burnerDevices: payload.phone ? [{ imei: '864201938472910', number: payload.phone, status: 'Active Surveillance' }] : []
-        };
-        if (onCriminalAdded) onCriminalAdded(mockEntity);
+      let finalEntity = payload;
+
+      try {
+        const res = await api.entities.create(payload);
+        if (res && res.entity) {
+          finalEntity = { ...payload, ...res.entity };
+        }
+      } catch (err) {
+        console.warn('API sync fallback, saving locally:', err);
       }
+
+      // Persist permanently in localStorage
+      try {
+        const stored = JSON.parse(localStorage.getItem('crimelens_custom_criminals') || '[]');
+        const updatedStored = [finalEntity, ...stored.filter(c => c.id !== finalEntity.id && c.name !== finalEntity.name)];
+        localStorage.setItem('crimelens_custom_criminals', JSON.stringify(updatedStored));
+      } catch (storageErr) {
+        console.warn('LocalStorage error:', storageErr);
+      }
+
+      // Broadcast event globally to any open pages or tabs
+      window.dispatchEvent(new CustomEvent('crimelens:criminal-added', { detail: finalEntity }));
+
+      if (onCriminalAdded) onCriminalAdded(finalEntity);
+      if (onSuccess) onSuccess(finalEntity);
+
       onClose();
     } catch (err) {
       console.error('Error adding criminal:', err);
