@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { api } from '../services/api.js';
+import AddCriminalModal from '../components/AddCriminalModal.jsx';
 
 const CRIMINAL_FIR_POLICE_STATIONS = [
   // MAYANK KOTOLI
@@ -254,25 +255,25 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
     status: 'ACTIVE SURVEILLANCE',
     color: '#4ADE80'
   }
-];
-
-export default function TimelinePage({ onNavigate: _onNavigate }) {
+];export default function TimelinePage({ onNavigate: _onNavigate }) {
   const [filterType, setFilterType] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedStation, setSelectedStation] = useState(null);
   const [eventsList, setEventsList] = useState([]);
+  const [stationsList, setStationsList] = useState(CRIMINAL_FIR_POLICE_STATIONS);
   const [toastMessage, setToastMessage] = useState(null);
   const [activeCriminalFilter, setActiveCriminalFilter] = useState('ALL');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersGroupRef = useRef(null);
 
-  const showToast = (msg) => {
+  const showToast = useCallback((msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3200);
-  };
+  }, []);
 
   const DEFAULT_EVENTS = [
     {
@@ -340,7 +341,7 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
       coordinates: 'Encrypted VoIP Trunk // Tower Meerut North',
       evidenceTag: 'WIRETAP-MCOCA-MK01',
       ioOfficer: 'Special Cell STF Squad',
-      categoryColor: '#FBBF24',
+      categoryColor: '#FACC15',
       icon: '🟡'
     },
     {
@@ -362,11 +363,11 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
     },
     {
       id: 'TL-2024-006',
-      timestamp: '2024-10-26 21:10:00 IST',
-      title: 'NBW Warrant Issued: Court of District & Sessions Judge',
-      category: 'JUDICIAL_ORDER',
+      timestamp: '2024-10-26 22:10:15 IST',
+      title: 'Non-Bailable Warrant (NBW) Judicial Execution Issued',
+      category: 'POLICE_ACTION',
       severity: 'HIGH',
-      entity: "Mayank Kotoli (CRM-9942)",
+      entity: 'All State Police Forces / Border Checkposts',
       firNumber: 'NBW Order #JUD-2024-8819',
       policeStation: 'Court of Sessions Judge, Gurugram',
       description: 'Non-Bailable Warrant issued under BNS Section 103 with non-appearance forfeiture order and police lookout notice.',
@@ -379,32 +380,87 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
     }
   ];
 
-  // Load custom registered criminals from localStorage
-  const getCombinedStations = () => {
-    let stations = [...CRIMINAL_FIR_POLICE_STATIONS];
+  // Dynamic loading of stations & timeline events from localStorage and backend
+  const loadTimelineData = useCallback(async () => {
+    let customList = [];
     try {
       const stored = localStorage.getItem('crimelens_custom_criminals');
-      if (stored) {
-        const customList = JSON.parse(stored);
-        customList.forEach((c, idx) => {
-          if (c.firNumbers && c.firNumbers.length > 0) {
-            c.firNumbers.forEach((fir, fIdx) => {
-              stations.push({
-                id: `CUSTOM-FIR-${c.id}-${fIdx}`,
-                criminalName: c.name,
-                criminalId: c.id,
-                firNumber: fir,
-                stationName: c.policeStation || 'PS City Central (Crime Branch)',
-                city: 'Delhi NCR, India',
-                lat: 28.5200 + (idx * 0.02) + (fIdx * 0.01),
-                lng: 77.1500 + (idx * 0.02) - (fIdx * 0.01),
-                sections: c.crimeType || 'Penal Code Investigation',
-                crimeType: c.category || 'Special Offense',
-                date: '2024-10-27',
-                ioOfficer: 'Special Crime Branch IO',
-                status: c.status || 'ACTIVE INVESTIGATION',
-                color: '#00E5FF'
-              });
+      if (stored) customList = JSON.parse(stored);
+    } catch {
+      customList = [];
+    }
+
+    let backendEntities = [];
+    try {
+      const data = await api.entities.getAll();
+      if (data && data.entities) {
+        backendEntities = data.entities;
+      }
+    } catch {
+      backendEntities = [];
+    }
+
+    // Build combined stations list
+    const combinedStations = [...CRIMINAL_FIR_POLICE_STATIONS];
+    const existingStationIds = new Set(CRIMINAL_FIR_POLICE_STATIONS.map(s => s.id));
+
+    [...backendEntities, ...customList].forEach((c, idx) => {
+      if (c && c.name) {
+        const firs = Array.isArray(c.firNumbers) ? c.firNumbers : (c.firNumbers ? [c.firNumbers] : []);
+        const primaryFir = firs.length > 0 ? firs[0] : `FIR-2024-${c.id || idx + 100}`;
+        const stnId = `CUSTOM-FIR-${c.id || idx}`;
+
+        if (!existingStationIds.has(stnId)) {
+          existingStationIds.add(stnId);
+          combinedStations.push({
+            id: stnId,
+            criminalName: c.name,
+            criminalId: c.id || `CRM-${idx + 1000}`,
+            firNumber: primaryFir,
+            stationName: c.policeStation || 'PS Crime Branch / Special STF',
+            city: 'Delhi-NCR, India',
+            lat: 28.4600 + ((idx * 17) % 80) / 400,
+            lng: 77.0300 + ((idx * 23) % 70) / 350,
+            sections: c.crimeType || 'BNS / Organized Crime Inquiry',
+            crimeType: c.category || c.crimeType || 'Special Criminal Investigation',
+            date: new Date().toISOString().split('T')[0],
+            ioOfficer: 'Special Crime Branch IO',
+            status: c.status || 'ACTIVE INVESTIGATION / NBW',
+            color: c.threatLevel === 'CRITICAL' ? '#FF5555' : '#00E5FF',
+            isCustom: true
+          });
+        }
+      }
+    });
+
+    setStationsList(combinedStations);
+
+    // Build timeline events
+    const combinedEvents = [...DEFAULT_EVENTS];
+    const existingEventIds = new Set(DEFAULT_EVENTS.map(e => e.id));
+
+    try {
+      const apiEvents = await api.timeline.getEvents();
+      if (apiEvents && apiEvents.events) {
+        apiEvents.events.forEach(evt => {
+          if (!existingEventIds.has(evt.id)) {
+            existingEventIds.add(evt.id);
+            combinedEvents.push({
+              id: evt.id,
+              timestamp: evt.timestamp,
+              title: evt.title,
+              category: evt.category || 'POLICE_ACTION',
+              severity: evt.severity || 'HIGH',
+              entity: evt.entity,
+              firNumber: evt.firNumber,
+              policeStation: evt.policeStation || 'Police Station',
+              description: evt.description,
+              confidence: evt.confidence || '99.0%',
+              coordinates: evt.coordinates || 'State Police Jurisdiction',
+              evidenceTag: evt.evidenceTag || 'EVIDENCE-MEMO',
+              ioOfficer: evt.ioOfficer || 'Investigating Officer',
+              categoryColor: evt.severity === 'CRITICAL' ? '#FF5555' : '#00E5FF',
+              icon: '🚨'
             });
           }
         });
@@ -412,50 +468,115 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
     } catch {
       // ignore
     }
-    return stations;
-  };
 
-  const allStations = getCombinedStations();
+    // Also add events for custom added criminals
+    customList.forEach((c, idx) => {
+      const evtId = `CUSTOM-EVT-${c.id || idx}`;
+      if (!existingEventIds.has(evtId)) {
+        existingEventIds.add(evtId);
+        combinedEvents.unshift({
+          id: evtId,
+          timestamp: '2024-10-27 19:30:00 IST',
+          title: `CCTNS Registration & FIR Docket: ${c.name}`,
+          category: 'POLICE_ACTION',
+          severity: c.threatLevel || 'HIGH',
+          entity: `${c.name} (${c.id || 'CRM-NEW'})`,
+          firNumber: c.firNumbers ? c.firNumbers[0] : 'FIR-2024-CCTNS',
+          policeStation: c.policeStation || 'Special Crime Branch PS',
+          description: `Criminal dossier registered under ${c.crimeType || 'Violent Crime'}. Modus: ${c.modusOperandi || 'Under STF Tracking'}. Warrant status active.`,
+          confidence: '100.0%',
+          coordinates: 'Crime Scene / Jurisdiction Hotspot',
+          evidenceTag: `CCTNS-${c.id || '9999'}`,
+          ioOfficer: 'State STF Investigating Officer',
+          categoryColor: c.threatLevel === 'CRITICAL' ? '#FF5555' : '#00E5FF',
+          icon: '🚨'
+        });
+      }
+    });
+
+    setEventsList(combinedEvents);
+  }, []);
+
+  const allStations = stationsList;
 
   // Filter stations based on search query and criminal selector
-  const filteredStations = allStations.filter((stn) => {
-    const q = searchQuery.toLowerCase().trim();
-    const matchesQuery =
-      !q ||
-      stn.criminalName.toLowerCase().includes(q) ||
-      stn.criminalId.toLowerCase().includes(q) ||
-      stn.stationName.toLowerCase().includes(q) ||
-      stn.firNumber.toLowerCase().includes(q) ||
-      stn.city.toLowerCase().includes(q) ||
-      stn.sections.toLowerCase().includes(q);
+  const filteredStations = useMemo(() => {
+    return allStations.filter((stn) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchesQuery =
+        !q ||
+        stn.criminalName.toLowerCase().includes(q) ||
+        stn.criminalId.toLowerCase().includes(q) ||
+        stn.stationName.toLowerCase().includes(q) ||
+        stn.firNumber.toLowerCase().includes(q) ||
+        stn.city.toLowerCase().includes(q) ||
+        stn.sections.toLowerCase().includes(q);
 
-    const matchesCriminal =
-      activeCriminalFilter === 'ALL' ||
-      stn.criminalName.toLowerCase().includes(activeCriminalFilter.toLowerCase()) ||
-      stn.criminalId.toLowerCase().includes(activeCriminalFilter.toLowerCase());
+      const matchesCriminal =
+        activeCriminalFilter === 'ALL' ||
+        stn.criminalName.toLowerCase().includes(activeCriminalFilter.toLowerCase()) ||
+        stn.criminalId.toLowerCase().includes(activeCriminalFilter.toLowerCase());
 
-    return matchesQuery && matchesCriminal;
-  });
+      return matchesQuery && matchesCriminal;
+    });
+  }, [allStations, searchQuery, activeCriminalFilter]);
 
   // Filter timeline events
-  const filteredEvents = eventsList.filter((evt) => {
-    const q = searchQuery.toLowerCase().trim();
-    const matchesSearch =
-      !q ||
-      evt.title.toLowerCase().includes(q) ||
-      evt.entity.toLowerCase().includes(q) ||
-      evt.policeStation.toLowerCase().includes(q) ||
-      evt.firNumber.toLowerCase().includes(q) ||
-      evt.description.toLowerCase().includes(q);
+  const filteredEvents = useMemo(() => {
+    return eventsList.filter((evt) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        evt.title.toLowerCase().includes(q) ||
+        evt.entity.toLowerCase().includes(q) ||
+        (evt.policeStation && evt.policeStation.toLowerCase().includes(q)) ||
+        (evt.firNumber && evt.firNumber.toLowerCase().includes(q)) ||
+        evt.description.toLowerCase().includes(q);
 
-    const matchesCategory = filterType === 'ALL' || evt.category === filterType;
+      const matchesCategory = filterType === 'ALL' || evt.category === filterType;
 
-    const matchesCriminal =
-      activeCriminalFilter === 'ALL' ||
-      evt.entity.toLowerCase().includes(activeCriminalFilter.toLowerCase());
+      const matchesCriminal =
+        activeCriminalFilter === 'ALL' ||
+        evt.entity.toLowerCase().includes(activeCriminalFilter.toLowerCase());
 
-    return matchesSearch && matchesCategory && matchesCriminal;
-  });
+      return matchesSearch && matchesCategory && matchesCriminal;
+    });
+  }, [eventsList, searchQuery, filterType, activeCriminalFilter]);
+
+  // Dynamically compute Suspect Filter Pills with all criminals
+  const dynamicSuspectPills = useMemo(() => {
+    const map = {};
+    allStations.forEach(stn => {
+      const key = stn.criminalName.trim().toUpperCase();
+      if (!map[key]) {
+        map[key] = {
+          rawName: stn.criminalName,
+          key: stn.criminalName,
+          id: stn.criminalId,
+          count: 0,
+          color: stn.color || '#00E5FF',
+          isCustom: Boolean(stn.isCustom)
+        };
+      }
+      map[key].count += 1;
+    });
+
+    const pills = [
+      { label: 'ALL CRIMINALS', filterVal: 'ALL', count: allStations.length, color: '#00E5FF' }
+    ];
+
+    Object.values(map).forEach(c => {
+      pills.push({
+        label: `${c.isCustom ? '✨ ' : ''}${c.rawName}`,
+        filterVal: c.rawName,
+        count: c.count,
+        color: c.color,
+        isCustom: c.isCustom
+      });
+    });
+
+    return pills;
+  }, [allStations]);
 
   // Function to render markers onto the map safely
   const renderMapMarkers = (map, markersGroup, stations) => {
@@ -575,23 +696,23 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
     }
   }, [searchQuery, activeCriminalFilter]);
 
-  // Load timeline data from backend
+  // Load timeline and station data dynamically
   useEffect(() => {
-    async function loadTimeline() {
-      try {
-        const data = await api.timeline.getEvents();
-        if (data && data.events && data.events.length > 0) {
-          setEventsList(data.events);
-        } else {
-          setEventsList(DEFAULT_EVENTS);
-        }
-      } catch (err) {
-        console.warn('Using local timeline seed:', err);
-        setEventsList(DEFAULT_EVENTS);
+    loadTimelineData();
+
+    // Global listener when a criminal is added anywhere in the app
+    const handleCriminalAdded = (e) => {
+      const newCrim = e.detail;
+      if (newCrim) {
+        showToast(`✓ Offender "${newCrim.name}" FIR jurisdiction plotted on map.`);
+        loadTimelineData();
+        setActiveCriminalFilter(newCrim.name);
       }
-    }
-    loadTimeline();
-  }, []);
+    };
+
+    window.addEventListener('crimelens:criminal-added', handleCriminalAdded);
+    return () => window.removeEventListener('crimelens:criminal-added', handleCriminalAdded);
+  }, [loadTimelineData, showToast]);
 
   const handleSelectCriminalFilter = (name) => {
     setActiveCriminalFilter(name);
@@ -675,27 +796,51 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
           </p>
         </div>
 
-        {/* Live Active Indicator */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          backgroundColor: 'rgba(0, 229, 255, 0.08)',
-          border: '1px solid rgba(0, 229, 255, 0.3)',
-          padding: '8px 14px',
-          borderRadius: '6px'
-        }}>
-          <span style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            backgroundColor: '#00E676',
-            boxShadow: '0 0 10px #00E676',
-            display: 'inline-block'
-          }}></span>
-          <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 700 }}>
-            {filteredStations.length} POLICE STATIONS PLOTTED
-          </span>
+        {/* Header Action Controls */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            style={{
+              backgroundColor: '#00E5FF',
+              border: 'none',
+              color: '#07090E',
+              borderRadius: '6px',
+              padding: '8px 15px',
+              fontSize: '12px',
+              fontWeight: 800,
+              fontFamily: 'var(--font-mono, monospace)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)'
+            }}
+          >
+            <span>🚨</span>
+            <span>+ ADD CRIMINAL TO MAP</span>
+          </button>
+
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            backgroundColor: 'rgba(0, 229, 255, 0.08)',
+            border: '1px solid rgba(0, 229, 255, 0.3)',
+            padding: '8px 14px',
+            borderRadius: '6px'
+          }}>
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: '#00E676',
+              boxShadow: '0 0 10px #00E676',
+              display: 'inline-block'
+            }}></span>
+            <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 700 }}>
+              {filteredStations.length} POLICE STATIONS PLOTTED
+            </span>
+          </div>
         </div>
       </div>
 
@@ -755,15 +900,8 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
             SEARCH BY SUSPECT:
           </span>
 
-          {[
-            { label: 'ALL CRIMINALS', filterVal: 'ALL', count: allStations.length },
-            { label: '🔴 Mayank Kotoli', filterVal: 'Mayank Kotoli', count: 4 },
-            { label: '🟣 Devendra Rawat (D-7)', filterVal: 'Devendra', count: 3 },
-            { label: '🟠 Sameer Qureshi (Ghost)', filterVal: 'Sameer', count: 3 },
-            { label: '🟡 Mahesh Khan (Tiger)', filterVal: 'Mahesh', count: 3 },
-            { label: '🟢 Elena Rostova (Czar)', filterVal: 'Elena', count: 2 },
-          ].map((item, idx) => {
-            const isSelected = activeCriminalFilter === item.filterVal;
+          {dynamicSuspectPills.map((item, idx) => {
+            const isSelected = activeCriminalFilter.toLowerCase() === item.filterVal.toLowerCase();
             return (
               <button
                 key={idx}
@@ -1204,6 +1342,19 @@ export default function TimelinePage({ onNavigate: _onNavigate }) {
         </div>,
         document.body
       )}
+
+      {/* Add Criminal Modal */}
+      <AddCriminalModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onCriminalAdded={(newCrim) => {
+          if (newCrim) {
+            showToast(`✓ Offender ${newCrim.name} mapped onto Crime Map.`);
+            loadTimelineData();
+            setActiveCriminalFilter(newCrim.name);
+          }
+        }}
+      />
     </div>
   );
 }
