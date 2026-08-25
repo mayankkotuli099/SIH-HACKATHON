@@ -1,141 +1,423 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  FileText,
   CheckCircle2,
   Copy,
   Download,
   Printer,
   ShieldCheck,
   Send,
-  ArrowLeft
+  ArrowLeft,
+  Search,
+  UserPlus,
+  Fingerprint
 } from 'lucide-react';
 import Navbar from '../src/components/Navbar.jsx';
+import AddCriminalModal from '../src/components/AddCriminalModal.jsx';
+import { api } from '../src/services/api.js';
 
-const CHARGESHEETS_LIST = [
+// Default seed suspects fallback
+const DEFAULT_SEED = [
   {
-    id: 'CS-2024-402',
-    caseTitle: "State of Haryana vs Mayank Kotoli & Ors.",
-    accused: "Mayank Kotoli (CRM-9942)",
-    crimeCategory: 'HOMICIDE & CONTRACT MURDER',
-    firNumber: 'FIR-2024-402',
-    policeStation: 'Special Crime Branch / PS Sector 18',
-    sections: 'BNS Sec 103 (Murder), Sec 111 (Organized Crime), Arms Act Sec 25',
-    court: 'Court of District & Sessions Judge, Gurugram',
-    ioOfficer: 'Inspector V. Rathore (STF Unit 4)',
-    status: 'READY FOR FILING',
-    bounty: '₹500,000 INR',
-    icon: '🔴',
-    summary: 'The accused, Mayank Kotoli, executed a contract assassination at Sector 18 market, firing 4 point-blank 9mm rounds before fleeing on an unregistered motorcycle.',
-    exhibits: [
-      'CFSL Ballistics: 9mm cartridge striations match Beretta 92FS',
-      'Forensic Blood Splatter DNA analysis from Sector 18 crime scene',
-      'CCTV Footage: Unregistered KTM Duke getaway motorcycle with 2 shooters',
-      'Seizure Memo: .32 Desi Katta & 4 live rounds recovered from hideout'
+    id: "CRM-9942",
+    name: "MAYANK KOTOLI",
+    aliases: ["Kotoli", "The Trigger", "MK-99"],
+    crimeType: "HOMICIDE & CONTRACT KILLING",
+    firNumbers: ["FIR-2024-402 (Murder BNS 103 / IPC 302)", "FIR-2023-881 (Attempted Murder)"],
+    weaponSignature: "9mm Beretta 92FS / .32 Desi Katta",
+    modusOperandi: "Ambush contract killings on rival gang leaders using point-blank double-tap; getaway via unregistered KTM Duke bikes.",
+    wantedReward: "₹500,000 INR ($6,000 USD)",
+    dnaProfileMatch: "99.4% Match to Blood Splatter at Sector 18 Homicide Scene",
+    riskScore: 99.2,
+    threatLevel: "CRITICAL",
+    status: "ACTIVE_FUGITIVE",
+    category: "Homicide & Violent Crime",
+    policeStation: "Special Crime Branch / PS Sector 18",
+    biometrics: {
+      dob: "1987-05-14",
+      nationality: "Indian (Interpol Blue Notice)",
+      scarsAndMarks: "Deep scar across left jawline; Cobra tattoo on right forearm",
+      voiceprintConfidence: "98.9%",
+      facialVectorId: "FV-99420-MK"
+    },
+    knownAssociates: [
+      { id: "CRM-0014", name: "Mahesh 'Tiger' Khan", relation: "Gang Syndicate Boss", risk: "CRITICAL" },
+      { id: "CRM-4494", name: "Suresh 'Chhota' Goli", relation: "Armorer & Weapon Supplier", risk: "HIGH" },
+      { id: "CRM-8821", name: "Sameer Qureshi", relation: "Getaway Driver", risk: "HIGH" }
     ],
-    witnesses: [
-      'Dr. S. K. Gupta, Senior Forensic Surgeon (Civil Hospital)',
-      'S. K. Verma, Senior Scientific Officer (CFSL Ballistics)',
-      'Sub-Inspector D. Sharma (First Responder Witness)'
+    financialAccounts: [
+      { bank: "Cash Hawala Drops", accNo: "SECTOR-12-HAWALA", balance: "₹35 Lakhs Cash" },
+      { bank: "Axis Bank (Benami Proxy)", accNo: "****-4901", balance: "₹14.2 Lakhs (Frozen)" }
+    ],
+    burnerDevices: [
+      { imei: "864201938472910", number: "+91-98711-40291", status: "Cell Tower Ping: Meerut Highway" },
+      { imei: "359102847291830", number: "+91-99882-11049", status: "Signal Intercepted" }
     ]
   },
   {
-    id: 'CS-2024-102',
-    caseTitle: "State vs Devendra 'D-7' Rawat (Serial Sexual Offenses SIT)",
-    accused: "Devendra 'D-7' Rawat (CRM-7721)",
-    crimeCategory: 'SEXUAL ASSAULT & SERIAL RAPE',
-    firNumber: 'FIR-2024-102',
-    policeStation: 'Special SIT / Women Safety PS Sector 14',
-    sections: 'BNS Sec 64 (Rape), Sec 70(1) (Gang Rape), POCSO Act Sec 4/6',
-    court: 'Special Fast Track Court for Women Safety',
-    ioOfficer: 'ACP Sunita Deshmukh (Women Safety SIT)',
-    status: 'READY FOR FILING',
-    bounty: '₹1,000,000 INR',
-    icon: '🟣',
-    summary: 'The accused operated a predatory fake taxi cab, targeting lone female commuters near transit hubs. Forensic DNA conclusively matches repeat offense crime scenes.',
-    exhibits: [
-      '100% STR DNA Allele match from Forensic Evidence Kit #FK-8821',
-      'GPS location logs and cell tower triangulation near highway underpass',
-      'Seized Hunting Knife with victim biological trace stains',
-      'Fake taxi registration plates (DL-1T-4902) recovered from vehicle'
+    id: "CRM-7721",
+    name: "DEVENDRA 'D-7' RAWAT",
+    aliases: ["D-7", "Highway Predator", "Night Stalker"],
+    crimeType: "SEXUAL ASSAULT & SERIAL RAPE",
+    firNumbers: ["FIR-2024-102 (Aggravated Rape BNS 64 / IPC 376D)", "FIR-2024-089 (POCSO Act)"],
+    weaponSignature: "Hunting Knife / Chloroform Spray",
+    modusOperandi: "Stalks lone commuters near unlit transit hubs and ring roads; uses fake taxi cabs with altered plates.",
+    wantedReward: "₹1,000,000 INR ($12,000 USD)",
+    dnaProfileMatch: "100% STR DNA Match from Forensic Kit #FK-8821",
+    riskScore: 99.8,
+    threatLevel: "CRITICAL",
+    status: "ACTIVE_FUGITIVE",
+    category: "Sexual Offenses & Rape",
+    policeStation: "Special SIT / Women Safety PS Sector 14",
+    biometrics: {
+      dob: "1991-11-03",
+      nationality: "Indian",
+      scarsAndMarks: "Burn mark on right shoulder; Stutter in speech",
+      voiceprintConfidence: "96.4%",
+      facialVectorId: "FV-77210-DR"
+    },
+    knownAssociates: [
+      { id: "CRM-3310", name: "Raju 'Mechanic' Verma", relation: "Fake Number Plate Supplier", risk: "HIGH" },
+      { id: "CRM-9942", name: "Mayank Kotoli", relation: "Former Inmate / Gang Link", risk: "CRITICAL" }
     ],
-    witnesses: [
-      'Dr. Ananya Ray, Chief Medical Officer (Forensic Medicine)',
-      'Forensic DNA Expert (State DNA Database Registry)',
-      'Head Constable S. Yadav (SIT Recovery Witness)'
+    financialAccounts: [
+      { bank: "Punjab National Bank", accNo: "****-8821", balance: "₹1.8 Lakhs (Monitored)" }
+    ],
+    burnerDevices: [
+      { imei: "869201948271049", number: "+91-98112-99011", status: "Tower Triangulation: Sector 14" }
     ]
   },
   {
-    id: 'CS-2024-103',
-    caseTitle: "State vs Sameer 'Ghost' Qureshi (Axis Bank Vault Robbery)",
-    accused: "Sameer 'Ghost' Qureshi (CRM-8821)",
-    crimeCategory: 'ARMED ROBBERY & BANK HEISTS',
-    firNumber: 'FIR-2024-103',
-    policeStation: 'Anti-Robbery Cell / PS Sadar',
-    sections: 'BNS Sec 310 (Dacoity with Murder), Sec 312 (Robbery), Arms Act',
-    court: 'Court of Additional Sessions Judge, Sadar',
-    ioOfficer: 'DSP Alok Verma (Highway Crime Cell)',
-    status: 'READY FOR FILING',
-    bounty: '₹750,000 INR',
-    icon: '🟠',
-    summary: 'The accused breached the bank vault using high-temperature thermal lance torches, looting 14kg gold bullion before escaping in a commercial Eicher getaway truck.',
-    exhibits: [
-      'Thermal lance torch nozzles and oxygen cylinder breach remnants',
-      'ANPR Highway Camera Snapshot: Eicher truck carrying 14kg gold bullion',
-      '12-Gauge sawed-off shotgun seized from getaway hideout',
-      'Bank CCTV laser jammer frequency recording and signal logs'
+    id: "CRM-8821",
+    name: "SAMEER 'GHOST' QURESHI",
+    aliases: ["Ghost", "The Drill", "SQ-Lock"],
+    crimeType: "ARMED ROBBERY & BANK HEISTS",
+    firNumbers: ["FIR-2024-103 (Armed Bank Robbery BNS 310 / IPC 392)", "FIR-2023-662 (Jewelry Vault Burglary)"],
+    weaponSignature: "Sawed-off 12-Gauge Shotgun / Thermal Lance",
+    modusOperandi: "High-precision vault breaching, security guard neutralization, laser jammer deployment, signal blocker trucks.",
+    wantedReward: "₹750,000 INR ($9,000 USD)",
+    dnaProfileMatch: "Glove DNA Match from Axis Bank Vault Heist",
+    riskScore: 92.4,
+    threatLevel: "HIGH",
+    status: "ACTIVE_TRACKING",
+    category: "Armed Robbery & Bank Heists",
+    policeStation: "Anti-Robbery Cell / PS Sadar",
+    biometrics: {
+      dob: "1989-02-18",
+      nationality: "Indian",
+      scarsAndMarks: "Missing tip of right index finger",
+      voiceprintConfidence: "94.2%",
+      facialVectorId: "FV-88210-SQ"
+    },
+    knownAssociates: [
+      { id: "CRM-0014", name: "Mahesh Khan", relation: "Syndicate Boss / Fencer", risk: "CRITICAL" },
+      { id: "CRM-4494", name: "Vikram Mehta", relation: "Hawala Fencer", risk: "HIGH" }
     ],
-    witnesses: [
-      'Bank Branch Head & Security Manager (Axis Bank)',
-      'ANPR Highway Toll Operations In-Charge',
-      'Forensic Cyber & Sensor Expert (Crime Branch)'
+    financialAccounts: [
+      { bank: "Stolen Gold Bullion Reserves", accNo: "HEIST-OCT-2024", balance: "14 kg Stolen Gold" }
+    ],
+    burnerDevices: [
+      { imei: "864201938472888", number: "+91-98991-00219", status: "Active GPS Beacon on Getaway Truck" }
     ]
   },
   {
-    id: 'CS-2024-001',
-    caseTitle: "State vs Mahesh 'Tiger' Khan (MCOCA Gang Syndicate)",
-    accused: "Mahesh 'Tiger' Khan (CRM-0014)",
-    crimeCategory: 'ORGANIZED CRIME GANG & EXTORTION',
-    firNumber: 'FIR-2024-001',
-    policeStation: 'Organized Crime Branch / Special Cell',
-    sections: 'MCOCA Act Sec 3/4, BNS Sec 308 (Extortion), Arms Act',
-    court: 'Special MCOCA Designated Court',
-    ioOfficer: 'Special Cell STF Squad',
-    status: 'READY FOR FILING',
-    bounty: '₹2,500,000 INR',
-    icon: '🟡',
-    summary: 'The accused leads an inter-state syndicate running extortion networks across builders, deploying armed enforcers to extract protection money with threats of violence.',
-    exhibits: [
-      'Judicially intercepted wiretap audio recording demanding ₹50 Lakhs ransom',
-      'Acoustic Voice Spectrogram 99.1% pitch match certificate',
-      'Hawala account ledger records and attached benami properties',
-      'Export of 2 imported Glock 17 pistols and 90 live rounds'
+    id: "CRM-0014",
+    name: "MAHESH 'TIGER' KHAN",
+    aliases: ["Tiger", "Bada Don", "MK-01"],
+    crimeType: "ORGANIZED GANG SYNDICATE & EXTORTION",
+    firNumbers: ["FIR-2024-001 (MCOCA Act)", "FIR-2023-909 (Extortion & Kidnapping)"],
+    weaponSignature: "AK-47 / Imported Glock 17",
+    modusOperandi: "Extortion rackets on builders, inter-state contraband protection, contract killings via youth recruit sleeper cells.",
+    wantedReward: "₹2,500,000 INR ($30,000 USD)",
+    dnaProfileMatch: "Indexed in State Police Gangster Database",
+    riskScore: 98.5,
+    threatLevel: "CRITICAL",
+    status: "WARRANT_ISSUED",
+    category: "Gang Syndicate & Extortion",
+    policeStation: "Organized Crime Branch / Special Cell",
+    biometrics: {
+      dob: "1978-08-22",
+      nationality: "Indian (Red Corner Notice)",
+      scarsAndMarks: "Bullet exit wound scar on abdomen; Tiger tattoo on neck",
+      voiceprintConfidence: "99.1%",
+      facialVectorId: "FV-00145-MK"
+    },
+    knownAssociates: [
+      { id: "CRM-9942", name: "Mayank Kotoli", relation: "Lead Hitman", risk: "CRITICAL" },
+      { id: "CRM-5512", name: "Elena 'Czar' Rostova", relation: "Narcotics Supply Partner", risk: "CRITICAL" },
+      { id: "CRM-8821", name: "Sameer Qureshi", relation: "Heist Specialist", risk: "HIGH" }
     ],
-    witnesses: [
-      'Complainant Builder (Protected Identity u/s MCOCA)',
-      'Acoustic Speech Analysis Senior Expert (CFSL)',
-      'Inspector Special Cell (Wiretap Custody Officer)'
+    financialAccounts: [
+      { bank: "Dubai Bullion Vault", accNo: "****-9102", balance: "$1.8M Gold Bullion" },
+      { bank: "Swiss Escrow #88", accNo: "****-3310", balance: "$3.2M USD (Frozen)" }
+    ],
+    burnerDevices: [
+      { imei: "861902847291830", number: "+971-50-8819021", status: "Encrypted Satellite Relay" }
+    ]
+  },
+  {
+    id: "CRM-5512",
+    name: "ELENA 'CZAR' ROSTOVA",
+    aliases: ["The Chemist", "Czarina", "ER-Narc"],
+    crimeType: "NARCOTICS & ILLICIT ARMS TRAFFICKING",
+    firNumbers: ["FIR-2024-104 (NDPS Act 100kg Seizure)", "FIR-2023-419 (Cross-Border Arms Smuggling)"],
+    weaponSignature: "Steyr TMP 9mm Submachine Gun",
+    modusOperandi: "Maritime container smuggling of synthetic opioids, military-grade arms distribution across Northern India.",
+    wantedReward: "₹1,500,000 INR ($18,000 USD)",
+    dnaProfileMatch: "Fingerprint match on Port Terminal C Container Seal",
+    riskScore: 96.0,
+    threatLevel: "CRITICAL",
+    status: "ACTIVE_SURVEILLANCE",
+    category: "Narcotics & Arms Smuggling",
+    policeStation: "Narcotics Control Bureau (NCB) Zonal Unit",
+    biometrics: {
+      dob: "1986-10-12",
+      nationality: "Dual Flagged (Interpol Red Notice)",
+      scarsAndMarks: "Tattoo of Russian Eagle on back",
+      voiceprintConfidence: "97.8%",
+      facialVectorId: "FV-55120-ER"
+    },
+    knownAssociates: [
+      { id: "CRM-0014", name: "Mahesh Khan", relation: "Distribution Partner", risk: "CRITICAL" },
+      { id: "CRM-9942", name: "Mayank Kotoli", relation: "Enforcer", risk: "CRITICAL" }
+    ],
+    financialAccounts: [
+      { bank: "HSBC HK Maritime Trust", accNo: "****-9921", balance: "$4.2M USD (Frozen)" }
+    ],
+    burnerDevices: [
+      { imei: "359102847291999", number: "+44-7700-900821", status: "Satellite Tracked: Arabian Sea" }
     ]
   }
 ];
 
+// Transform any raw entity/criminal into a complete Form 173 / BNSS 193 Police Chargesheet
+export function formatEntityToChargesheet(entity) {
+  const name = (entity.name || 'UNKNOWN ACCUSED').toUpperCase();
+  const id = entity.id || `CRM-${Math.floor(1000 + Math.random() * 9000)}`;
+  const crimeCategory = entity.crimeType || entity.category || 'VIOLENT CRIME';
+  const upperCrime = crimeCategory.toUpperCase();
+
+  // Determine legal sections and court benchmark
+  let sections = 'BNS Sec 111 (Organized Crime Gang), Bharatiya Nyaya Sanhita, Arms Act Sec 25';
+  let court = 'Court of District & Sessions Judge, Gurugram';
+  let icon = '🔴';
+
+  if (upperCrime.includes('HOMICIDE') || upperCrime.includes('MURDER')) {
+    sections = 'BNS Sec 103 (Murder), Sec 111 (Organized Crime Gang), Sec 61 (Criminal Conspiracy), Arms Act Sec 25/27';
+    court = 'Court of District & Sessions Judge (Special Homicide Bench)';
+    icon = '🔴';
+  } else if (upperCrime.includes('SEXUAL') || upperCrime.includes('RAPE') || upperCrime.includes('POCSO')) {
+    sections = 'BNS Sec 64 (Rape), Sec 70(1) (Gang Rape), POCSO Act Sec 4/6, BNS Sec 351 (Criminal Intimidation)';
+    court = 'Special Fast Track Court for Women & Child Safety';
+    icon = '🟣';
+  } else if (upperCrime.includes('ROBBERY') || upperCrime.includes('HEIST') || upperCrime.includes('DACOITY')) {
+    sections = 'BNS Sec 310 (Dacoity with Murder), Sec 312 (Robbery), Sec 317 (Stolen Property), Arms Act Sec 25';
+    court = 'Court of Additional Sessions Judge (Anti-Robbery Cell)';
+    icon = '🟠';
+  } else if (upperCrime.includes('NARCOTICS') || upperCrime.includes('NDPS') || upperCrime.includes('ARMS')) {
+    sections = 'NDPS Act Sec 21(c)/29 (Commercial Quantity Synthetic Heroin), Arms Act Sec 25(1AA)';
+    court = 'Special NDPS Designated Sessions Court';
+    icon = '🟢';
+  } else if (upperCrime.includes('GANG') || upperCrime.includes('MCOCA') || upperCrime.includes('EXTORTION')) {
+    sections = 'MCOCA Act Sec 3 & 4 (Organized Crime), BNS Sec 308 (Extortion), BNS Sec 140 (Kidnapping for Ransom)';
+    court = 'Special MCOCA Designated Court';
+    icon = '🟡';
+  } else if (upperCrime.includes('KIDNAP')) {
+    sections = 'BNS Sec 140 (Kidnapping for Ransom), BNS Sec 308 (Extortion), Arms Act Sec 25';
+    court = 'Court of District & Sessions Judge (SIT Special Court)';
+    icon = '🟡';
+  }
+
+  // FIR Number parsing
+  const firList = Array.isArray(entity.firNumbers) ? entity.firNumbers : (entity.firNumbers ? [entity.firNumbers] : []);
+  const firNumber = firList.length > 0
+    ? firList[0].split(' ')[0]
+    : `FIR-2024-${id.replace(/[^0-9]/g, '') || '402'}`;
+
+  // Police Station
+  const policeStation = entity.policeStation || 'Special Crime Branch / State STF Unit';
+
+  // Exhibits compilation
+  const exhibits = [];
+  if (entity.weaponSignature) {
+    exhibits.push(`Forensic Ballistics & Weapon Memo: ${entity.weaponSignature} recovered & striations matched`);
+  } else {
+    exhibits.push(`Forensic Seizure Memo: Illicit weapon & ammunition recovered u/s 27 Indian Evidence Act`);
+  }
+
+  if (entity.dnaProfileMatch) {
+    exhibits.push(`Forensic DNA STR Match: ${entity.dnaProfileMatch}`);
+  } else {
+    exhibits.push(`Biological Evidence: STR DNA Sample processed at State Forensic Science Laboratory (CFSL)`);
+  }
+
+  if (entity.burnerDevices && entity.burnerDevices.length > 0) {
+    exhibits.push(`Cell Surveillance & CDR Memo: Intercept on ${entity.burnerDevices[0].number || entity.burnerDevices[0].imei} (${entity.burnerDevices[0].status})`);
+  } else if (entity.phone) {
+    exhibits.push(`Cell Tower Triangulation & CDR Intercept log on suspect registered contact ${entity.phone}`);
+  } else {
+    exhibits.push(`Digital Surveillance: Cell tower pings and ANPR highway camera timestamps logged`);
+  }
+
+  const scars = entity.scarsAndMarks || (entity.biometrics && entity.biometrics.scarsAndMarks);
+  if (scars) {
+    exhibits.push(`Identification Memo: Physical Scars & Tattoos (${scars}) catalogued in CCTNS registry`);
+  } else {
+    exhibits.push(`Biometric Vector Memo: Facial vector ID FV-${id} verified against National Criminal Database`);
+  }
+
+  const ioOfficer = entity.ioOfficer || 'Inspector V. Rathore (STF Unit 4 / Crime Branch)';
+
+  return {
+    id: `CS-2024-${id.replace(/[^0-9]/g, '') || Math.floor(100 + Math.random() * 900)}`,
+    entityId: id,
+    caseTitle: `State vs ${name} & Ors.`,
+    accused: `${name} (${id})`,
+    rawName: name,
+    aliases: entity.aliases || [`Alias ${name.split(' ')[0]}`],
+    crimeCategory,
+    firNumber,
+    allFirs: firList.length > 0 ? firList : [firNumber],
+    policeStation,
+    sections,
+    court,
+    ioOfficer,
+    status: entity.status === 'ACTIVE_FUGITIVE' ? 'ACTIVE FUGITIVE - WARRANT PENDING' : 'READY FOR FILING',
+    bounty: entity.wantedReward || '₹200,000 INR',
+    icon,
+    summary: entity.modusOperandi || `The accused, ${name}, is identified as the prime perpetrator in ${firNumber}. Investigation establishes physical presence, witness testimonies, and forensic correlation with the crime scene.`,
+    exhibits,
+    witnesses: [
+      'Dr. S. K. Gupta, Senior Forensic Surgeon (Civil Hospital)',
+      'Senior Scientific Officer (CFSL Forensic & Ballistics Division)',
+      'Sub-Inspector / Investigating Officer (First Responder & Recovery Witness)'
+    ],
+    weaponSignature: entity.weaponSignature || 'Unlicensed Country-made Firearm',
+    scarsAndMarks: scars || 'Catalogued in Police CCTNS archive',
+    phone: entity.phone || (entity.burnerDevices && entity.burnerDevices[0] ? entity.burnerDevices[0].number : 'Active Tracking'),
+    threatLevel: entity.threatLevel || 'CRITICAL',
+    riskScore: entity.riskScore || 92,
+    biometrics: entity.biometrics || { dob: '1990-01-01', nationality: 'Indian' },
+    knownAssociates: entity.knownAssociates || [],
+    financialAccounts: entity.financialAccounts || [],
+    burnerDevices: entity.burnerDevices || []
+  };
+}
+
 export default function Reports() {
   const navigate = useNavigate();
-  const [selectedCase, setSelectedCase] = useState(CHARGESHEETS_LIST[0]);
-  const [toastMessage, setToastMessage] = useState(null);
+  const location = useLocation();
 
-  const showToast = (msg) => {
+  const [entitiesList, setEntitiesList] = useState([]);
+  const [selectedCase, setSelectedCase] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const showToast = useCallback((msg) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
+    setTimeout(() => setToastMessage(null), 3500);
+  }, []);
+
+  // Load criminals and construct chargesheets
+  const loadChargesheets = useCallback(async (preferredId = null) => {
+    let customList = [];
+    try {
+      const stored = localStorage.getItem('crimelens_custom_criminals');
+      if (stored) customList = JSON.parse(stored);
+    } catch {
+      customList = [];
+    }
+
+    let allEntities = [];
+    try {
+      const data = await api.entities.getAll();
+      const existingIds = new Set();
+
+      // Custom list first
+      for (const item of customList) {
+        if (item && item.id && !existingIds.has(item.id)) {
+          existingIds.add(item.id);
+          allEntities.push(item);
+        }
+      }
+
+      // Backend list
+      if (data && data.entities) {
+        for (const item of data.entities) {
+          if (item && item.id && !existingIds.has(item.id)) {
+            existingIds.add(item.id);
+            allEntities.push(item);
+          }
+        }
+      }
+
+      // Default seed fallbacks
+      for (const item of DEFAULT_SEED) {
+        if (item && item.id && !existingIds.has(item.id)) {
+          existingIds.add(item.id);
+          allEntities.push(item);
+        }
+      }
+    } catch {
+      const existingIds = new Set();
+      for (const item of [...customList, ...DEFAULT_SEED]) {
+        if (item && item.id && !existingIds.has(item.id)) {
+          existingIds.add(item.id);
+          allEntities.push(item);
+        }
+      }
+    }
+
+    setEntitiesList(allEntities);
+
+    // Format all entities to chargesheets
+    const chargesheets = allEntities.map(formatEntityToChargesheet);
+
+    // Selection logic
+    let target = null;
+    const targetId = preferredId || localStorage.getItem('crimelens_selected_chargesheet');
+    if (targetId) {
+      target = chargesheets.find(c => c.entityId.toLowerCase() === targetId.toLowerCase() || c.rawName.toLowerCase().includes(targetId.toLowerCase()));
+    }
+
+    if (!target && chargesheets.length > 0) {
+      target = chargesheets[0];
+    }
+
+    if (target) {
+      setSelectedCase(target);
+    }
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const paramId = params.get('id') || params.get('suspect');
+    loadChargesheets(paramId);
+
+    // Global listener when a criminal is added anywhere in the app
+    const handleCriminalAdded = (e) => {
+      const newCrim = e.detail;
+      if (newCrim) {
+        showToast(`✓ New Criminal "${newCrim.name}" registered. Chargesheet generated.`);
+        loadChargesheets(newCrim.id);
+      }
+    };
+
+    window.addEventListener('crimelens:criminal-added', handleCriminalAdded);
+    return () => window.removeEventListener('crimelens:criminal-added', handleCriminalAdded);
+  }, [location.search, loadChargesheets, showToast]);
 
   const handleCopyHash = () => {
+    if (!selectedCase) return;
     const hash = `SHA256:${selectedCase.id}-7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069`;
     navigator.clipboard?.writeText(hash);
     showToast('✓ Cryptographic SHA-256 seal copied to clipboard.');
   };
 
   const handleDownload = () => {
+    if (!selectedCase) return;
     showToast(`✓ Chargesheet_${selectedCase.firNumber}_Final_Report.pdf downloaded.`);
   };
 
@@ -144,8 +426,48 @@ export default function Reports() {
   };
 
   const handleCourtSubmit = () => {
+    if (!selectedCase) return;
     showToast(`✓ Chargesheet electronically filed with ${selectedCase.court}.`);
   };
+
+  const handleAddCriminalSuccess = (newCriminal) => {
+    if (newCriminal) {
+      showToast(`✓ Offender ${newCriminal.name} added to chargesheets list.`);
+      loadChargesheets(newCriminal.id);
+    }
+  };
+
+  // Convert loaded entities into chargesheet items
+  const allChargesheets = useMemo(() => {
+    return entitiesList.map(formatEntityToChargesheet);
+  }, [entitiesList]);
+
+  // Filter chargesheets by search query and category
+  const filteredChargesheets = useMemo(() => {
+    return allChargesheets.filter(c => {
+      const q = searchQuery.toLowerCase();
+      const matchesSearch = !q ||
+        c.rawName.toLowerCase().includes(q) ||
+        c.entityId.toLowerCase().includes(q) ||
+        c.firNumber.toLowerCase().includes(q) ||
+        c.crimeCategory.toLowerCase().includes(q) ||
+        c.aliases.some(a => a.toLowerCase().includes(q)) ||
+        (c.weaponSignature && c.weaponSignature.toLowerCase().includes(q));
+
+      if (!matchesSearch) return false;
+
+      if (categoryFilter === 'ALL') return true;
+      if (categoryFilter === 'HOMICIDE') return c.crimeCategory.includes('HOMICIDE') || c.crimeCategory.includes('MURDER');
+      if (categoryFilter === 'RAPE') return c.crimeCategory.includes('SEXUAL') || c.crimeCategory.includes('RAPE');
+      if (categoryFilter === 'ROBBERY') return c.crimeCategory.includes('ROBBERY') || c.crimeCategory.includes('HEIST');
+      if (categoryFilter === 'NARCOTICS') return c.crimeCategory.includes('NARCOTICS') || c.crimeCategory.includes('NDPS');
+      if (categoryFilter === 'GANG') return c.crimeCategory.includes('GANG') || c.crimeCategory.includes('MCOCA') || c.crimeCategory.includes('EXTORTION');
+
+      return true;
+    });
+  }, [allChargesheets, searchQuery, categoryFilter]);
+
+  const activeCase = selectedCase || filteredChargesheets[0] || (allChargesheets.length > 0 ? allChargesheets[0] : null);
 
   return (
     <div style={{
@@ -170,7 +492,7 @@ export default function Reports() {
           fontWeight: 700,
           fontFamily: 'var(--font-mono, monospace)',
           fontSize: '13px',
-          boxShadow: '0 0 20px rgba(0, 229, 255, 0.5)',
+          boxShadow: '0 0 25px rgba(0, 229, 255, 0.6)',
           zIndex: 100000,
           display: 'flex',
           alignItems: 'center',
@@ -182,12 +504,12 @@ export default function Reports() {
       )}
 
       <main style={{
-        maxWidth: '1200px',
+        maxWidth: '1280px',
         margin: '0 auto',
         padding: '2rem 1.5rem 3rem 1.5rem',
         boxSizing: 'border-box'
       }}>
-        {/* Header */}
+        {/* Header with Title & Action Buttons */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -209,47 +531,127 @@ export default function Reports() {
               letterSpacing: '1px'
             }}>
               <span>🇮🇳</span>
-              <span>INDIAN POLICE // FINAL CHARGESHEET GENERATOR</span>
+              <span>INDIAN POLICE // FINAL FORM 173 / BNSS 193 CHARGESHEET SYSTEM</span>
             </div>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '4px 0 0 0' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '4px 0 0 0', letterSpacing: '0.5px' }}>
               POLICE CHARGESHEET &amp; JUDICIAL EVIDENCE
             </h1>
           </div>
 
-          <button
-            onClick={() => navigate('/dashboard')}
-            style={{
-              backgroundColor: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              color: '#94A3B8',
-              borderRadius: '5px',
-              padding: '7px 14px',
-              fontSize: '12px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <ArrowLeft size={14} /> Back to Dashboard
-          </button>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              style={{
+                backgroundColor: '#00E5FF',
+                border: 'none',
+                color: '#07090E',
+                borderRadius: '6px',
+                padding: '8px 16px',
+                fontSize: '12px',
+                fontWeight: 800,
+                fontFamily: 'var(--font-mono, monospace)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 0 20px rgba(0, 229, 255, 0.35)'
+              }}
+            >
+              <UserPlus size={14} /> + ADD CRIMINAL &amp; GENERATE CHARGESHEET
+            </button>
+
+            <button
+              onClick={() => navigate('/dashboard')}
+              style={{
+                backgroundColor: 'transparent',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                color: '#94A3B8',
+                borderRadius: '6px',
+                padding: '8px 14px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <ArrowLeft size={14} /> Back to Dashboard
+            </button>
+          </div>
         </div>
 
-        {/* Step 1: Select Case from Horizontal Suspect Cards */}
+        {/* Step 1: Select Accused Criminal Dossier */}
         <div style={{ marginBottom: '1.5rem' }}>
-          <div style={{ fontSize: '11px', fontWeight: 700, color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)', marginBottom: '8px' }}>
-            STEP 1: SELECT CRIMINAL CASE DOSSIER
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '10px',
+            marginBottom: '10px'
+          }}>
+            <div style={{ fontSize: '11.5px', fontWeight: 700, color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>
+              STEP 1: SELECT ACCUSED CRIMINAL DOSSIER ({filteredChargesheets.length} CHARGESHEETS AVAILABLE)
+            </div>
+
+            {/* Search Input for Criminals */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <div style={{ position: 'relative' }}>
+                <Search size={13} style={{ position: 'absolute', left: '10px', top: '9px', color: '#94A3B8' }} />
+                <input
+                  type="text"
+                  placeholder="Search accused, FIR, alias..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                    border: '1px solid rgba(0, 229, 255, 0.25)',
+                    borderRadius: '4px',
+                    padding: '6px 12px 6px 30px',
+                    color: '#FFFFFF',
+                    fontSize: '12px',
+                    outline: 'none',
+                    width: '210px'
+                  }}
+                />
+              </div>
+
+              {/* Category Filter */}
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                style={{
+                  backgroundColor: 'rgba(7, 10, 16, 0.9)',
+                  border: '1px solid rgba(0, 229, 255, 0.25)',
+                  borderRadius: '4px',
+                  padding: '6px 10px',
+                  color: '#00E5FF',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  outline: 'none'
+                }}
+              >
+                <option value="ALL">All Offenses</option>
+                <option value="HOMICIDE">Homicide</option>
+                <option value="RAPE">Sexual Offenses</option>
+                <option value="ROBBERY">Armed Robbery</option>
+                <option value="NARCOTICS">Narcotics</option>
+                <option value="GANG">Gang / MCOCA</option>
+              </select>
+            </div>
           </div>
+
+          {/* Horizontal Grid of Criminals */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
             gap: '0.85rem'
           }}>
-            {CHARGESHEETS_LIST.map((c) => {
-              const isSelected = selectedCase.id === c.id;
+            {filteredChargesheets.map((c) => {
+              const isSelected = activeCase && activeCase.entityId === c.entityId;
               return (
                 <div
-                  key={c.id}
+                  key={c.entityId}
                   onClick={() => setSelectedCase(c)}
                   style={{
                     backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.15)' : 'rgba(12, 17, 26, 0.85)',
@@ -258,7 +660,8 @@ export default function Reports() {
                     padding: '12px 14px',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
-                    boxShadow: isSelected ? '0 0 20px rgba(0, 229, 255, 0.2)' : 'none'
+                    boxShadow: isSelected ? '0 0 20px rgba(0, 229, 255, 0.2)' : 'none',
+                    position: 'relative'
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
@@ -268,10 +671,10 @@ export default function Reports() {
                     <span style={{ fontSize: '13px' }}>{c.icon}</span>
                   </div>
                   <div style={{ fontSize: '13px', fontWeight: 800, color: isSelected ? '#00E5FF' : '#FFFFFF' }}>
-                    {c.accused.split('(')[0]}
+                    {c.rawName}
                   </div>
-                  <div style={{ fontSize: '10.5px', color: '#94A3B8', marginTop: '2px' }}>
-                    {c.crimeCategory.split(' ')[0]}
+                  <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: '2px', fontFamily: 'var(--font-mono, monospace)' }}>
+                    ID: {c.entityId} • {c.crimeCategory.split(' ')[0]}
                   </div>
                 </div>
               );
@@ -280,172 +683,255 @@ export default function Reports() {
         </div>
 
         {/* Step 2: Main Chargesheet Document (Form 173 / BNSS 193) */}
-        <div style={{
-          backgroundColor: 'rgba(12, 17, 26, 0.95)',
-          border: '1.5px solid rgba(0, 229, 255, 0.3)',
-          borderRadius: '10px',
-          padding: '2rem',
-          boxShadow: '0 0 40px rgba(0, 0, 0, 0.6)',
-          marginBottom: '1.5rem'
-        }}>
-          {/* Document Header */}
+        {activeCase ? (
           <div style={{
-            textAlign: 'center',
-            borderBottom: '1.5px solid rgba(0, 229, 255, 0.25)',
-            paddingBottom: '1.25rem',
+            backgroundColor: 'rgba(12, 17, 26, 0.95)',
+            border: '1.5px solid rgba(0, 229, 255, 0.3)',
+            borderRadius: '10px',
+            padding: '2rem',
+            boxShadow: '0 0 40px rgba(0, 0, 0, 0.6)',
             marginBottom: '1.5rem'
           }}>
-            <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', letterSpacing: '1.5px' }}>
-              // BHARATIYA NAGARIK SURAKSHA SANHITA (BNSS SEC 193 / FORM 173) //
-            </div>
-            <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', margin: '6px 0 3px 0' }}>
-              FINAL POLICE INVESTIGATION CHARGESHEET
-            </h2>
-            <div style={{ fontSize: '12.5px', color: '#94A3B8' }}>
-              BEFORE THE COURT OF: <strong style={{ color: '#FFFFFF' }}>{selectedCase.court}</strong>
-            </div>
-          </div>
-
-          {/* Quick Particulars Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '1rem',
-            backgroundColor: 'rgba(7, 10, 16, 0.9)',
-            border: '1px solid rgba(0, 229, 255, 0.15)',
-            padding: '14px 16px',
-            borderRadius: '6px',
-            marginBottom: '1.5rem',
-            fontSize: '12.5px'
-          }}>
-            <div><span style={{ color: '#94A3B8' }}>FIR Number:</span> <strong style={{ color: '#00E5FF' }}>{selectedCase.firNumber}</strong></div>
-            <div><span style={{ color: '#94A3B8' }}>Police Station:</span> <strong style={{ color: '#FFFFFF' }}>{selectedCase.policeStation}</strong></div>
-            <div><span style={{ color: '#94A3B8' }}>Primary Accused:</span> <strong style={{ color: '#FF8888' }}>{selectedCase.accused}</strong></div>
-            <div><span style={{ color: '#94A3B8' }}>Investigating Officer:</span> <strong style={{ color: '#FFFFFF' }}>{selectedCase.ioOfficer}</strong></div>
-            <div style={{ gridColumn: '1 / -1', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '8px' }}>
-              <span style={{ color: '#94A3B8' }}>Penal Sections:</span>{' '}
-              <strong style={{ color: '#FBBF24' }}>{selectedCase.sections}</strong>
-            </div>
-          </div>
-
-          {/* Facts of Case */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#00E5FF', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
-              1. Brief Facts &amp; Investigation Findings:
-            </h3>
-            <p style={{
-              fontSize: '13px',
-              color: '#CBD5E1',
-              lineHeight: 1.6,
-              margin: 0,
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              padding: '12px 14px',
-              borderRadius: '6px',
-              borderLeft: '3px solid #00E5FF'
+            {/* Document Header */}
+            <div style={{
+              textAlign: 'center',
+              borderBottom: '1.5px solid rgba(0, 229, 255, 0.25)',
+              paddingBottom: '1.25rem',
+              marginBottom: '1.5rem'
             }}>
-              {selectedCase.summary}
+              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', letterSpacing: '1.5px' }}>
+                // BHARATIYA NAGARIK SURAKSHA SANHITA (BNSS SEC 193 / FORM 173) //
+              </div>
+              <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', margin: '6px 0 3px 0' }}>
+                FINAL POLICE INVESTIGATION CHARGESHEET
+              </h2>
+              <div style={{ fontSize: '12.5px', color: '#94A3B8' }}>
+                BEFORE THE COURT OF: <strong style={{ color: '#FFFFFF' }}>{activeCase.court}</strong>
+              </div>
+            </div>
+
+            {/* Quick Particulars Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '1rem',
+              backgroundColor: 'rgba(7, 10, 16, 0.9)',
+              border: '1px solid rgba(0, 229, 255, 0.15)',
+              padding: '14px 16px',
+              borderRadius: '6px',
+              marginBottom: '1.5rem',
+              fontSize: '12.5px'
+            }}>
+              <div><span style={{ color: '#94A3B8' }}>FIR Number:</span> <strong style={{ color: '#00E5FF' }}>{activeCase.firNumber}</strong></div>
+              <div><span style={{ color: '#94A3B8' }}>Police Station:</span> <strong style={{ color: '#FFFFFF' }}>{activeCase.policeStation}</strong></div>
+              <div><span style={{ color: '#94A3B8' }}>Primary Accused:</span> <strong style={{ color: '#FF8888' }}>{activeCase.accused}</strong></div>
+              <div><span style={{ color: '#94A3B8' }}>Investigating Officer:</span> <strong style={{ color: '#FFFFFF' }}>{activeCase.ioOfficer}</strong></div>
+              <div style={{ gridColumn: '1 / -1', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                <div>
+                  <span style={{ color: '#94A3B8' }}>Penal Sections:</span>{' '}
+                  <strong style={{ color: '#FBBF24' }}>{activeCase.sections}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#94A3B8' }}>Warrant Status:</span>{' '}
+                  <strong style={{ color: '#FF5555' }}>{activeCase.status}</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 1: Facts of Case */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#00E5FF', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
+                1. Brief Facts &amp; Investigation Findings:
+              </h3>
+              <p style={{
+                fontSize: '13px',
+                color: '#CBD5E1',
+                lineHeight: 1.6,
+                margin: 0,
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                padding: '12px 14px',
+                borderRadius: '6px',
+                borderLeft: '3px solid #00E5FF'
+              }}>
+                {activeCase.summary}
+              </p>
+            </div>
+
+            {/* Section 2: Admissible Forensic Exhibits */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#00E5FF', margin: '0 0 8px 0', textTransform: 'uppercase' }}>
+                2. Admissible Forensic Evidence Exhibits:
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {activeCase.exhibits.map((ex, idx) => (
+                  <div key={idx} style={{
+                    fontSize: '12px',
+                    color: '#FFFFFF',
+                    backgroundColor: 'rgba(0, 229, 255, 0.05)',
+                    border: '1px solid rgba(0, 229, 255, 0.15)',
+                    padding: '8px 12px',
+                    borderRadius: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <ShieldCheck size={15} color="#00E5FF" />
+                    <span>{ex}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Section 3: Comprehensive Accused Bio-Data & Intelligence Profile */}
+            <div style={{
+              marginBottom: '1.5rem',
+              backgroundColor: 'rgba(7, 10, 16, 0.85)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              borderRadius: '6px',
+              padding: '16px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '8px' }}>
+                <Fingerprint size={16} color="#00E5FF" />
+                <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  3. Accused Specific Intelligence &amp; Bio-Data Dossier
+                </h3>
+              </div>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '12px',
+                fontSize: '12px'
+              }}>
+                {/* Identification Marks */}
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>PHYSICAL IDENTIFICATION &amp; SCARS</div>
+                  <div style={{ color: '#FFFFFF', fontWeight: 600 }}>{activeCase.scarsAndMarks}</div>
+                </div>
+
+                {/* Weapon Signature */}
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>WEAPON SIGNATURE / BALLISTICS</div>
+                  <div style={{ color: '#FF8888', fontWeight: 600 }}>{activeCase.weaponSignature}</div>
+                </div>
+
+                {/* Active Phone & Burner Devices */}
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>ACTIVE CONTACT / SURVEILLANCE BEACON</div>
+                  <div style={{ color: '#00E5FF', fontWeight: 600 }}>
+                    {activeCase.phone}
+                  </div>
+                </div>
+
+                {/* Bounty & Risk Score */}
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>STATE REWARD BOUNTY &amp; RISK SCORE</div>
+                  <div style={{ color: '#FBBF24', fontWeight: 700 }}>
+                    {activeCase.bounty} <span style={{ color: '#94A3B8' }}>(Risk Score: {activeCase.riskScore}/100)</span>
+                  </div>
+                </div>
+
+                {/* Aliases */}
+                {activeCase.aliases && activeCase.aliases.length > 0 && (
+                  <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                    <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>KNOWN ALIASES / GANG MONIKERS</div>
+                    <div style={{ color: '#FFFFFF' }}>{activeCase.aliases.join(', ')}</div>
+                  </div>
+                )}
+
+                {/* Known Associates */}
+                {activeCase.knownAssociates && activeCase.knownAssociates.length > 0 && (
+                  <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                    <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>CRIME NETWORK ASSOCIATES</div>
+                    <div style={{ color: '#FFFFFF' }}>
+                      {activeCase.knownAssociates.map(a => `${a.name} (${a.relation})`).join('; ')}
+                    </div>
+                  </div>
+                )}
+
+                {/* Financial Hawala / Benami Accounts */}
+                {activeCase.financialAccounts && activeCase.financialAccounts.length > 0 && (
+                  <div style={{ gridColumn: '1 / -1', backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                    <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>ATTACHED HAWALA / BENAMI FINANCIAL ASSETS</div>
+                    <div style={{ color: '#FBBF24' }}>
+                      {activeCase.financialAccounts.map(f => `${f.bank} [${f.accNo}]: ${f.balance}`).join(' • ')}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Section 4: Prosecution Witnesses */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#00E5FF', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
+                4. Charge-Sheeted Prosecution Witnesses:
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '8px' }}>
+                {activeCase.witnesses.map((w, idx) => (
+                  <div key={idx} style={{
+                    fontSize: '12px',
+                    color: '#94A3B8',
+                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    padding: '8px 12px',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(255, 255, 255, 0.06)'
+                  }}>
+                    👤 <strong>Witness #{idx + 1}:</strong> {w}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Section 65B Digital Certificate */}
+            <div style={{
+              backgroundColor: 'rgba(0, 229, 255, 0.04)',
+              border: '1px solid rgba(0, 229, 255, 0.2)',
+              borderRadius: '6px',
+              padding: '12px 14px',
+              fontSize: '11.5px',
+              color: '#94A3B8',
+              lineHeight: 1.5
+            }}>
+              🔒 <strong>Section 65B Bharatiya Sakshya Adhiniyam Certificate</strong>: All digital exhibits, ANPR timestamps, wiretaps, and forensic reports for accused <span style={{ color: '#FFFFFF', fontWeight: 700 }}>{activeCase.accused}</span> are cryptographically validated under root hash{' '}
+              <span style={{ color: '#00E5FF', fontFamily: 'monospace' }}>SHA256:{activeCase.id}-7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span>.
+            </div>
+          </div>
+        ) : (
+          <div style={{
+            backgroundColor: 'rgba(12, 17, 26, 0.95)',
+            border: '1px dashed rgba(0, 229, 255, 0.3)',
+            borderRadius: '10px',
+            padding: '3rem',
+            textAlign: 'center',
+            marginBottom: '1.5rem'
+          }}>
+            <p style={{ color: '#94A3B8', fontSize: '14px', margin: 0 }}>
+              No criminal dossier selected. Click "+ ADD CRIMINAL &amp; GENERATE CHARGESHEET" above or select an accused from the list.
             </p>
           </div>
+        )}
 
-          {/* Evidence Exhibits */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#00E5FF', margin: '0 0 8px 0', textTransform: 'uppercase' }}>
-              2. Admissible Forensic Evidence Exhibits:
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {selectedCase.exhibits.map((ex, idx) => (
-                <div key={idx} style={{
-                  fontSize: '12px',
-                  color: '#FFFFFF',
-                  backgroundColor: 'rgba(0, 229, 255, 0.05)',
-                  border: '1px solid rgba(0, 229, 255, 0.15)',
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}>
-                  <ShieldCheck size={15} color="#00E5FF" />
-                  <span>{ex}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Section 65B Digital Certificate */}
+        {/* Step 3: Action Buttons Bar */}
+        {activeCase && (
           <div style={{
-            backgroundColor: 'rgba(0, 229, 255, 0.04)',
-            border: '1px solid rgba(0, 229, 255, 0.2)',
-            borderRadius: '6px',
-            padding: '12px 14px',
-            fontSize: '11.5px',
-            color: '#94A3B8',
-            lineHeight: 1.5
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '10px',
+            backgroundColor: 'rgba(12, 17, 26, 0.85)',
+            border: '1px solid rgba(0, 229, 255, 0.15)',
+            borderRadius: '8px',
+            padding: '1rem 1.25rem'
           }}>
-            🔒 <strong>Section 65B Bharatiya Sakshya Adhiniyam Certificate</strong>: All digital exhibits, ANPR timestamps, wiretaps, and forensic reports are cryptographically validated under root hash{' '}
-            <span style={{ color: '#00E5FF', fontFamily: 'monospace' }}>SHA256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span>.
-          </div>
-        </div>
-
-        {/* Step 3: Large, Simple Action Buttons Bar */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px',
-          backgroundColor: 'rgba(12, 17, 26, 0.85)',
-          border: '1px solid rgba(0, 229, 255, 0.15)',
-          borderRadius: '8px',
-          padding: '1rem 1.25rem'
-        }}>
-          <button
-            onClick={handleCopyHash}
-            style={{
-              backgroundColor: 'transparent',
-              border: '1px solid rgba(0, 229, 255, 0.35)',
-              color: '#00E5FF',
-              borderRadius: '6px',
-              padding: '10px 16px',
-              fontSize: '12.5px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <Copy size={15} /> COPY HASH SEAL
-          </button>
-
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <button
-              onClick={handlePrint}
-              style={{
-                backgroundColor: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                color: '#FFFFFF',
-                borderRadius: '6px',
-                padding: '10px 18px',
-                fontSize: '12.5px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <Printer size={15} /> PRINT CHARGESHEET
-            </button>
-
-            <button
-              onClick={handleDownload}
+              onClick={handleCopyHash}
               style={{
                 backgroundColor: 'transparent',
                 border: '1px solid rgba(0, 229, 255, 0.35)',
                 color: '#00E5FF',
                 borderRadius: '6px',
-                padding: '10px 18px',
+                padding: '10px 16px',
                 fontSize: '12.5px',
                 fontWeight: 700,
                 cursor: 'pointer',
@@ -454,32 +940,79 @@ export default function Reports() {
                 gap: '6px'
               }}
             >
-              <Download size={15} /> DOWNLOAD PDF
+              <Copy size={15} /> COPY HASH SEAL
             </button>
 
-            <button
-              onClick={handleCourtSubmit}
-              style={{
-                backgroundColor: '#00E5FF',
-                color: '#07090E',
-                border: 'none',
-                borderRadius: '6px',
-                padding: '10px 22px',
-                fontSize: '12.5px',
-                fontWeight: 800,
-                fontFamily: 'var(--font-mono, monospace)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 0 20px rgba(0, 229, 255, 0.4)'
-              }}
-            >
-              <Send size={15} /> SUBMIT TO COURT
-            </button>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <button
+                onClick={handlePrint}
+                style={{
+                  backgroundColor: 'transparent',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#FFFFFF',
+                  borderRadius: '6px',
+                  padding: '10px 18px',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Printer size={15} /> PRINT CHARGESHEET
+              </button>
+
+              <button
+                onClick={handleDownload}
+                style={{
+                  backgroundColor: 'transparent',
+                  border: '1px solid rgba(0, 229, 255, 0.35)',
+                  color: '#00E5FF',
+                  borderRadius: '6px',
+                  padding: '10px 18px',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Download size={15} /> DOWNLOAD PDF
+              </button>
+
+              <button
+                onClick={handleCourtSubmit}
+                style={{
+                  backgroundColor: '#00E5FF',
+                  color: '#07090E',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '10px 22px',
+                  fontSize: '12.5px',
+                  fontWeight: 800,
+                  fontFamily: 'var(--font-mono, monospace)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 0 20px rgba(0, 229, 255, 0.4)'
+                }}
+              >
+                <Send size={15} /> SUBMIT TO COURT
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </main>
+
+      {/* Add Criminal Modal */}
+      <AddCriminalModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onCriminalAdded={handleAddCriminalSuccess}
+      />
     </div>
   );
 }

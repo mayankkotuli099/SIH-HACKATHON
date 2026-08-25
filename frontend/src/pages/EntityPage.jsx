@@ -306,8 +306,16 @@ export default function EntityPage({ onNavigate }) {
   };
 
   const handleExport = () => {
+    if (active && active.id) {
+      localStorage.setItem('crimelens_selected_chargesheet', active.id);
+    }
     setExportNotification(true);
-    setTimeout(() => setExportNotification(false), 3200);
+    setTimeout(() => {
+      setExportNotification(false);
+      if (onNavigate) {
+        onNavigate('reports');
+      }
+    }, 1200);
   };
 
   const handleFreeze = () => {
