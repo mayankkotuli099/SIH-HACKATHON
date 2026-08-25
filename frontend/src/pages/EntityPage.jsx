@@ -194,27 +194,63 @@ export default function EntityPage({ onNavigate }) {
     try {
       const data = await api.entities.getAll();
       let merged = [];
+      const existingIds = new Set();
+
+      // Custom list first
+      for (const item of customList) {
+        if (!existingIds.has(item.id)) {
+          existingIds.add(item.id);
+          merged.push(item);
+        }
+      }
+
       if (data && data.entities && data.entities.length > 0) {
-        // Merge customList at the front, deduplicate by ID
-        const existingIds = new Set();
-        const combined = [...customList, ...data.entities];
-        for (const item of combined) {
+        for (const item of data.entities) {
           if (!existingIds.has(item.id)) {
             existingIds.add(item.id);
             merged.push(item);
           }
         }
       } else {
-        merged = [...customList, ...DEFAULT_SEED];
+        for (const item of DEFAULT_SEED) {
+          if (!existingIds.has(item.id)) {
+            existingIds.add(item.id);
+            merged.push(item);
+          }
+        }
       }
 
       setEntitiesList(merged);
+
+      // Check URL parameters for selected suspect
+      const params = new URLSearchParams(window.location.search);
+      const suspectParam = params.get('suspect');
+      const idParam = params.get('id');
+
+      if (suspectParam || idParam) {
+        const found = merged.find(c =>
+          (idParam && c.id.toLowerCase() === idParam.toLowerCase()) ||
+          (suspectParam && c.name.toLowerCase().includes(suspectParam.toLowerCase()))
+        );
+        if (found) {
+          setSelectedEntity(found);
+          return;
+        }
+      }
+
       if (merged.length > 0 && !selectedEntity) {
         setSelectedEntity(merged[0]);
       }
     } catch (err) {
       console.warn('Using local fallback criminal directory:', err);
-      const merged = [...customList, ...DEFAULT_SEED];
+      const existingIds = new Set();
+      const merged = [];
+      for (const item of [...customList, ...DEFAULT_SEED]) {
+        if (!existingIds.has(item.id)) {
+          existingIds.add(item.id);
+          merged.push(item);
+        }
+      }
       setEntitiesList(merged);
       if (!selectedEntity && merged.length > 0) {
         setSelectedEntity(merged[0]);
@@ -224,9 +260,26 @@ export default function EntityPage({ onNavigate }) {
 
   useEffect(() => {
     loadEntities();
+
+    // Listen for global criminal added event
+    const handleGlobalAdded = (e) => {
+      const newCrim = e.detail;
+      if (newCrim) {
+        handleCriminalAdded(newCrim);
+      }
+    };
+
+    window.addEventListener('crimelens:criminal-added', handleGlobalAdded);
+    return () => window.removeEventListener('crimelens:criminal-added', handleGlobalAdded);
   }, []);
 
   const handleCriminalAdded = (newCrim) => {
+    if (!newCrim) return;
+
+    // Reset filters so the new criminal is guaranteed visible
+    setSelectedCategory('ALL');
+    setSearchQuery('');
+
     // Prepend to state
     setEntitiesList((prev) => {
       const updated = [newCrim, ...prev.filter(c => c.id !== newCrim.id)];
@@ -245,11 +298,11 @@ export default function EntityPage({ onNavigate }) {
     setWarrantNotification(true);
     setTimeout(() => setWarrantNotification(false), 3500);
 
-    // Smooth scroll down to the dossier view
+    // Smooth scroll down to the 360 dossier view
     setTimeout(() => {
       const el = document.getElementById('dossier-view');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    }, 150);
   };
 
   const handleExport = () => {

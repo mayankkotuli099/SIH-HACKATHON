@@ -948,9 +948,18 @@ export default function DashboardPage({ onNavigate }) {
         <AddCriminalModal
           isOpen={isAddCriminalModalOpen}
           onClose={() => setIsAddCriminalModalOpen(false)}
-          onSuccess={() => {
-            showToast('✓ Criminal record registered and synchronized with CrimeLens AI.');
+          onCriminalAdded={(newCrim) => {
+            showToast(`✓ ${newCrim.name} registered! Opening Criminal 360 Dossier...`);
             setIsAddCriminalModalOpen(false);
+            if (onNavigate) {
+              onNavigate('entities', { suspect: newCrim.name });
+            }
+          }}
+          onSuccess={(newCrim) => {
+            setIsAddCriminalModalOpen(false);
+            if (onNavigate && newCrim) {
+              onNavigate('entities', { suspect: newCrim.name });
+            }
           }}
         />
       )}
