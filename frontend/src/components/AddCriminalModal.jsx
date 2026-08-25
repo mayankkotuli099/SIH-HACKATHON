@@ -87,6 +87,7 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
         const stored = JSON.parse(localStorage.getItem('crimelens_custom_criminals') || '[]');
         const updatedStored = [finalEntity, ...stored.filter(c => c.id !== finalEntity.id && c.name !== finalEntity.name)];
         localStorage.setItem('crimelens_custom_criminals', JSON.stringify(updatedStored));
+        localStorage.setItem('crimelens_selected_chargesheet', finalEntity.id);
       } catch (storageErr) {
         console.warn('LocalStorage error:', storageErr);
       }
