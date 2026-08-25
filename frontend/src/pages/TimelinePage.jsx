@@ -6,7 +6,6 @@ import { api } from '../services/api.js';
 import AddCriminalModal from '../components/AddCriminalModal.jsx';
 
 const CRIMINAL_FIR_POLICE_STATIONS = [
-  // MAYANK KOTOLI
   {
     id: 'FIR-STN-01',
     criminalName: 'Mayank Kotoli',

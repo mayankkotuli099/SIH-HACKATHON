@@ -2,6 +2,74 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { api } from '../services/api.js';
 import AddCriminalModal from '../components/AddCriminalModal.jsx';
 
+export const POLICE_STATIONS = [
+  {
+    id: 'PS-18',
+    name: 'PS Sector 18 Crime Branch',
+    code: 'STN-NCR-018',
+    district: 'Gurugram Commissionerate',
+    zone: 'Zone-1 (DLF & Cyber City)',
+    sho: 'Inspector R. K. Dahiya',
+    status: 'ONLINE',
+    ping: '14ms',
+    activeOfficers: 24,
+    emergencyHotline: '112 / 0124-2391001',
+    cctnsStatus: 'LIVE CCTNS NODE'
+  },
+  {
+    id: 'PS-14',
+    name: 'Women Safety PS Sector 14',
+    code: 'STN-NCR-014',
+    district: 'Gurugram Commissionerate',
+    zone: 'South-West Sub-Division',
+    sho: 'Inspector Meena Sangwan',
+    status: 'ONLINE',
+    ping: '18ms',
+    activeOfficers: 18,
+    emergencyHotline: '1091 / 0124-2221414',
+    cctnsStatus: 'LIVE CCTNS NODE'
+  },
+  {
+    id: 'PS-SADAR',
+    name: 'PS Sadar Bazar Anti-Robbery',
+    code: 'STN-DEL-042',
+    district: 'Delhi Central District',
+    zone: 'Old Delhi & Chandni Chowk',
+    sho: 'Inspector Sandeep Hooda',
+    status: 'ONLINE',
+    ping: '22ms',
+    activeOfficers: 28,
+    emergencyHotline: '011-23512345',
+    cctnsStatus: 'LIVE CCTNS NODE'
+  },
+  {
+    id: 'PS-STF',
+    name: 'Special Cell STF Delhi HQ',
+    code: 'STN-STF-001',
+    district: 'Special Operations Command',
+    zone: 'Inter-State Gang & Terror Grid',
+    sho: 'ACP Rajesh Verma',
+    status: 'ONLINE',
+    ping: '9ms',
+    activeOfficers: 42,
+    emergencyHotline: '011-24361000',
+    cctnsStatus: 'HIGH SEC CCTNS'
+  },
+  {
+    id: 'PS-CYBER',
+    name: 'Cyber Crime PS Sector 43',
+    code: 'STN-CYB-043',
+    district: 'Cyber Command Wing',
+    zone: 'Fintech & Digital Fraud Hub',
+    sho: 'Inspector Amit Kulkarni',
+    status: 'ONLINE',
+    ping: '11ms',
+    activeOfficers: 16,
+    emergencyHotline: '1930 / 0124-2884300',
+    cctnsStatus: 'LIVE CCTNS NODE'
+  }
+];
+
 export default function DashboardPage({ onNavigate }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [severityFilter, setSeverityFilter] = useState('ALL');
@@ -12,6 +80,21 @@ export default function DashboardPage({ onNavigate }) {
   const [isAddCriminalModalOpen, setIsAddCriminalModalOpen] = useState(false);
   const [isLiveFeedActive, setIsLiveFeedActive] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Connected Police Station State
+  const [selectedStationId, setSelectedStationId] = useState(() => {
+    try {
+      const stored = localStorage.getItem('crimelens_station_id');
+      return stored || 'PS-18';
+    } catch {
+      return 'PS-18';
+    }
+  });
+  const [showStationDetails, setShowStationDetails] = useState(false);
+
+  const activeStation = useMemo(() => {
+    return POLICE_STATIONS.find((s) => s.id === selectedStationId) || POLICE_STATIONS[0];
+  }, [selectedStationId]);
 
   // AI Suspect Prediction State
   const [predictionInput, setPredictionInput] = useState('');
@@ -502,6 +585,179 @@ export default function DashboardPage({ onNavigate }) {
             <span>+ REGISTER CRIMINAL</span>
           </button>
         </div>
+      </div>
+
+      {/* ================= CONNECTED POLICE STATION (SIMPLE & CONCISE) ================= */}
+      <div style={{
+        backgroundColor: 'rgba(11, 18, 30, 0.85)',
+        border: '1px solid rgba(0, 229, 255, 0.22)',
+        borderRadius: '8px',
+        padding: '0.85rem 1.25rem',
+        marginBottom: '1.5rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '1rem',
+        background: 'linear-gradient(90deg, rgba(0, 229, 255, 0.06) 0%, rgba(11, 18, 30, 0.9) 100%)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }}>
+        {/* Left: Station Identity & Details */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 360px' }}>
+          <div style={{
+            width: '42px',
+            height: '42px',
+            borderRadius: '8px',
+            backgroundColor: 'rgba(0, 229, 255, 0.12)',
+            border: '1.5px solid var(--cyan-glow)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '20px',
+            boxShadow: '0 0 12px rgba(0, 229, 255, 0.25)',
+            flexShrink: 0
+          }}>
+            🏢
+          </div>
+          <div>
+            <div style={{
+              fontSize: '10.5px',
+              fontFamily: 'monospace',
+              color: 'var(--cyan-glow)',
+              letterSpacing: '1px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginBottom: '2px',
+              flexWrap: 'wrap'
+            }}>
+              <span>CONNECTED POLICE STATION</span>
+              <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>•</span>
+              <span style={{ color: '#94A3B8' }}>{activeStation.code}</span>
+              <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>•</span>
+              <span style={{ color: '#00E676', fontWeight: 700 }}>● {activeStation.cctnsStatus}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '0.3px' }}>
+                {activeStation.name}
+              </span>
+              <span style={{
+                fontSize: '11px',
+                color: '#94A3B8',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                border: '1px solid rgba(255, 255, 255, 0.1)'
+              }}>
+                📍 {activeStation.district} ({activeStation.zone})
+              </span>
+              <button
+                onClick={() => setShowStationDetails(prev => !prev)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--cyan-glow)',
+                  fontSize: '11px',
+                  fontFamily: 'monospace',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: 0
+                }}
+              >
+                {showStationDetails ? 'Hide Details ▲' : 'View Details ▼'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Quick Station Switcher & Active Officers */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {/* Active Officers Pill */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            backgroundColor: 'rgba(0, 229, 255, 0.08)',
+            border: '1px solid rgba(0, 229, 255, 0.25)',
+            borderRadius: '6px',
+            padding: '5px 10px',
+            fontSize: '11px',
+            fontFamily: 'monospace',
+            color: '#E2E8F0'
+          }}>
+            <span>👮</span>
+            <span><strong>{activeStation.activeOfficers}</strong> Officers Active</span>
+          </div>
+
+          {/* Quick Station Switch Dropdown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <label style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+              STATION:
+            </label>
+            <select
+              value={selectedStationId}
+              onChange={(e) => {
+                const newId = e.target.value;
+                setSelectedStationId(newId);
+                localStorage.setItem('crimelens_station_id', newId);
+                const st = POLICE_STATIONS.find(s => s.id === newId);
+                if (st) {
+                  showToast(`✓ Switched to ${st.name}`);
+                }
+              }}
+              style={{
+                backgroundColor: 'rgba(7, 12, 20, 0.95)',
+                border: '1px solid rgba(0, 229, 255, 0.35)',
+                borderRadius: '5px',
+                color: 'var(--cyan-glow)',
+                fontFamily: 'monospace',
+                fontSize: '11.5px',
+                fontWeight: 700,
+                padding: '6px 10px',
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              {POLICE_STATIONS.map((st) => (
+                <option key={st.id} value={st.id} style={{ backgroundColor: '#0B121E', color: '#FFFFFF' }}>
+                  {st.name} ({st.code})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Optional Collapsible Station Details */}
+        {showStationDetails && (
+          <div style={{
+            width: '100%',
+            marginTop: '8px',
+            paddingTop: '10px',
+            borderTop: '1px solid rgba(0, 229, 255, 0.15)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '10px',
+            fontSize: '11.5px',
+            fontFamily: 'monospace'
+          }}>
+            <div style={{ color: '#94A3B8' }}>
+              <span style={{ color: 'var(--cyan-glow)' }}>Station Head (SHO): </span>
+              <strong style={{ color: '#FFFFFF' }}>{activeStation.sho}</strong>
+            </div>
+            <div style={{ color: '#94A3B8' }}>
+              <span style={{ color: 'var(--cyan-glow)' }}>Emergency Hotline: </span>
+              <strong style={{ color: '#00E676' }}>{activeStation.emergencyHotline}</strong>
+            </div>
+            <div style={{ color: '#94A3B8' }}>
+              <span style={{ color: 'var(--cyan-glow)' }}>Network Latency: </span>
+              <strong style={{ color: '#FFFFFF' }}>{activeStation.ping} (Encrypted Tunnel)</strong>
+            </div>
+            <div style={{ color: '#94A3B8' }}>
+              <span style={{ color: 'var(--cyan-glow)' }}>CCTNS Sync: </span>
+              <strong style={{ color: '#00E676' }}>Real-Time Continuous</strong>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ================= 4 KPI METRIC CARDS ================= */}
