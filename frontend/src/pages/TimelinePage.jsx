@@ -11,7 +11,7 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
     criminalName: 'Mayank Kotoli',
     criminalId: 'CRM-9942',
     firNumber: 'FIR-2024-402',
-    stationName: 'PS Sector 18 (Crime Branch)',
+    stationName: 'PS Sector 19 (Crime Branch)',
     city: 'Gurugram, Haryana',
     lat: 28.4721,
     lng: 77.0392,
