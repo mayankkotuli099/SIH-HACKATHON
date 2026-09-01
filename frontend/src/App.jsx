@@ -13,12 +13,15 @@ import SettingsPage from './pages/SettingsPage';
 import EntityPage from './pages/EntityPage';
 import CasesPage from './pages/CasesPage';
 import NetworkPage from './pages/NetworkPage';
+import LocationPage from './pages/LocationPage';
+import CDRForensicsIngestion from './components/CDRForensicsIngestion';
 
 export default function App({ initialPage = 'home' }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
+  const [isIngestionOpen, setIsIngestionOpen] = useState(false);
 
   // Derive current page directly from URL location path
   const getCurrentPage = () => {
@@ -41,6 +44,10 @@ export default function App({ initialPage = 'home' }) {
     if (page === 'ai_assistant') {
       setIsAIChatOpen(true);
       window.dispatchEvent(new CustomEvent('crimelens:open-ai-chat'));
+      return;
+    }
+    if (page === 'ingestion') {
+      setIsIngestionOpen(true);
       return;
     }
     if (page === 'reports') {
@@ -128,8 +135,12 @@ export default function App({ initialPage = 'home' }) {
               <CasesPage />
             )}
 
-            {/* Tactical Fallbacks / Modules for Network, Anomalies, Location, Influencers, Cases */}
-            {(currentPage === 'anomalies' || currentPage === 'location' || currentPage === 'ai_assistant') && (
+            {currentPage === 'location' && (
+              <LocationPage onNavigate={handleNavigate} />
+            )}
+
+            {/* Tactical Fallbacks / Modules for Anomalies and AI Copilot */}
+            {(currentPage === 'anomalies' || currentPage === 'ai_assistant') && (
               <div style={{
                 flex: 1,
                 padding: '2.5rem 3rem',
@@ -163,7 +174,6 @@ export default function App({ initialPage = 'home' }) {
                       textTransform: 'uppercase'
                     }}>
                       {currentPage === 'anomalies' && '⚡ Real-time Threat Anomalies'}
-                      {currentPage === 'location' && '📍 Geospatial Vectors & Tracking'}
                       {currentPage === 'ai_assistant' && '🤖 Neural Copilot & AI Investigation'}
                     </h1>
                   </div>
@@ -191,7 +201,6 @@ export default function App({ initialPage = 'home' }) {
                     fontSize: '28px'
                   }}>
                     {currentPage === 'anomalies' && '⚡'}
-                    {currentPage === 'location' && '📍'}
                     {currentPage === 'ai_assistant' && '🤖'}
                   </div>
 
@@ -222,6 +231,16 @@ export default function App({ initialPage = 'home' }) {
         isOpen={isAIChatOpen}
         onToggle={setIsAIChatOpen}
         onClose={() => setIsAIChatOpen(false)}
+      />
+
+      {/* Global CDR & Forensic Data Ingestion Hub Modal */}
+      <CDRForensicsIngestion
+        isOpen={isIngestionOpen}
+        onClose={() => setIsIngestionOpen(false)}
+        onIngestSuccess={() => {
+          setIsIngestionOpen(false);
+          handleNavigate('location');
+        }}
       />
     </div>
   );

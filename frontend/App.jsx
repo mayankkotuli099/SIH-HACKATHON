@@ -72,6 +72,14 @@ function App() {
         }
       />
       <Route
+        path="/location"
+        element={
+          <ProtectedRoute>
+            <SiteApp key="location" initialPage="location" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/settings"
         element={
           <ProtectedRoute>

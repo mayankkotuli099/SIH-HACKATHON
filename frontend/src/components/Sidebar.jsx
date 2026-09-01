@@ -28,7 +28,9 @@ export default function Sidebar({
         { id: 'dashboard', label: 'DASHBOARD', icon: '📊', badge: null, desc: 'Live Telemetry & KPIs' },
         { id: 'cases', label: 'FIR & CASES', icon: '📁', badge: 'ACTIVE', badgeColor: '#00E5FF', desc: 'Case Files & FIR Records' },
         { id: 'entities', label: 'CRIMINAL 360', icon: '👤', badge: 'DOSSIER', badgeColor: '#00E676', desc: 'Biometric & Profile Intel' },
+        { id: 'location', label: 'GIS GEO-TRACK', icon: '🗺️', badge: 'LIVE GIS', badgeColor: '#00E676', desc: 'Geospatial Vectors & Trajectory Playback' },
         { id: 'timeline', label: 'TIMELINE & MAP', icon: '⏱️', badge: 'LIVE', badgeColor: '#00E5FF', desc: 'Chronological Event Trace & Map' },
+        { id: 'ingestion', label: 'CDR INGESTION', icon: '📡', badge: 'FORENSIC', badgeColor: '#A855F7', desc: 'CDR & Financial Log Ingestion Hub' },
         { id: 'reports', label: 'CHARGESHEETS', icon: '📄', badge: 'BNSS 193', badgeColor: '#FBBF24', desc: 'Form 173 Final Reports' }
       ]
     },

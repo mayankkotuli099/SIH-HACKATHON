@@ -39,6 +39,7 @@ export default function Navbar({ activePage = 'home', onNavigate }) {
     { id: 'entities', label: 'CRIMINAL 360' },
     { id: 'cases', label: 'FIR & CASES' },
     { id: 'network', label: 'GANG NETWORK' },
+    { id: 'location', label: 'GEO TRACK' },
     { id: 'timeline', label: 'TIMELINE' },
     { id: 'reports', label: 'CHARGESHEETS' },
   ];
