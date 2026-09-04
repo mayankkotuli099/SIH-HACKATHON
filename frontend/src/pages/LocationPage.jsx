@@ -36,7 +36,7 @@ const CELL_TOWERS = [
     operator: 'Airtel STF Trunk',
     activeSuspectPings: 4,
     status: 'SURVEILLANCE_ACTIVE',
-    color: '#00E5FF'
+    color: '#2563eb'
   },
   {
     id: 'TWR-02',
@@ -49,7 +49,7 @@ const CELL_TOWERS = [
     operator: 'Jio Intercept Node',
     activeSuspectPings: 2,
     status: 'ACTIVE_INTERCEPT',
-    color: '#00E5FF'
+    color: '#2563eb'
   },
   {
     id: 'TWR-03',
@@ -62,7 +62,7 @@ const CELL_TOWERS = [
     operator: 'Highway Telecom Relay',
     activeSuspectPings: 3,
     status: 'HIGHWAY_MONITORING',
-    color: '#00E5FF'
+    color: '#2563eb'
   },
   {
     id: 'TWR-04',
@@ -75,7 +75,7 @@ const CELL_TOWERS = [
     operator: 'Special Cell Dedicated Mast',
     activeSuspectPings: 1,
     status: 'GOVT_SECURE',
-    color: '#00E5FF'
+    color: '#2563eb'
   }
 ];
 
@@ -317,11 +317,11 @@ export default function LocationPage({ onNavigate }) {
         });
 
         marker.bindPopup(`
-          <div style="color: #07090E; font-family: sans-serif; min-width: 200px;">
-            <div style="font-size: 10px; font-weight: 800; color: #0284C7;">📡 CELLULAR MAST NODE</div>
+          <div style="color: #0f172a; font-family: sans-serif; min-width: 200px;">
+            <div style="font-size: 10px; font-weight: 800; color: #1e40af;">📡 CELLULAR MAST NODE</div>
             <div style="font-size: 13px; font-weight: 800; margin: 2px 0;">${twr.name}</div>
             <div style="font-size: 11px; color: #475569;">Cell ID: ${twr.cellId}</div>
-            <div style="font-size: 11px; color: #DC2626; font-weight: 700; margin-top: 4px;">
+            <div style="font-size: 11px; color: #dc2626; font-weight: 700; margin-top: 4px;">
               ⚡ ${twr.activeSuspectPings} Active Intercept Pings
             </div>
           </div>
@@ -334,10 +334,10 @@ export default function LocationPage({ onNavigate }) {
         if (layers.triangulationRings) {
           const circle = L.circle([twr.lat, twr.lng], {
             radius: twr.radiusM,
-            color: '#00E5FF',
+            color: '#2563eb',
             weight: 1,
             dashArray: '4, 6',
-            fillColor: '#00E5FF',
+            fillColor: '#2563eb',
             fillOpacity: 0.08
           });
           layersGroupRef.current.cellTowers.addLayer(circle);
@@ -350,14 +350,14 @@ export default function LocationPage({ onNavigate }) {
       ANPR_CAMERAS.forEach((cam) => {
         const marker = L.circleMarker([cam.lat, cam.lng], {
           radius: 8,
-          color: '#07090E',
+          color: '#0f172a',
           weight: 2,
           fillColor: '#FACC15',
           fillOpacity: 0.95
         });
 
         marker.bindPopup(`
-          <div style="color: #07090E; font-family: sans-serif; min-width: 210px;">
+          <div style="color: #0f172a; font-family: sans-serif; min-width: 210px;">
             <div style="font-size: 10px; font-weight: 800; color: #B45309;">📷 ANPR HIGHWAY HIT</div>
             <div style="font-size: 13px; font-weight: 800; margin: 2px 0;">${cam.name}</div>
             <div style="background: #FEF3C7; padding: 4px 6px; border-radius: 4px; font-size: 11px; margin: 4px 0;">
@@ -385,10 +385,10 @@ export default function LocationPage({ onNavigate }) {
         });
 
         marker.bindPopup(`
-          <div style="color: #07090E; font-family: sans-serif; min-width: 220px;">
+          <div style="color: #0f172a; font-family: sans-serif; min-width: 220px;">
             <div style="font-size: 10px; font-weight: 800; color: #DC2626;">🚨 CRIME SCENE PERIMETER</div>
             <div style="font-size: 13px; font-weight: 800; margin: 2px 0;">${cs.title}</div>
-            <div style="font-size: 11px; color: #0284C7; font-weight: 700;">${cs.firNumber} • ${cs.policeStation}</div>
+            <div style="font-size: 11px; color: #1e40af; font-weight: 700;">${cs.firNumber} • ${cs.policeStation}</div>
             <div style="margin-top: 4px; font-size: 11px; color: #475569;">Geofence Radius: ${cs.geofenceRadiusM}m</div>
           </div>
         `);
@@ -436,11 +436,11 @@ export default function LocationPage({ onNavigate }) {
           });
 
           suspectMarker.bindPopup(`
-            <div style="color: #07090E; font-family: sans-serif; min-width: 200px;">
+            <div style="color: #0f172a; font-family: sans-serif; min-width: 200px;">
               <div style="font-size: 10px; font-weight: 800; color: #DC2626;">🎯 REAL-TIME SUSPECT VECTOR</div>
               <div style="font-size: 13.5px; font-weight: 800; color: #0F172A;">${name}</div>
               <div style="font-size: 11px; color: #475569; margin: 3px 0;">📍 ${currentPos.label}</div>
-              <div style="font-size: 10px; color: #0284C7; font-weight: 700;">TIMESTAMP: ~${currentPos.time} IST</div>
+              <div style="font-size: 10px; color: #1e40af; font-weight: 700;">TIMESTAMP: ~${currentPos.time} IST</div>
             </div>
           `);
 
@@ -468,7 +468,7 @@ export default function LocationPage({ onNavigate }) {
         scrollWheelZoom: true
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap &copy; CARTO'
       }).addTo(map);
@@ -525,32 +525,32 @@ export default function LocationPage({ onNavigate }) {
 
   return (
     <div style={{
-      padding: '1.5rem 2rem 3rem 2rem',
-      backgroundColor: 'var(--bg-dark, #07090E)',
+      padding: '24px 28px',
+      backgroundColor: 'var(--bg-app, #f8fafc)',
       minHeight: '100vh',
-      color: '#FFFFFF',
+      color: 'var(--text-primary, #0f172a)',
       boxSizing: 'border-box'
     }}>
       {/* Toast Alert */}
       {toastMessage && (
         <div style={{
           position: 'fixed',
-          top: '80px',
+          bottom: '24px',
           right: '24px',
-          backgroundColor: '#00E5FF',
-          color: '#07090E',
+          backgroundColor: 'var(--card-bg, #ffffff)',
+          color: 'var(--card-text, #0f172a)',
+          border: '1px solid var(--card-border, #e2e8f0)',
           padding: '10px 18px',
           borderRadius: '6px',
-          fontWeight: 800,
-          fontFamily: 'var(--font-mono, monospace)',
-          fontSize: '12px',
-          boxShadow: '0 0 25px rgba(0, 229, 255, 0.45)',
+          fontWeight: 600,
+          fontSize: '13px',
+          boxShadow: 'var(--shadow-lg)',
           zIndex: 100000,
           display: 'flex',
           alignItems: 'center',
           gap: '8px'
         }}>
-          <CheckCircle2 size={16} />
+          <CheckCircle2 size={16} color="#16a34a" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -562,43 +562,39 @@ export default function LocationPage({ onNavigate }) {
         alignItems: 'center',
         flexWrap: 'wrap',
         gap: '1rem',
-        borderBottom: '1px solid rgba(0, 229, 255, 0.2)',
-        paddingBottom: '1rem',
-        marginBottom: '1.25rem'
+        borderBottom: '1px solid var(--card-border, #e2e8f0)',
+        paddingBottom: '16px',
+        marginBottom: '20px'
       }}>
         <div>
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontFamily: 'var(--font-mono, monospace)',
             fontSize: '11px',
-            color: '#00E5FF',
-            letterSpacing: '1.5px',
-            marginBottom: '4px'
+            fontWeight: 700,
+            color: 'var(--accent-primary, #1e40af)',
+            letterSpacing: '0.8px',
+            marginBottom: '2px'
           }}>
-            <Navigation size={13} className="pulse-dot" />
-            <span>GIS TACTICAL MATRIX // GEOSPATIAL TELEMETRY &amp; GEOFENCING ENGINE</span>
+            GIS GEOSPATIAL INTELLIGENCE // TELEMETRY &amp; GEOFENCING
           </div>
-          <h1 style={{ fontSize: '24px', fontWeight: 800, margin: 0, letterSpacing: '0.5px' }}>
-            GEOSPATIAL TRACKING &amp; TRAJECTORY PLAYBACK
+          <h1 style={{ fontSize: '20px', fontWeight: 800, margin: 0, color: 'var(--card-text, #0f172a)' }}>
+            Geospatial Tracking &amp; Trajectory Playback
           </h1>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button
             onClick={() => onNavigate && onNavigate('timeline')}
-            className="btn-outline-cyan"
-            style={{ fontSize: '12px', padding: '7px 14px' }}
+            className="btn-secondary"
+            style={{ fontSize: '12px', padding: '6px 12px' }}
           >
-            ⏱️ VIEW TIMELINE STREAM
+            <span>⏱️ View Timeline</span>
           </button>
           <button
             onClick={() => onNavigate && onNavigate('reports')}
-            className="btn-cyan"
-            style={{ fontSize: '12px', padding: '7px 14px' }}
+            className="btn-primary"
+            style={{ fontSize: '12px', padding: '6px 12px' }}
           >
-            📄 GENERATE CHARGESHEET
+            <span>Generate Chargesheet</span>
           </button>
         </div>
       </div>
@@ -606,38 +602,38 @@ export default function LocationPage({ onNavigate }) {
       {/* Geofence Collision Alert Banner */}
       {geofenceCollisionAlert && (
         <div style={{
-          backgroundColor: 'rgba(255, 85, 85, 0.15)',
-          border: '1.5px solid #FF5555',
-          borderRadius: '8px',
-          padding: '12px 18px',
-          marginBottom: '1.25rem',
+          backgroundColor: '#fef2f2',
+          border: '1px solid #fecaca',
+          borderRadius: '6px',
+          padding: '12px 16px',
+          marginBottom: '20px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          animation: 'pulse 2s infinite',
-          boxShadow: '0 0 25px rgba(255, 85, 85, 0.35)'
+          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <AlertTriangle size={24} color="#FF5555" />
+            <AlertTriangle size={20} color="#dc2626" />
             <div>
-              <div style={{ fontSize: '13px', fontWeight: 900, color: '#FF6B6B', letterSpacing: '0.5px' }}>
+              <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#dc2626' }}>
                 {geofenceCollisionAlert.title}
               </div>
-              <div style={{ fontSize: '12px', color: '#FFFFFF', marginTop: '2px' }}>
-                <strong>Location:</strong> {geofenceCollisionAlert.location} • <strong>Suspects Co-located:</strong> {geofenceCollisionAlert.suspects.join(', ')}
+              <div style={{ fontSize: '12px', color: '#475569', marginTop: '2px' }}>
+                <strong>Location:</strong> {geofenceCollisionAlert.location} • <strong>Suspects:</strong> {geofenceCollisionAlert.suspects.join(', ')}
               </div>
             </div>
           </div>
 
-          <div style={{ textAlign: 'right' }}>
+          <div>
             <span style={{
-              backgroundColor: '#FF5555',
-              color: '#07090E',
-              fontWeight: 800,
+              backgroundColor: '#fee2e2',
+              color: '#991b1b',
+              border: '1px solid #fca5a5',
+              fontWeight: 700,
               fontSize: '11px',
-              padding: '4px 8px',
+              padding: '3px 8px',
               borderRadius: '4px',
-              fontFamily: 'var(--font-mono, monospace)'
+              fontFamily: 'monospace'
             }}>
               AT {geofenceCollisionAlert.time}
             </span>
@@ -649,27 +645,28 @@ export default function LocationPage({ onNavigate }) {
       <div style={{
         display: 'grid',
         gridTemplateColumns: '280px 1fr',
-        gap: '1.25rem',
+        gap: '20px',
         minHeight: '620px'
       }}>
         {/* Left Column: Layer Toggles & Suspect Selector */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Layer Control Card */}
           <div style={{
-            backgroundColor: 'rgba(12, 17, 26, 0.95)',
-            border: '1px solid rgba(0, 229, 255, 0.2)',
-            borderRadius: '8px',
-            padding: '14px 16px'
+            backgroundColor: 'var(--card-bg, #ffffff)',
+            border: '1px solid var(--card-border, #e2e8f0)',
+            borderRadius: '6px',
+            padding: '14px 16px',
+            boxShadow: 'var(--shadow-sm)'
           }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              fontSize: '11.5px',
+              fontSize: '11px',
               fontWeight: 800,
-              color: '#00E5FF',
-              fontFamily: 'var(--font-mono, monospace)',
-              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              color: 'var(--accent-primary, #1e40af)',
+              fontFamily: 'monospace',
+              borderBottom: '1px solid var(--card-border, #e2e8f0)',
               paddingBottom: '8px',
               marginBottom: '10px'
             }}>
@@ -678,52 +675,52 @@ export default function LocationPage({ onNavigate }) {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer', color: 'var(--card-text-secondary, #334155)' }}>
                 <input
                   type="checkbox"
                   checked={layers.cellTowers}
                   onChange={() => toggleLayer('cellTowers')}
-                  style={{ accentColor: '#00E5FF' }}
+                  style={{ accentColor: '#1e40af' }}
                 />
                 <span>📡 Cell Towers ({CELL_TOWERS.length})</span>
               </label>
 
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer', color: 'var(--card-text-secondary, #334155)' }}>
                 <input
                   type="checkbox"
                   checked={layers.triangulationRings}
                   onChange={() => toggleLayer('triangulationRings')}
-                  style={{ accentColor: '#00E5FF' }}
+                  style={{ accentColor: '#1e40af' }}
                 />
                 <span>⭕ Triangulation Radiuses</span>
               </label>
 
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer', color: 'var(--card-text-secondary, #334155)' }}>
                 <input
                   type="checkbox"
                   checked={layers.anprCameras}
                   onChange={() => toggleLayer('anprCameras')}
-                  style={{ accentColor: '#FACC15' }}
+                  style={{ accentColor: '#d97706' }}
                 />
                 <span>📷 ANPR Highway Cameras ({ANPR_CAMERAS.length})</span>
               </label>
 
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer', color: 'var(--card-text-secondary, #334155)' }}>
                 <input
                   type="checkbox"
                   checked={layers.crimeScenes}
                   onChange={() => toggleLayer('crimeScenes')}
-                  style={{ accentColor: '#FF5555' }}
+                  style={{ accentColor: '#dc2626' }}
                 />
                 <span>🚨 Crime Scene Hotspots ({CRIME_SCENES.length})</span>
               </label>
 
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', cursor: 'pointer', color: 'var(--card-text-secondary, #334155)' }}>
                 <input
                   type="checkbox"
                   checked={layers.trajectories}
                   onChange={() => toggleLayer('trajectories')}
-                  style={{ accentColor: '#00E676' }}
+                  style={{ accentColor: '#16a34a' }}
                 />
                 <span>🎯 Suspect Movement Vectors</span>
               </label>
@@ -732,20 +729,21 @@ export default function LocationPage({ onNavigate }) {
 
           {/* Suspect Vector Filter Card */}
           <div style={{
-            backgroundColor: 'rgba(12, 17, 26, 0.95)',
-            border: '1px solid rgba(0, 229, 255, 0.2)',
-            borderRadius: '8px',
-            padding: '14px 16px'
+            backgroundColor: 'var(--card-bg, #ffffff)',
+            border: '1px solid var(--card-border, #e2e8f0)',
+            borderRadius: '6px',
+            padding: '14px 16px',
+            boxShadow: 'var(--shadow-sm)'
           }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              fontSize: '11.5px',
+              fontSize: '11px',
               fontWeight: 800,
-              color: '#00E5FF',
-              fontFamily: 'var(--font-mono, monospace)',
-              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              color: 'var(--accent-primary, #1e40af)',
+              fontFamily: 'monospace',
+              borderBottom: '1px solid var(--card-border, #e2e8f0)',
               paddingBottom: '8px',
               marginBottom: '10px'
             }}>
@@ -758,14 +756,14 @@ export default function LocationPage({ onNavigate }) {
                 onClick={() => setSelectedSuspect('ALL')}
                 style={{
                   textAlign: 'left',
-                  padding: '7px 10px',
-                  borderRadius: '5px',
-                  backgroundColor: selectedSuspect === 'ALL' ? 'rgba(0, 229, 255, 0.2)' : 'transparent',
-                  border: selectedSuspect === 'ALL' ? '1px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.08)',
-                  color: selectedSuspect === 'ALL' ? '#00E5FF' : '#94A3B8',
+                  padding: '6px 10px',
+                  borderRadius: '4px',
+                  backgroundColor: selectedSuspect === 'ALL' ? 'var(--accent-subtle, #eff6ff)' : 'var(--card-bg-elevated, #f8fafc)',
+                  border: selectedSuspect === 'ALL' ? '1px solid var(--accent-primary, #bfdbfe)' : '1px solid var(--card-border, #e2e8f0)',
+                  color: selectedSuspect === 'ALL' ? 'var(--accent-primary, #1e40af)' : 'var(--text-muted, #64748b)',
                   fontSize: '11.5px',
                   fontWeight: 700,
-                  fontFamily: 'var(--font-mono, monospace)',
+                  fontFamily: 'monospace',
                   cursor: 'pointer'
                 }}
               >
@@ -780,13 +778,13 @@ export default function LocationPage({ onNavigate }) {
                     onClick={() => setSelectedSuspect(name)}
                     style={{
                       textAlign: 'left',
-                      padding: '7px 10px',
-                      borderRadius: '5px',
-                      backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.15)' : 'transparent',
-                      border: isSelected ? `1.5px solid ${data.color}` : '1px solid rgba(255, 255, 255, 0.08)',
-                      color: isSelected ? '#FFFFFF' : '#94A3B8',
+                      padding: '6px 10px',
+                      borderRadius: '4px',
+                      backgroundColor: isSelected ? 'var(--accent-subtle, #eff6ff)' : 'var(--card-bg, #ffffff)',
+                      border: isSelected ? `1.5px solid ${data.color}` : '1px solid var(--card-border, #e2e8f0)',
+                      color: isSelected ? 'var(--card-text, #0f172a)' : 'var(--text-muted, #64748b)',
                       fontSize: '11.5px',
-                      fontWeight: isSelected ? 800 : 500,
+                      fontWeight: isSelected ? 700 : 500,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -804,26 +802,26 @@ export default function LocationPage({ onNavigate }) {
           {/* Inspector Panel */}
           {selectedItem && (
             <div style={{
-              backgroundColor: 'rgba(12, 17, 26, 0.95)',
-              border: '1px solid rgba(0, 229, 255, 0.3)',
-              borderRadius: '8px',
+              backgroundColor: 'var(--card-bg, #ffffff)',
+              border: '1px solid var(--card-border, #e2e8f0)',
+              borderRadius: '6px',
               padding: '14px 16px',
-              animation: 'fadeIn 0.2s ease'
+              boxShadow: 'var(--shadow-sm)'
             }}>
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: '8px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                borderBottom: '1px solid var(--card-border, #e2e8f0)',
                 paddingBottom: '6px'
               }}>
-                <span style={{ fontSize: '10.5px', color: '#00E5FF', fontWeight: 800, fontFamily: 'var(--font-mono, monospace)' }}>
+                <span style={{ fontSize: '10.5px', color: 'var(--accent-primary, #1e40af)', fontWeight: 800, fontFamily: 'monospace' }}>
                   INSPECTOR // {selectedItem.type}
                 </span>
                 <button
                   onClick={() => setSelectedItem(null)}
-                  style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', fontSize: '11px' }}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-muted, #64748b)', cursor: 'pointer', fontSize: '12px' }}
                 >
                   ✕
                 </button>
@@ -831,33 +829,33 @@ export default function LocationPage({ onNavigate }) {
 
               {selectedItem.type === 'CELL_TOWER' && (
                 <div style={{ fontSize: '12px' }}>
-                  <div style={{ fontWeight: 800, color: '#FFFFFF', marginBottom: '2px' }}>{selectedItem.data.name}</div>
-                  <div style={{ color: '#94A3B8', fontSize: '11px' }}>ID: {selectedItem.data.cellId}</div>
-                  <div style={{ color: '#00E676', fontWeight: 700, marginTop: '4px' }}>Range: {selectedItem.data.radiusM}m • Azimuth: {selectedItem.data.azimuthDeg}°</div>
+                  <div style={{ fontWeight: 800, color: 'var(--card-text, #0f172a)', marginBottom: '2px' }}>{selectedItem.data.name}</div>
+                  <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px' }}>ID: {selectedItem.data.cellId}</div>
+                  <div style={{ color: '#16a34a', fontWeight: 700, marginTop: '4px' }}>Range: {selectedItem.data.radiusM}m • Azimuth: {selectedItem.data.azimuthDeg}°</div>
                 </div>
               )}
 
               {selectedItem.type === 'ANPR_CAMERA' && (
                 <div style={{ fontSize: '12px' }}>
-                  <div style={{ fontWeight: 800, color: '#FACC15', marginBottom: '2px' }}>{selectedItem.data.name}</div>
-                  <div style={{ color: '#FFFFFF' }}>Hit: <strong>{selectedItem.data.lastHit}</strong></div>
-                  <div style={{ color: '#FF8888', fontSize: '11px', marginTop: '2px' }}>Suspect: {selectedItem.data.suspect} ({selectedItem.data.speedKmph} km/h)</div>
+                  <div style={{ fontWeight: 800, color: '#d97706', marginBottom: '2px' }}>{selectedItem.data.name}</div>
+                  <div style={{ color: 'var(--card-text, #0f172a)' }}>Hit: <strong>{selectedItem.data.lastHit}</strong></div>
+                  <div style={{ color: '#dc2626', fontSize: '11px', marginTop: '2px' }}>Suspect: {selectedItem.data.suspect} ({selectedItem.data.speedKmph} km/h)</div>
                 </div>
               )}
 
               {selectedItem.type === 'CRIME_SCENE' && (
                 <div style={{ fontSize: '12px' }}>
-                  <div style={{ fontWeight: 800, color: '#FF6B6B', marginBottom: '2px' }}>{selectedItem.data.title}</div>
-                  <div style={{ color: '#00E5FF' }}>{selectedItem.data.firNumber}</div>
-                  <div style={{ color: '#CBD5E1', fontSize: '11px', marginTop: '2px' }}>PS: {selectedItem.data.policeStation}</div>
+                  <div style={{ fontWeight: 800, color: '#dc2626', marginBottom: '2px' }}>{selectedItem.data.title}</div>
+                  <div style={{ color: 'var(--accent-primary, #1e40af)' }}>{selectedItem.data.firNumber}</div>
+                  <div style={{ color: 'var(--card-text-secondary, #475569)', fontSize: '11px', marginTop: '2px' }}>PS: {selectedItem.data.policeStation}</div>
                 </div>
               )}
 
               {selectedItem.type === 'SUSPECT_VECTOR' && (
                 <div style={{ fontSize: '12px' }}>
                   <div style={{ fontWeight: 800, color: selectedItem.color, marginBottom: '2px' }}>{selectedItem.name}</div>
-                  <div style={{ color: '#FFFFFF' }}>Position: {selectedItem.currentPos.label}</div>
-                  <div style={{ color: '#94A3B8', fontSize: '11px', marginTop: '2px' }}>Est. Time: {selectedItem.currentPos.time} IST</div>
+                  <div style={{ color: 'var(--card-text, #0f172a)' }}>Position: {selectedItem.currentPos.label}</div>
+                  <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px', marginTop: '2px' }}>Est. Time: {selectedItem.currentPos.time} IST</div>
                 </div>
               )}
             </div>
@@ -865,20 +863,20 @@ export default function LocationPage({ onNavigate }) {
         </div>
 
         {/* Right Column: Interactive Map & Playback Control Ribbon */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Tactical Map Container */}
           <div style={{
             position: 'relative',
             height: '520px',
             width: '100%',
-            borderRadius: '10px',
-            border: '1.5px solid rgba(0, 229, 255, 0.3)',
+            borderRadius: '6px',
+            border: '1px solid var(--card-border, #e2e8f0)',
             overflow: 'hidden',
-            boxShadow: '0 0 35px rgba(0, 0, 0, 0.8)'
+            boxShadow: 'var(--shadow-sm)'
           }}>
             <div
               ref={mapContainerRef}
-              style={{ width: '100%', height: '100%', backgroundColor: '#07090E' }}
+              style={{ width: '100%', height: '100%', backgroundColor: 'var(--card-bg-elevated, #f1f5f9)' }}
             />
 
             {/* Map Floating HUD Overlay */}
@@ -886,17 +884,17 @@ export default function LocationPage({ onNavigate }) {
               position: 'absolute',
               top: '12px',
               right: '12px',
-              backgroundColor: 'rgba(7, 10, 16, 0.88)',
-              border: '1px solid rgba(0, 229, 255, 0.3)',
-              backdropFilter: 'blur(12px)',
-              padding: '8px 14px',
+              backgroundColor: 'var(--card-bg, #ffffff)',
+              border: '1px solid var(--card-border, #e2e8f0)',
+              padding: '6px 12px',
               borderRadius: '6px',
               zIndex: 1000,
-              fontFamily: 'var(--font-mono, monospace)',
-              fontSize: '11.5px'
+              fontFamily: 'monospace',
+              fontSize: '11.5px',
+              boxShadow: 'var(--shadow-md)'
             }}>
-              <div style={{ color: '#94A3B8', fontSize: '9.5px' }}>INTERCEPT CLOCK</div>
-              <div style={{ color: '#00E5FF', fontWeight: 800, fontSize: '14px' }}>
+              <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '9.5px' }}>INTERCEPT CLOCK</div>
+              <div style={{ color: 'var(--accent-primary, #1e40af)', fontWeight: 800, fontSize: '13px' }}>
                 {currentTimeLabel}
               </div>
             </div>
@@ -904,33 +902,31 @@ export default function LocationPage({ onNavigate }) {
 
           {/* Trajectory Playback Scrubber Bar */}
           <div style={{
-            backgroundColor: 'rgba(12, 17, 26, 0.95)',
-            border: '1px solid rgba(0, 229, 255, 0.25)',
-            borderRadius: '8px',
+            backgroundColor: 'var(--card-bg, #ffffff)',
+            border: '1px solid var(--card-border, #e2e8f0)',
+            borderRadius: '6px',
             padding: '12px 18px',
             display: 'flex',
             alignItems: 'center',
-            gap: '16px',
-            flexWrap: 'wrap'
+            gap: '14px',
+            flexWrap: 'wrap',
+            boxShadow: 'var(--shadow-sm)'
           }}>
             {/* Play/Pause Button */}
             <button
               onClick={() => setIsPlaying(!isPlaying)}
+              className={isPlaying ? 'btn-danger' : 'btn-primary'}
               style={{
-                backgroundColor: isPlaying ? '#FF5555' : '#00E5FF',
-                border: 'none',
-                color: '#07090E',
-                borderRadius: '6px',
-                width: '36px',
-                height: '36px',
+                width: '34px',
+                height: '34px',
+                padding: 0,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: isPlaying ? '0 0 15px rgba(255, 85, 85, 0.5)' : '0 0 15px rgba(0, 229, 255, 0.4)'
+                borderRadius: '6px'
               }}
             >
-              {isPlaying ? <Pause size={18} /> : <Play size={18} style={{ marginLeft: '2px' }} />}
+              {isPlaying ? <Pause size={16} /> : <Play size={16} style={{ marginLeft: '2px' }} />}
             </button>
 
             {/* Reset Button */}
@@ -939,28 +935,25 @@ export default function LocationPage({ onNavigate }) {
                 setIsPlaying(false);
                 setPlaybackProgress(0);
               }}
+              className="btn-secondary"
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                color: '#94A3B8',
-                borderRadius: '6px',
-                width: '36px',
-                height: '36px',
+                width: '34px',
+                height: '34px',
+                padding: 0,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
+                justifyContent: 'center'
               }}
               title="Reset Timeline to 17:00"
             >
-              <RotateCcw size={16} />
+              <RotateCcw size={15} />
             </button>
 
             {/* Scrubber Range Slider */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px', fontFamily: 'var(--font-mono, monospace)', color: '#94A3B8' }}>
-                <span>17:00 IST (Hideouts Active)</span>
-                <span style={{ color: '#00E5FF', fontWeight: 800 }}>{currentTimeLabel}</span>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px', fontFamily: 'monospace', color: '#64748b' }}>
+                <span>17:00 IST (Hideouts)</span>
+                <span style={{ color: '#1e40af', fontWeight: 800 }}>{currentTimeLabel}</span>
                 <span>20:30 IST (STF Intercepts)</span>
               </div>
               <input
@@ -975,27 +968,27 @@ export default function LocationPage({ onNavigate }) {
                 }}
                 style={{
                   width: '100%',
-                  accentColor: '#00E5FF',
+                  accentColor: '#1e40af',
                   cursor: 'pointer'
                 }}
               />
             </div>
 
             {/* Speed Multipliers */}
-            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
               {[1, 2, 5].map((spd) => (
                 <button
                   key={spd}
                   onClick={() => setPlaybackSpeed(spd)}
                   style={{
-                    backgroundColor: playbackSpeed === spd ? 'rgba(0, 229, 255, 0.2)' : 'rgba(255, 255, 255, 0.03)',
-                    border: playbackSpeed === spd ? '1px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.1)',
-                    color: playbackSpeed === spd ? '#00E5FF' : '#94A3B8',
+                    backgroundColor: playbackSpeed === spd ? 'var(--accent-subtle, #eff6ff)' : 'var(--card-bg-elevated, #f8fafc)',
+                    border: playbackSpeed === spd ? '1px solid var(--accent-primary, #bfdbfe)' : '1px solid var(--card-border, #e2e8f0)',
+                    color: playbackSpeed === spd ? 'var(--accent-primary, #1e40af)' : 'var(--text-muted, #64748b)',
                     borderRadius: '4px',
-                    padding: '4px 8px',
+                    padding: '3px 7px',
                     fontSize: '11px',
                     fontWeight: 700,
-                    fontFamily: 'var(--font-mono, monospace)',
+                    fontFamily: 'monospace',
                     cursor: 'pointer'
                   }}
                 >

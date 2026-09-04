@@ -304,7 +304,7 @@ export function formatEntityToChargesheet(entity) {
   };
 }
 
-export default function Reports() {
+export default function Reports({ embedded = false, onNavigate }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -496,13 +496,15 @@ export default function Reports() {
 
   return (
     <div style={{
-      minHeight: '100vh',
-      backgroundColor: 'var(--bg-dark, #07090E)',
-      color: '#FFFFFF',
+      minHeight: embedded ? 'auto' : '100vh',
+      backgroundColor: 'var(--bg-app, #f8fafc)',
+      color: 'var(--text-primary, #0f172a)',
       fontFamily: 'var(--font-sans, sans-serif)'
     }}>
-      {/* Navigation */}
-      <Navbar activePage="reports" onNavigate={(page) => navigate(page === 'home' ? '/' : `/${page}`)} />
+      {/* Top Navbar only if accessed standalone outside SiteApp */}
+      {!embedded && (
+        <Navbar activePage="reports" onNavigate={(page) => (onNavigate ? onNavigate(page) : navigate(page === 'home' ? '/' : `/${page}`))} />
+      )}
 
       {/* Toast Alert */}
       {toastMessage && (
@@ -510,20 +512,21 @@ export default function Reports() {
           position: 'fixed',
           top: '80px',
           right: '24px',
-          backgroundColor: '#00E5FF',
-          color: '#07090E',
+          backgroundColor: 'var(--card-bg, #ffffff)',
+          color: 'var(--card-text, #0f172a)',
+          border: '1px solid var(--card-border, #e2e8f0)',
           padding: '12px 20px',
           borderRadius: '6px',
-          fontWeight: 700,
-          fontFamily: 'var(--font-mono, monospace)',
+          fontWeight: 600,
+          fontFamily: 'var(--font-sans, sans-serif)',
           fontSize: '13px',
-          boxShadow: '0 0 25px rgba(0, 229, 255, 0.6)',
+          boxShadow: 'var(--shadow-lg)',
           zIndex: 100000,
           display: 'flex',
           alignItems: 'center',
           gap: '8px'
         }}>
-          <CheckCircle2 size={16} />
+          <CheckCircle2 size={16} color="#16a34a" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -542,7 +545,7 @@ export default function Reports() {
           flexWrap: 'wrap',
           gap: '1rem',
           marginBottom: '1.5rem',
-          borderBottom: '1px solid rgba(0, 229, 255, 0.2)',
+          borderBottom: '1px solid var(--border-color, #e2e8f0)',
           paddingBottom: '1rem'
         }}>
           <div>
@@ -552,14 +555,15 @@ export default function Reports() {
               gap: '6px',
               fontFamily: 'var(--font-mono, monospace)',
               fontSize: '11px',
-              color: '#00E5FF',
-              letterSpacing: '1px'
+              color: 'var(--text-accent, #1e40af)',
+              fontWeight: 700,
+              letterSpacing: '0.8px'
             }}>
-              <span>🇮🇳</span>
+              <span>🏛️</span>
               <span>INDIAN POLICE // FINAL FORM 173 / BNSS 193 CHARGESHEET SYSTEM</span>
             </div>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '4px 0 0 0', letterSpacing: '0.5px' }}>
-              POLICE CHARGESHEET &amp; JUDICIAL EVIDENCE
+            <h1 style={{ fontSize: '22px', fontWeight: 800, margin: '4px 0 0 0', letterSpacing: '-0.01em', color: 'var(--text-primary, #0f172a)' }}>
+              Police Chargesheet &amp; Judicial Evidence
             </h1>
           </div>
 
@@ -567,38 +571,45 @@ export default function Reports() {
             <button
               onClick={() => setIsAddModalOpen(true)}
               style={{
-                backgroundColor: '#00E5FF',
-                border: 'none',
-                color: '#07090E',
+                backgroundColor: 'var(--primary, #1e40af)',
+                border: '1px solid var(--primary, #1e40af)',
+                color: '#ffffff',
                 borderRadius: '6px',
                 padding: '8px 16px',
-                fontSize: '12px',
-                fontWeight: 800,
-                fontFamily: 'var(--font-mono, monospace)',
+                fontSize: '12.5px',
+                fontWeight: 600,
+                fontFamily: 'var(--font-sans, sans-serif)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: '0 0 20px rgba(0, 229, 255, 0.35)'
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                transition: 'background 0.15s ease'
               }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-hover, #1d4ed8)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary, #1e40af)'}
             >
-              <UserPlus size={14} /> + ADD CRIMINAL &amp; GENERATE CHARGESHEET
+              <UserPlus size={14} /> + Register Suspect &amp; Generate Chargesheet
             </button>
 
             <button
               onClick={() => navigate('/dashboard')}
               style={{
-                backgroundColor: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#94A3B8',
+                backgroundColor: 'var(--bg-card, #ffffff)',
+                border: '1px solid var(--border-color, #cbd5e1)',
+                color: 'var(--text-secondary, #475569)',
                 borderRadius: '6px',
                 padding: '8px 14px',
-                fontSize: '12px',
+                fontSize: '12.5px',
+                fontWeight: 500,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '6px',
+                transition: 'background 0.15s ease'
               }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-subtle, #f1f5f9)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-card, #ffffff)'}
             >
               <ArrowLeft size={14} /> Back to Dashboard
             </button>
@@ -615,28 +626,28 @@ export default function Reports() {
             gap: '10px',
             marginBottom: '10px'
           }}>
-            <div style={{ fontSize: '11.5px', fontWeight: 700, color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>
-              STEP 1: SELECT ACCUSED CRIMINAL DOSSIER ({filteredChargesheets.length} CHARGESHEETS AVAILABLE)
+            <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted, #64748b)', letterSpacing: '0.5px', fontFamily: 'var(--font-mono, monospace)' }}>
+              STEP 1: SELECT ACCUSED DOSSIER ({filteredChargesheets.length} CHARGESHEETS AVAILABLE)
             </div>
 
             {/* Search Input for Criminals */}
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <div style={{ position: 'relative' }}>
-                <Search size={13} style={{ position: 'absolute', left: '10px', top: '9px', color: '#94A3B8' }} />
+                <Search size={13} style={{ position: 'absolute', left: '10px', top: '9px', color: 'var(--text-muted, #94A3B8)' }} />
                 <input
                   type="text"
                   placeholder="Search accused, FIR, alias..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{
-                    backgroundColor: 'rgba(7, 10, 16, 0.9)',
-                    border: '1px solid rgba(0, 229, 255, 0.25)',
-                    borderRadius: '4px',
+                    backgroundColor: 'var(--bg-input, #ffffff)',
+                    border: '1px solid var(--border-color, #cbd5e1)',
+                    borderRadius: '6px',
                     padding: '6px 12px 6px 30px',
-                    color: '#FFFFFF',
+                    color: 'var(--text-primary, #0f172a)',
                     fontSize: '12px',
                     outline: 'none',
-                    width: '210px'
+                    width: '220px'
                   }}
                 />
               </div>
@@ -646,13 +657,13 @@ export default function Reports() {
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 style={{
-                  backgroundColor: 'rgba(7, 10, 16, 0.9)',
-                  border: '1px solid rgba(0, 229, 255, 0.25)',
-                  borderRadius: '4px',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
+                  borderRadius: '6px',
                   padding: '6px 10px',
-                  color: '#00E5FF',
+                  color: 'var(--text-accent, #1e40af)',
                   fontSize: '12px',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   outline: 'none'
                 }}
               >
@@ -679,26 +690,26 @@ export default function Reports() {
                   key={c.entityId}
                   onClick={() => setSelectedCase(c)}
                   style={{
-                    backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.15)' : 'rgba(12, 17, 26, 0.85)',
-                    border: isSelected ? '1.5px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
+                    backgroundColor: isSelected ? 'var(--bg-subtle, #eff6ff)' : 'var(--bg-card, #ffffff)',
+                    border: isSelected ? '1.5px solid var(--accent-blue, #1e40af)' : '1px solid var(--border-color, #e2e8f0)',
+                    borderRadius: '6px',
                     padding: '12px 14px',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
-                    boxShadow: isSelected ? '0 0 20px rgba(0, 229, 255, 0.2)' : 'none',
+                    boxShadow: isSelected ? '0 4px 6px -1px rgba(30, 64, 175, 0.08)' : 'var(--shadow-card)',
                     position: 'relative'
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 700 }}>
+                    <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono, monospace)', color: 'var(--text-accent, #1e40af)', fontWeight: 700 }}>
                       {c.firNumber}
                     </span>
                     <span style={{ fontSize: '13px' }}>{c.icon}</span>
                   </div>
-                  <div style={{ fontSize: '13px', fontWeight: 800, color: isSelected ? '#00E5FF' : '#FFFFFF' }}>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: isSelected ? 'var(--text-accent, #1e40af)' : 'var(--text-primary, #0f172a)' }}>
                     {c.rawName}
                   </div>
-                  <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: '2px', fontFamily: 'var(--font-mono, monospace)' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)', marginTop: '3px', fontFamily: 'var(--font-mono, monospace)' }}>
                     ID: {c.entityId} • {c.crimeCategory.split(' ')[0]}
                   </div>
                 </div>
@@ -710,28 +721,28 @@ export default function Reports() {
         {/* Step 2: Main Chargesheet Document (Form 173 / BNSS 193) */}
         {activeCase ? (
           <div style={{
-            backgroundColor: 'rgba(12, 17, 26, 0.95)',
-            border: '1.5px solid rgba(0, 229, 255, 0.3)',
-            borderRadius: '10px',
+            backgroundColor: 'var(--bg-card, #ffffff)',
+            border: '1px solid var(--border-color, #cbd5e1)',
+            borderRadius: '8px',
             padding: '2rem',
-            boxShadow: '0 0 40px rgba(0, 0, 0, 0.6)',
+            boxShadow: 'var(--shadow-card)',
             marginBottom: '1.5rem'
           }}>
             {/* Document Header */}
             <div style={{
               textAlign: 'center',
-              borderBottom: '1.5px solid rgba(0, 229, 255, 0.25)',
+              borderBottom: '1px solid var(--border-color, #e2e8f0)',
               paddingBottom: '1.25rem',
               marginBottom: '1.5rem'
             }}>
-              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', letterSpacing: '1.5px' }}>
+              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: 'var(--text-accent, #1e40af)', letterSpacing: '1.2px', fontWeight: 700 }}>
                 // BHARATIYA NAGARIK SURAKSHA SANHITA (BNSS SEC 193 / FORM 173) //
               </div>
-              <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', margin: '6px 0 3px 0' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary, #0f172a)', margin: '6px 0 3px 0' }}>
                 FINAL POLICE INVESTIGATION CHARGESHEET
               </h2>
-              <div style={{ fontSize: '12.5px', color: '#94A3B8' }}>
-                BEFORE THE COURT OF: <strong style={{ color: '#FFFFFF' }}>{activeCase.court}</strong>
+              <div style={{ fontSize: '12.5px', color: 'var(--text-secondary, #475569)' }}>
+                BEFORE THE COURT OF: <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{activeCase.court}</strong>
               </div>
             </div>
 
@@ -740,43 +751,53 @@ export default function Reports() {
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
               gap: '1rem',
-              backgroundColor: 'rgba(7, 10, 16, 0.9)',
-              border: '1px solid rgba(0, 229, 255, 0.15)',
+              backgroundColor: 'var(--bg-subtle, #f8fafc)',
+              border: '1px solid var(--border-color, #e2e8f0)',
               padding: '14px 16px',
               borderRadius: '6px',
               marginBottom: '1.5rem',
               fontSize: '12.5px'
             }}>
-              <div><span style={{ color: '#94A3B8' }}>FIR Number:</span> <strong style={{ color: '#00E5FF' }}>{activeCase.firNumber}</strong></div>
-              <div><span style={{ color: '#94A3B8' }}>Police Station:</span> <strong style={{ color: '#FFFFFF' }}>{activeCase.policeStation}</strong></div>
-              <div><span style={{ color: '#94A3B8' }}>Primary Accused:</span> <strong style={{ color: '#FF8888' }}>{activeCase.accused}</strong></div>
-              <div><span style={{ color: '#94A3B8' }}>Investigating Officer:</span> <strong style={{ color: '#FFFFFF' }}>{activeCase.ioOfficer}</strong></div>
-              <div style={{ gridColumn: '1 / -1', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+              <div><span style={{ color: 'var(--text-muted, #64748b)' }}>FIR Number:</span> <strong style={{ color: 'var(--text-accent, #1e40af)' }}>{activeCase.firNumber}</strong></div>
+              <div><span style={{ color: 'var(--text-muted, #64748b)' }}>Police Station:</span> <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{activeCase.policeStation}</strong></div>
+              <div><span style={{ color: 'var(--text-muted, #64748b)' }}>Primary Accused:</span> <strong style={{ color: 'var(--status-critical, #dc2626)' }}>{activeCase.accused}</strong></div>
+              <div><span style={{ color: 'var(--text-muted, #64748b)' }}>Investigating Officer:</span> <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{activeCase.ioOfficer}</strong></div>
+              <div style={{ gridColumn: '1 / -1', borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
                 <div>
-                  <span style={{ color: '#94A3B8' }}>Penal Sections:</span>{' '}
-                  <strong style={{ color: '#FBBF24' }}>{activeCase.sections}</strong>
+                  <span style={{ color: 'var(--text-muted, #64748b)' }}>Penal Sections:</span>{' '}
+                  <strong style={{ color: 'var(--status-warning, #b45309)' }}>{activeCase.sections}</strong>
                 </div>
                 <div>
-                  <span style={{ color: '#94A3B8' }}>Warrant Status:</span>{' '}
-                  <strong style={{ color: '#FF5555' }}>{activeCase.status}</strong>
+                  <span style={{ color: 'var(--text-muted, #64748b)' }}>Warrant Status:</span>{' '}
+                  <span style={{
+                    backgroundColor: 'rgba(239, 68, 68, 0.12)',
+                    color: 'var(--status-critical, #dc2626)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    fontWeight: 700,
+                    fontSize: '11px'
+                  }}>
+                    {activeCase.status}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Section 1: Facts of Case */}
             <div style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#00E5FF', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary, #0f172a)', margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
                 1. Brief Facts &amp; Investigation Findings:
               </h3>
               <p style={{
                 fontSize: '13px',
-                color: '#CBD5E1',
+                color: 'var(--text-secondary, #334155)',
                 lineHeight: 1.6,
                 margin: 0,
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                backgroundColor: 'var(--bg-subtle, #f8fafc)',
                 padding: '12px 14px',
                 borderRadius: '6px',
-                borderLeft: '3px solid #00E5FF'
+                borderLeft: '3px solid var(--primary, #1e40af)'
               }}>
                 {activeCase.summary}
               </p>
@@ -784,23 +805,23 @@ export default function Reports() {
 
             {/* Section 2: Admissible Forensic Exhibits */}
             <div style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#00E5FF', margin: '0 0 8px 0', textTransform: 'uppercase' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary, #0f172a)', margin: '0 0 8px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
                 2. Admissible Forensic Evidence Exhibits:
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {activeCase.exhibits.map((ex, idx) => (
                   <div key={idx} style={{
                     fontSize: '12px',
-                    color: '#FFFFFF',
-                    backgroundColor: 'rgba(0, 229, 255, 0.05)',
-                    border: '1px solid rgba(0, 229, 255, 0.15)',
+                    color: 'var(--text-primary, #0f172a)',
+                    backgroundColor: 'var(--bg-subtle, #f8fafc)',
+                    border: '1px solid var(--border-color, #e2e8f0)',
                     padding: '8px 12px',
                     borderRadius: '4px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <ShieldCheck size={15} color="#00E5FF" />
+                    <ShieldCheck size={15} color="#3b82f6" />
                     <span>{ex}</span>
                   </div>
                 ))}
@@ -810,14 +831,14 @@ export default function Reports() {
             {/* Section 3: Comprehensive Accused Bio-Data & Intelligence Profile */}
             <div style={{
               marginBottom: '1.5rem',
-              backgroundColor: 'rgba(7, 10, 16, 0.85)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              backgroundColor: 'var(--bg-subtle, #f8fafc)',
+              border: '1px solid var(--border-color, #e2e8f0)',
               borderRadius: '6px',
               padding: '16px'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '8px' }}>
-                <Fingerprint size={16} color="#00E5FF" />
-                <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '1px solid var(--border-color, #e2e8f0)', paddingBottom: '8px' }}>
+                <Fingerprint size={16} color="#3b82f6" />
+                <h3 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary, #0f172a)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   3. Accused Specific Intelligence &amp; Bio-Data Dossier
                 </h3>
               </div>
@@ -829,46 +850,46 @@ export default function Reports() {
                 fontSize: '12px'
               }}>
                 {/* Identification Marks */}
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>PHYSICAL IDENTIFICATION &amp; SCARS</div>
-                  <div style={{ color: '#FFFFFF', fontWeight: 600 }}>{activeCase.scarsAndMarks}</div>
+                <div style={{ backgroundColor: 'var(--bg-card, #ffffff)', padding: '10px 12px', borderRadius: '4px', border: '1px solid var(--border-color, #e2e8f0)' }}>
+                  <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px', fontWeight: 600, marginBottom: '3px' }}>PHYSICAL IDENTIFICATION &amp; SCARS</div>
+                  <div style={{ color: 'var(--text-primary, #0f172a)', fontWeight: 600 }}>{activeCase.scarsAndMarks}</div>
                 </div>
 
                 {/* Weapon Signature */}
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>WEAPON SIGNATURE / BALLISTICS</div>
-                  <div style={{ color: '#FF8888', fontWeight: 600 }}>{activeCase.weaponSignature}</div>
+                <div style={{ backgroundColor: 'var(--bg-card, #ffffff)', padding: '10px 12px', borderRadius: '4px', border: '1px solid var(--border-color, #e2e8f0)' }}>
+                  <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px', fontWeight: 600, marginBottom: '3px' }}>WEAPON SIGNATURE / BALLISTICS</div>
+                  <div style={{ color: 'var(--status-critical, #dc2626)', fontWeight: 600 }}>{activeCase.weaponSignature}</div>
                 </div>
 
                 {/* Active Phone & Burner Devices */}
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>ACTIVE CONTACT / SURVEILLANCE BEACON</div>
-                  <div style={{ color: '#00E5FF', fontWeight: 600 }}>
+                <div style={{ backgroundColor: 'var(--bg-card, #ffffff)', padding: '10px 12px', borderRadius: '4px', border: '1px solid var(--border-color, #e2e8f0)' }}>
+                  <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px', fontWeight: 600, marginBottom: '3px' }}>ACTIVE CONTACT / SURVEILLANCE BEACON</div>
+                  <div style={{ color: 'var(--text-accent, #1e40af)', fontWeight: 600 }}>
                     {activeCase.phone}
                   </div>
                 </div>
 
                 {/* Bounty & Risk Score */}
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>STATE REWARD BOUNTY &amp; RISK SCORE</div>
-                  <div style={{ color: '#FBBF24', fontWeight: 700 }}>
-                    {activeCase.bounty} <span style={{ color: '#94A3B8' }}>(Risk Score: {activeCase.riskScore}/100)</span>
+                <div style={{ backgroundColor: 'var(--bg-card, #ffffff)', padding: '10px 12px', borderRadius: '4px', border: '1px solid var(--border-color, #e2e8f0)' }}>
+                  <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px', fontWeight: 600, marginBottom: '3px' }}>STATE REWARD BOUNTY &amp; RISK SCORE</div>
+                  <div style={{ color: 'var(--status-warning, #b45309)', fontWeight: 700 }}>
+                    {activeCase.bounty} <span style={{ color: 'var(--text-muted, #64748b)', fontWeight: 400 }}>(Risk Score: {activeCase.riskScore}/100)</span>
                   </div>
                 </div>
 
                 {/* Aliases */}
                 {activeCase.aliases && activeCase.aliases.length > 0 && (
-                  <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                    <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>KNOWN ALIASES / GANG MONIKERS</div>
-                    <div style={{ color: '#FFFFFF' }}>{activeCase.aliases.join(', ')}</div>
+                  <div style={{ backgroundColor: 'var(--bg-card, #ffffff)', padding: '10px 12px', borderRadius: '4px', border: '1px solid var(--border-color, #e2e8f0)' }}>
+                    <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px', fontWeight: 600, marginBottom: '3px' }}>KNOWN ALIASES / GANG MONIKERS</div>
+                    <div style={{ color: 'var(--text-primary, #0f172a)' }}>{activeCase.aliases.join(', ')}</div>
                   </div>
                 )}
 
                 {/* Known Associates */}
                 {activeCase.knownAssociates && activeCase.knownAssociates.length > 0 && (
-                  <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                    <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>CRIME NETWORK ASSOCIATES</div>
-                    <div style={{ color: '#FFFFFF' }}>
+                  <div style={{ backgroundColor: 'var(--bg-card, #ffffff)', padding: '10px 12px', borderRadius: '4px', border: '1px solid var(--border-color, #e2e8f0)' }}>
+                    <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px', fontWeight: 600, marginBottom: '3px' }}>CRIME NETWORK ASSOCIATES</div>
+                    <div style={{ color: 'var(--text-primary, #0f172a)' }}>
                       {activeCase.knownAssociates.map(a => `${a.name} (${a.relation})`).join('; ')}
                     </div>
                   </div>
@@ -876,9 +897,9 @@ export default function Reports() {
 
                 {/* Financial Hawala / Benami Accounts */}
                 {activeCase.financialAccounts && activeCase.financialAccounts.length > 0 && (
-                  <div style={{ gridColumn: '1 / -1', backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                    <div style={{ color: '#94A3B8', fontSize: '11px', fontWeight: 700, marginBottom: '3px' }}>ATTACHED HAWALA / BENAMI FINANCIAL ASSETS</div>
-                    <div style={{ color: '#FBBF24' }}>
+                  <div style={{ gridColumn: '1 / -1', backgroundColor: 'var(--bg-card, #ffffff)', padding: '10px 12px', borderRadius: '4px', border: '1px solid var(--border-color, #e2e8f0)' }}>
+                    <div style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px', fontWeight: 600, marginBottom: '3px' }}>ATTACHED HAWALA / BENAMI FINANCIAL ASSETS</div>
+                    <div style={{ color: 'var(--status-warning, #b45309)', fontWeight: 600 }}>
                       {activeCase.financialAccounts.map(f => `${f.bank} [${f.accNo}]: ${f.balance}`).join(' • ')}
                     </div>
                   </div>
@@ -888,18 +909,18 @@ export default function Reports() {
 
             {/* Section 4: Prosecution Witnesses */}
             <div style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#00E5FF', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary, #0f172a)', margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
                 4. Charge-Sheeted Prosecution Witnesses:
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '8px' }}>
                 {activeCase.witnesses.map((w, idx) => (
                   <div key={idx} style={{
                     fontSize: '12px',
-                    color: '#94A3B8',
-                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    color: 'var(--text-secondary, #334155)',
+                    backgroundColor: 'var(--bg-subtle, #f8fafc)',
                     padding: '8px 12px',
                     borderRadius: '4px',
-                    border: '1px solid rgba(255, 255, 255, 0.06)'
+                    border: '1px solid var(--border-color, #e2e8f0)'
                   }}>
                     👤 <strong>Witness #{idx + 1}:</strong> {w}
                   </div>
@@ -909,29 +930,29 @@ export default function Reports() {
 
             {/* Section 65B Digital Certificate */}
             <div style={{
-              backgroundColor: 'rgba(0, 229, 255, 0.04)',
-              border: '1px solid rgba(0, 229, 255, 0.2)',
+              backgroundColor: 'var(--bg-subtle, #eff6ff)',
+              border: '1px solid var(--border-strong, #bfdbfe)',
               borderRadius: '6px',
               padding: '12px 14px',
               fontSize: '11.5px',
-              color: '#94A3B8',
+              color: 'var(--text-accent, #1e40af)',
               lineHeight: 1.5
             }}>
-              🔒 <strong>Section 65B Bharatiya Sakshya Adhiniyam Certificate</strong>: All digital exhibits, ANPR timestamps, wiretaps, and forensic reports for accused <span style={{ color: '#FFFFFF', fontWeight: 700 }}>{activeCase.accused}</span> are cryptographically validated under root hash{' '}
-              <span style={{ color: '#00E5FF', fontFamily: 'monospace' }}>SHA256:{activeCase.id}-7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span>.
+              🔒 <strong>Section 65B Bharatiya Sakshya Adhiniyam Certificate</strong>: All digital exhibits, ANPR timestamps, wiretaps, and forensic reports for accused <span style={{ color: 'var(--text-primary, #0f172a)', fontWeight: 700 }}>{activeCase.accused}</span> are cryptographically validated under root hash{' '}
+              <span style={{ color: 'var(--text-accent, #1e40af)', fontFamily: 'monospace', fontWeight: 600 }}>SHA256:{activeCase.id}-7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span>.
             </div>
           </div>
         ) : (
           <div style={{
-            backgroundColor: 'rgba(12, 17, 26, 0.95)',
-            border: '1px dashed rgba(0, 229, 255, 0.3)',
-            borderRadius: '10px',
+            backgroundColor: 'var(--bg-card, #ffffff)',
+            border: '1px dashed var(--border-color, #cbd5e1)',
+            borderRadius: '8px',
             padding: '3rem',
             textAlign: 'center',
             marginBottom: '1.5rem'
           }}>
-            <p style={{ color: '#94A3B8', fontSize: '14px', margin: 0 }}>
-              No criminal dossier selected. Click "+ ADD CRIMINAL &amp; GENERATE CHARGESHEET" above or select an accused from the list.
+            <p style={{ color: 'var(--text-muted, #64748b)', fontSize: '14px', margin: 0 }}>
+              No criminal dossier selected. Click "+ Register Suspect &amp; Generate Chargesheet" above or select an accused from the list.
             </p>
           </div>
         )}
@@ -944,28 +965,32 @@ export default function Reports() {
             alignItems: 'center',
             flexWrap: 'wrap',
             gap: '10px',
-            backgroundColor: 'rgba(12, 17, 26, 0.85)',
-            border: '1px solid rgba(0, 229, 255, 0.15)',
-            borderRadius: '8px',
-            padding: '1rem 1.25rem'
+            backgroundColor: 'var(--bg-card, #ffffff)',
+            border: '1px solid var(--border-color, #e2e8f0)',
+            borderRadius: '6px',
+            padding: '1rem 1.25rem',
+            boxShadow: 'var(--shadow-card)'
           }}>
             <button
               onClick={handleCopyHash}
               style={{
-                backgroundColor: 'transparent',
-                border: '1px solid rgba(0, 229, 255, 0.35)',
-                color: '#00E5FF',
+                backgroundColor: 'var(--bg-card, #ffffff)',
+                border: '1px solid var(--border-color, #cbd5e1)',
+                color: 'var(--text-accent, #1e40af)',
                 borderRadius: '6px',
-                padding: '10px 16px',
+                padding: '9px 16px',
                 fontSize: '12.5px',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '6px',
+                transition: 'background 0.15s ease'
               }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-subtle, #f1f5f9)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-card, #ffffff)'}
             >
-              <Copy size={15} /> COPY HASH SEAL
+              <Copy size={15} /> Copy Hash Seal
             </button>
 
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
@@ -977,81 +1002,91 @@ export default function Reports() {
                   }
                 }}
                 style={{
-                  backgroundColor: 'rgba(0, 229, 255, 0.15)',
-                  border: '1px solid #00E5FF',
-                  color: '#00E5FF',
+                  backgroundColor: 'var(--bg-subtle, #eff6ff)',
+                  border: '1px solid var(--border-strong, #bfdbfe)',
+                  color: 'var(--text-accent, #1e40af)',
                   borderRadius: '6px',
-                  padding: '10px 18px',
+                  padding: '9px 16px',
                   fontSize: '12.5px',
-                  fontWeight: 800,
-                  fontFamily: 'var(--font-mono, monospace)',
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-sans, sans-serif)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: '0 0 15px rgba(0, 229, 255, 0.25)'
+                  transition: 'background 0.15s ease'
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-hover, #dbeafe)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-subtle, #eff6ff)'}
               >
-                <ShieldCheck size={16} /> 📜 SEC 65B BSA CERTIFICATE
+                <ShieldCheck size={16} /> 📜 Sec 65B BSA Certificate
               </button>
 
               <button
                 onClick={handlePrint}
                 style={{
-                  backgroundColor: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  color: '#FFFFFF',
+                  backgroundColor: 'var(--bg-card, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
+                  color: 'var(--text-primary, #0f172a)',
                   borderRadius: '6px',
-                  padding: '10px 18px',
+                  padding: '9px 16px',
                   fontSize: '12.5px',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  transition: 'background 0.15s ease'
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-subtle, #f1f5f9)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-card, #ffffff)'}
               >
-                <Printer size={15} /> PRINT / SAVE PDF
+                <Printer size={15} /> Print / Save PDF
               </button>
 
               <button
                 onClick={handleDownload}
                 style={{
-                  backgroundColor: 'transparent',
-                  border: '1px solid rgba(0, 229, 255, 0.35)',
-                  color: '#00E5FF',
+                  backgroundColor: 'var(--bg-card, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
+                  color: 'var(--text-accent, #1e40af)',
                   borderRadius: '6px',
-                  padding: '10px 18px',
+                  padding: '9px 16px',
                   fontSize: '12.5px',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  transition: 'background 0.15s ease'
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-subtle, #f1f5f9)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-card, #ffffff)'}
               >
-                <Download size={15} /> DOWNLOAD BRIEF
+                <Download size={15} /> Download Brief
               </button>
 
               <button
                 onClick={handleCourtSubmit}
                 style={{
-                  backgroundColor: '#00E5FF',
-                  color: '#07090E',
-                  border: 'none',
+                  backgroundColor: 'var(--primary, #1e40af)',
+                  color: '#ffffff',
+                  border: '1px solid var(--primary, #1e40af)',
                   borderRadius: '6px',
-                  padding: '10px 22px',
+                  padding: '9px 20px',
                   fontSize: '12.5px',
-                  fontWeight: 800,
-                  fontFamily: 'var(--font-mono, monospace)',
+                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: '0 0 20px rgba(0, 229, 255, 0.4)'
+                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                  transition: 'background 0.15s ease'
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-hover, #1d4ed8)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary, #1e40af)'}
               >
-                <Send size={15} /> SUBMIT TO COURT
+                <Send size={15} /> Submit to Court
               </button>
             </div>
           </div>
@@ -1063,9 +1098,9 @@ export default function Reports() {
         <div style={{
           position: 'fixed',
           inset: 0,
-          backgroundColor: 'rgba(5, 7, 12, 0.88)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
+          backgroundColor: 'rgba(15, 23, 42, 0.65)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
           zIndex: 100000,
           display: 'flex',
           alignItems: 'center',
@@ -1074,66 +1109,66 @@ export default function Reports() {
           boxSizing: 'border-box'
         }}>
           <div style={{
-            backgroundColor: '#0F172A',
-            border: '2px solid #00E5FF',
-            borderRadius: '12px',
+            backgroundColor: 'var(--bg-modal, #ffffff)',
+            border: '1px solid var(--border-color, #cbd5e1)',
+            borderRadius: '10px',
             width: '100%',
             maxWidth: '850px',
             maxHeight: '90vh',
             overflowY: 'auto',
             padding: '2rem',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 229, 255, 0.3)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
             position: 'relative',
-            color: '#FFFFFF'
+            color: 'var(--text-primary, #0f172a)'
           }}>
             {/* Certificate Header */}
-            <div style={{ textAlign: 'center', borderBottom: '2px solid rgba(0, 229, 255, 0.3)', paddingBottom: '1.25rem', marginBottom: '1.5rem' }}>
+            <div style={{ textAlign: 'center', borderBottom: '1px solid var(--border-color, #e2e8f0)', paddingBottom: '1.25rem', marginBottom: '1.5rem' }}>
               <div style={{ fontSize: '28px', marginBottom: '4px' }}>🏛️</div>
-              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', letterSpacing: '2px', fontWeight: 800 }}>
+              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: 'var(--text-accent, #1e40af)', letterSpacing: '1.5px', fontWeight: 700 }}>
                 GOVERNMENT OF INDIA // STATE FORENSIC SCIENCE LABORATORY
               </div>
-              <h2 style={{ fontSize: '19px', fontWeight: 900, margin: '6px 0 2px 0', letterSpacing: '0.5px' }}>
+              <h2 style={{ fontSize: '19px', fontWeight: 800, margin: '6px 0 2px 0', letterSpacing: '-0.01em', color: 'var(--text-primary, #0f172a)' }}>
                 CERTIFICATE OF ADMISSIBILITY OF ELECTRONIC RECORD
               </h2>
-              <div style={{ fontSize: '12px', color: '#94A3B8' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted, #64748b)' }}>
                 [Under Section 65B of Indian Evidence Act, 1872 &amp; Section 63 of Bharatiya Sakshya Adhiniyam, 2023]
               </div>
             </div>
 
             {/* Certificate Body */}
-            <div style={{ fontSize: '12.5px', lineHeight: 1.7, color: '#E2E8F0', marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '13px', lineHeight: 1.7, color: 'var(--text-secondary, #334155)', marginBottom: '1.5rem' }}>
               <p>
-                I, <strong>{activeCase.ioOfficer}</strong>, Investigating Officer &amp; Cyber Forensic Analyst at <strong>{activeCase.policeStation}</strong>, do hereby solemnly affirm and certify that:
+                I, <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{activeCase.ioOfficer}</strong>, Investigating Officer &amp; Cyber Forensic Analyst at <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{activeCase.policeStation}</strong>, do hereby solemnly affirm and certify that:
               </p>
-              <ol style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <ol style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                 <li>
-                  The electronic evidence comprising Call Detail Records (CDR), Cell Tower Triangulation pings, ANPR surveillance hits, and intercepted digital transcripts produced in the case of <strong>{activeCase.caseTitle}</strong> (<strong>{activeCase.firNumber}</strong>) were derived from computer output lawfully under my lawful control.
+                  The electronic evidence comprising Call Detail Records (CDR), Cell Tower Triangulation pings, ANPR surveillance hits, and intercepted digital transcripts produced in the case of <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{activeCase.caseTitle}</strong> (<strong style={{ color: 'var(--text-accent, #1e40af)' }}>{activeCase.firNumber}</strong>) were derived from computer output lawfully under my lawful control.
                 </li>
                 <li>
                   The digital data was extracted in regular and ordinary course of criminal investigation and the target computing system operated properly without unauthorized tampering.
                 </li>
                 <li>
-                  The cryptographic hash fingerprint generated below certifies that the electronic exhibits submitted before the Hon'ble <strong>{activeCase.court}</strong> are identical bit-for-bit with the master forensic mirror.
+                  The cryptographic hash fingerprint generated below certifies that the electronic exhibits submitted before the Hon'ble <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{activeCase.court}</strong> are identical bit-for-bit with the master forensic mirror.
                 </li>
               </ol>
             </div>
 
             {/* Cryptographic Hash Seal Box */}
             <div style={{
-              backgroundColor: 'rgba(7, 10, 16, 0.95)',
-              border: '1.5px solid rgba(0, 229, 255, 0.4)',
-              borderRadius: '8px',
+              backgroundColor: 'var(--bg-subtle, #f8fafc)',
+              border: '1px solid var(--border-color, #cbd5e1)',
+              borderRadius: '6px',
               padding: '14px 18px',
               marginBottom: '1.5rem',
               fontFamily: 'var(--font-mono, monospace)'
             }}>
-              <div style={{ fontSize: '10.5px', color: '#00E5FF', fontWeight: 800, letterSpacing: '1px', marginBottom: '4px' }}>
+              <div style={{ fontSize: '10.5px', color: 'var(--text-accent, #1e40af)', fontWeight: 700, letterSpacing: '0.5px', marginBottom: '4px' }}>
                 IMMUTABLE SHA-256 DIGITAL EVIDENCE SEAL:
               </div>
-              <div style={{ fontSize: '13px', color: '#00E676', wordBreak: 'break-all', fontWeight: 700 }}>
+              <div style={{ fontSize: '13px', color: 'var(--status-success, #15803d)', wordBreak: 'break-all', fontWeight: 700 }}>
                 {generatedHash || `SHA256:${activeCase.id}-7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069`}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#94A3B8', marginTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted, #64748b)', marginTop: '8px', borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '6px' }}>
                 <span>DEVICE MAC: 00:1A:2B:3C:4D:5E</span>
                 <span>CFSL MIRROR ID: CFSL-DEL-2024-991</span>
                 <span>STATUS: COURT ADMISSIBLE ✓</span>
@@ -1141,10 +1176,10 @@ export default function Reports() {
             </div>
 
             {/* Signatures & Actions */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '1.25rem' }}>
               <div>
-                <div style={{ fontSize: '11px', color: '#94A3B8' }}>ISSUED AT GURUGRAM / DELHI-NCR</div>
-                <div style={{ fontSize: '12px', color: '#FFFFFF', fontWeight: 700 }}>DATE: {new Date().toLocaleDateString()}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)' }}>ISSUED AT GURUGRAM / DELHI-NCR</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-primary, #0f172a)', fontWeight: 700 }}>DATE: {new Date().toLocaleDateString()}</div>
               </div>
 
               <div style={{ display: 'flex', gap: '10px' }}>
@@ -1154,46 +1189,46 @@ export default function Reports() {
                     showToast('✓ SHA-256 Section 65B Seal copied to clipboard.');
                   }}
                   style={{
-                    backgroundColor: 'rgba(0, 229, 255, 0.15)',
-                    border: '1px solid #00E5FF',
-                    color: '#00E5FF',
+                    backgroundColor: 'var(--bg-card, #ffffff)',
+                    border: '1px solid var(--border-color, #cbd5e1)',
+                    color: 'var(--text-accent, #1e40af)',
                     padding: '8px 16px',
                     borderRadius: '6px',
                     fontSize: '12px',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     cursor: 'pointer'
                   }}
                 >
-                  COPY SEAL
+                  Copy Seal
                 </button>
                 <button
                   onClick={() => window.print()}
                   style={{
-                    backgroundColor: '#00E5FF',
-                    border: 'none',
-                    color: '#07090E',
+                    backgroundColor: 'var(--primary, #1e40af)',
+                    border: '1px solid var(--primary, #1e40af)',
+                    color: '#ffffff',
                     padding: '8px 18px',
                     borderRadius: '6px',
                     fontSize: '12px',
-                    fontWeight: 800,
+                    fontWeight: 600,
                     cursor: 'pointer'
                   }}
                 >
-                  PRINT CERTIFICATE
+                  Print Certificate
                 </button>
                 <button
                   onClick={() => setIsSection65BOpen(false)}
                   style={{
-                    backgroundColor: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#94A3B8',
+                    backgroundColor: 'var(--bg-card, #ffffff)',
+                    border: '1px solid var(--border-color, #cbd5e1)',
+                    color: 'var(--text-secondary, #475569)',
                     padding: '8px 14px',
                     borderRadius: '6px',
                     fontSize: '12px',
                     cursor: 'pointer'
                   }}
                 >
-                  CLOSE
+                  Close
                 </button>
               </div>
             </div>

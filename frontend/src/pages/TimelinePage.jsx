@@ -425,7 +425,7 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
             date: new Date().toISOString().split('T')[0],
             ioOfficer: 'Special Crime Branch IO',
             status: c.status || 'ACTIVE INVESTIGATION / NBW',
-            color: c.threatLevel === 'CRITICAL' ? '#FF5555' : '#00E5FF',
+            color: c.threatLevel === 'CRITICAL' ? '#dc2626' : '#2563eb',
             isCustom: true
           });
         }
@@ -458,7 +458,7 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
               coordinates: evt.coordinates || 'State Police Jurisdiction',
               evidenceTag: evt.evidenceTag || 'EVIDENCE-MEMO',
               ioOfficer: evt.ioOfficer || 'Investigating Officer',
-              categoryColor: evt.severity === 'CRITICAL' ? '#FF5555' : '#00E5FF',
+              categoryColor: evt.severity === 'CRITICAL' ? '#dc2626' : '#2563eb',
               icon: '🚨'
             });
           }
@@ -487,7 +487,7 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
           coordinates: 'Crime Scene / Jurisdiction Hotspot',
           evidenceTag: `CCTNS-${c.id || '9999'}`,
           ioOfficer: 'State STF Investigating Officer',
-          categoryColor: c.threatLevel === 'CRITICAL' ? '#FF5555' : '#00E5FF',
+          categoryColor: c.threatLevel === 'CRITICAL' ? '#dc2626' : '#2563eb',
           icon: '🚨'
         });
       }
@@ -553,7 +553,7 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
           key: stn.criminalName,
           id: stn.criminalId,
           count: 0,
-          color: stn.color || '#00E5FF',
+          color: stn.color || '#2563eb',
           isCustom: Boolean(stn.isCustom)
         };
       }
@@ -561,7 +561,7 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
     });
 
     const pills = [
-      { label: 'ALL CRIMINALS', filterVal: 'ALL', count: allStations.length, color: '#00E5FF' }
+      { label: 'ALL CRIMINALS', filterVal: 'ALL', count: allStations.length, color: '#2563eb' }
     ];
 
     Object.values(map).forEach(c => {
@@ -589,13 +589,13 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
         radius: 10,
         color: '#FFFFFF',
         weight: 2,
-        fillColor: stn.color || '#00E5FF',
+        fillColor: stn.color || '#2563eb',
         fillOpacity: 0.95
       });
 
       const popupContent = `
-        <div style="font-family: sans-serif; min-width: 210px; color: #07090E; padding: 4px;">
-          <div style="font-size: 10.5px; font-weight: 800; color: #0284C7; letter-spacing: 0.5px; margin-bottom: 2px;">
+        <div style="font-family: sans-serif; min-width: 210px; color: #0f172a; padding: 4px;">
+          <div style="font-size: 10.5px; font-weight: 800; color: #1e40af; letter-spacing: 0.5px; margin-bottom: 2px;">
             🏛️ POLICE STATION JURISDICTION
           </div>
           <div style="font-size: 13.5px; font-weight: 800; color: #0F172A; margin-bottom: 3px;">
@@ -604,7 +604,7 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
           <div style="font-size: 11px; color: #475569; margin-bottom: 5px;">
             📍 ${stn.city}
           </div>
-          <div style="background: #F1F5F9; border-left: 3px solid ${stn.color || '#00E5FF'}; padding: 6px 8px; border-radius: 4px; font-size: 11px; margin-bottom: 5px;">
+          <div style="background: #F1F5F9; border-left: 3px solid ${stn.color || '#2563eb'}; padding: 6px 8px; border-radius: 4px; font-size: 11px; margin-bottom: 5px;">
             <div><strong>Suspect:</strong> <span style="color: #DC2626; font-weight: 800;">${stn.criminalName}</span></div>
             <div><strong>FIR No:</strong> <span style="color: #0284C7; font-weight: 700;">${stn.firNumber}</span></div>
             <div><strong>Sections:</strong> ${stn.sections}</div>
@@ -652,7 +652,7 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
         scrollWheelZoom: true
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap &copy; CARTO'
       }).addTo(map);
@@ -732,32 +732,32 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
 
   return (
     <div style={{
-      padding: '1.75rem 2.25rem 3rem 2.25rem',
-      backgroundColor: 'var(--bg-dark, #07090E)',
+      padding: '24px 28px',
+      backgroundColor: 'var(--bg-app, #f8fafc)',
       minHeight: '100vh',
-      color: '#FFFFFF',
+      color: 'var(--text-primary, #0f172a)',
       boxSizing: 'border-box'
     }}>
       {/* Toast Alert */}
       {toastMessage && (
         <div style={{
           position: 'fixed',
-          top: '75px',
+          bottom: '24px',
           right: '24px',
-          backgroundColor: '#00E5FF',
-          color: '#07090E',
+          backgroundColor: 'var(--bg-modal, #ffffff)',
+          color: 'var(--text-primary, #0f172a)',
+          border: '1px solid var(--border-color, #e2e8f0)',
           padding: '10px 18px',
           borderRadius: '6px',
-          fontWeight: 800,
-          fontFamily: 'var(--font-mono, monospace)',
-          fontSize: '12.5px',
-          boxShadow: '0 0 25px rgba(0, 229, 255, 0.45)',
+          fontWeight: 600,
+          fontSize: '13px',
+          boxShadow: 'var(--shadow-md)',
           zIndex: 100000,
           display: 'flex',
           alignItems: 'center',
           gap: '8px'
         }}>
-          <span>✓</span>
+          <span style={{ color: 'var(--status-verified, #16a34a)' }}>✓</span>
           <span>{toastMessage}</span>
         </div>
       )}
@@ -769,29 +769,25 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
         alignItems: 'flex-start',
         flexWrap: 'wrap',
         gap: '1rem',
-        borderBottom: '1px solid rgba(0, 229, 255, 0.2)',
-        paddingBottom: '1.25rem',
-        marginBottom: '1.5rem'
+        borderBottom: '1px solid var(--border-color, #e2e8f0)',
+        paddingBottom: '16px',
+        marginBottom: '20px'
       }}>
         <div>
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontFamily: 'var(--font-mono, monospace)',
             fontSize: '11px',
-            color: '#00E5FF',
-            letterSpacing: '1.5px',
-            marginBottom: '4px'
+            fontWeight: 700,
+            color: 'var(--accent-primary, #1e40af)',
+            letterSpacing: '0.8px',
+            marginBottom: '2px'
           }}>
-            <span>🇮🇳</span>
-            <span>INDIAN POLICE INVESTIGATION // SECTION 65B BSA CERTIFIED</span>
+            DIGITAL FORENSICS CHRONOLOGY // SECTION 65B BSA CERTIFIED
           </div>
-          <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 4px 0', letterSpacing: '0.5px' }}>
-            CRIMINAL FIR POLICE STATIONS MAP &amp; TIMELINE
+          <h1 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 4px 0', color: 'var(--text-primary, #0f172a)' }}>
+            FIR Chronology &amp; Police Stations Map
           </h1>
-          <p style={{ margin: 0, fontSize: '13px', color: '#94A3B8' }}>
-            Search any criminal to instantly plot all Police Stations where FIRs are registered across state jurisdictions.
+          <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-muted, #64748b)' }}>
+            Filter by suspect or incident to plot jurisdictional police stations and verifiable chronological event milestones.
           </p>
         </div>
 
@@ -799,44 +795,29 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            style={{
-              backgroundColor: '#00E5FF',
-              border: 'none',
-              color: '#07090E',
-              borderRadius: '6px',
-              padding: '8px 15px',
-              fontSize: '12px',
-              fontWeight: 800,
-              fontFamily: 'var(--font-mono, monospace)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)'
-            }}
+            className="btn-primary"
+            style={{ fontSize: '12px', padding: '7px 14px' }}
           >
-            <span>🚨</span>
-            <span>+ ADD CRIMINAL TO MAP</span>
+            <span>+ Add Suspect to Map</span>
           </button>
 
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
-            backgroundColor: 'rgba(0, 229, 255, 0.08)',
-            border: '1px solid rgba(0, 229, 255, 0.3)',
-            padding: '8px 14px',
+            gap: '8px',
+            backgroundColor: 'var(--accent-subtle, #eff6ff)',
+            border: '1px solid var(--border-strong, #bfdbfe)',
+            padding: '6px 12px',
             borderRadius: '6px'
           }}>
             <span style={{
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              backgroundColor: '#00E676',
-              boxShadow: '0 0 10px #00E676',
+              backgroundColor: 'var(--status-verified, #16a34a)',
               display: 'inline-block'
             }}></span>
-            <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 700 }}>
+            <span style={{ fontSize: '11.5px', fontFamily: 'monospace', color: 'var(--accent-primary, #1e40af)', fontWeight: 700 }}>
               {filteredStations.length} POLICE STATIONS PLOTTED
             </span>
           </div>
@@ -844,32 +825,33 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
       </div>
 
       {/* Search & Criminal Quick Selector */}
-      <div style={{
-        backgroundColor: 'rgba(12, 17, 26, 0.9)',
-        border: '1px solid rgba(0, 229, 255, 0.2)',
-        borderRadius: '8px',
-        padding: '1.2rem',
-        marginBottom: '1.5rem',
+      <div className="cl-card" style={{
+        backgroundColor: 'var(--bg-card, #ffffff)',
+        border: '1px solid var(--border-color, #e2e8f0)',
+        borderRadius: '6px',
+        padding: '16px',
+        marginBottom: '20px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '0.85rem'
+        gap: '12px',
+        boxShadow: 'var(--shadow-sm)'
       }}>
         {/* Search Input Box */}
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           <div style={{ flex: '1', minWidth: '280px', position: 'relative' }}>
             <input
               type="text"
-              placeholder="🔍 Search Criminal Name (e.g. Mayank Kotoli, Devendra Rawat, Sameer Qureshi)..."
+              placeholder="Search Criminal Name (e.g. Mayank Kotoli, Devendra Rawat, Sameer Qureshi)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
                 width: '100%',
-                backgroundColor: 'rgba(7, 10, 16, 0.95)',
-                border: '1.5px solid rgba(0, 229, 255, 0.35)',
+                backgroundColor: 'var(--bg-input, #ffffff)',
+                border: '1px solid var(--border-strong, #cbd5e1)',
                 borderRadius: '6px',
-                padding: '10px 14px',
-                color: '#FFFFFF',
-                fontSize: '13px',
+                padding: '8px 12px',
+                color: 'var(--text-primary, #0f172a)',
+                fontSize: '12.5px',
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -878,25 +860,18 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              style={{
-                backgroundColor: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#94A3B8',
-                borderRadius: '5px',
-                padding: '9px 14px',
-                fontSize: '12px',
-                cursor: 'pointer'
-              }}
+              className="btn-ghost"
+              style={{ fontSize: '12px' }}
             >
-              Clear Search
+              Clear
             </button>
           )}
         </div>
 
         {/* Quick Suspect Filter Pills */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: '#94A3B8', fontWeight: 700 }}>
-            SEARCH BY SUSPECT:
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-muted, #64748b)', fontWeight: 700 }}>
+            TARGET SUSPECT:
           </span>
 
           {dynamicSuspectPills.map((item, idx) => {
@@ -906,18 +881,18 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
                 key={idx}
                 onClick={() => handleSelectCriminalFilter(item.filterVal)}
                 style={{
-                  backgroundColor: isSelected ? '#00E5FF' : 'rgba(7, 10, 16, 0.8)',
-                  color: isSelected ? '#07090E' : '#CBD5E1',
-                  border: isSelected ? '1px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.12)',
-                  borderRadius: '5px',
-                  padding: '5px 11px',
-                  fontSize: '11.5px',
-                  fontWeight: isSelected ? 800 : 600,
+                  backgroundColor: isSelected ? 'var(--accent-subtle, #eff6ff)' : 'var(--bg-subtle, #f8fafc)',
+                  color: isSelected ? 'var(--accent-primary, #1e40af)' : 'var(--text-secondary, #475569)',
+                  border: isSelected ? '1px solid var(--accent-primary, #bfdbfe)' : '1px solid var(--border-color, #e2e8f0)',
+                  borderRadius: '4px',
+                  padding: '4px 10px',
+                  fontSize: '11px',
+                  fontWeight: isSelected ? 700 : 500,
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease'
+                  transition: 'all 0.12s ease'
                 }}
               >
-                {item.label} <span style={{ opacity: 0.8, fontSize: '10px' }}>({item.count})</span>
+                {item.label} <span style={{ opacity: 0.75, fontSize: '10px' }}>({item.count})</span>
               </button>
             );
           })}
@@ -925,27 +900,27 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
       </div>
 
       {/* Geospatial Map Container */}
-      <div style={{
-        backgroundColor: 'rgba(12, 17, 26, 0.95)',
-        border: '1.5px solid rgba(0, 229, 255, 0.3)',
-        borderRadius: '8px',
-        padding: '1.25rem',
-        marginBottom: '1.5rem',
-        boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)'
+      <div className="cl-card" style={{
+        backgroundColor: 'var(--bg-card, #ffffff)',
+        border: '1px solid var(--border-color, #e2e8f0)',
+        borderRadius: '6px',
+        padding: '16px',
+        marginBottom: '20px',
+        boxShadow: 'var(--shadow-sm)'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
           <div>
-            <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 800 }}>
-              🗺️ POLICE STATIONS FIR GEOSPATIAL RADAR
+            <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--accent-primary, #1e40af)', fontWeight: 700 }}>
+              JURISDICTIONAL POLICE STATIONS MAP
             </span>
-            <div style={{ fontSize: '12px', color: '#94A3B8' }}>
-              Showing <strong style={{ color: '#FFFFFF' }}>{filteredStations.length}</strong> Police Stations where FIRs are registered for{' '}
-              <strong style={{ color: '#00E5FF' }}>{activeCriminalFilter === 'ALL' ? (searchQuery || 'All Suspects') : activeCriminalFilter}</strong>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted, #64748b)' }}>
+              Showing <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{filteredStations.length}</strong> Police Stations for{' '}
+              <strong style={{ color: 'var(--accent-primary, #1e40af)' }}>{activeCriminalFilter === 'ALL' ? (searchQuery || 'All Suspects') : activeCriminalFilter}</strong>
             </div>
           </div>
 
-          <div style={{ fontSize: '11px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>
-            Click pins on map or cards below to inspect
+          <div style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>
+            Click markers to inspect jurisdiction
           </div>
         </div>
 
@@ -956,8 +931,8 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
             width: '100%',
             height: '380px',
             borderRadius: '6px',
-            backgroundColor: '#070A10',
-            border: '1px solid rgba(0, 229, 255, 0.2)',
+            backgroundColor: 'var(--bg-subtle, #f1f5f9)',
+            border: '1px solid var(--border-color, #e2e8f0)',
             zIndex: 1
           }}
         />
@@ -966,8 +941,8 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
         {selectedStation && (
           <div style={{
             marginTop: '12px',
-            backgroundColor: 'rgba(0, 229, 255, 0.08)',
-            border: '1px solid rgba(0, 229, 255, 0.35)',
+            backgroundColor: 'var(--accent-subtle, #eff6ff)',
+            border: '1px solid var(--border-strong, #bfdbfe)',
             borderRadius: '6px',
             padding: '10px 14px',
             display: 'flex',
@@ -977,15 +952,15 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
             gap: '10px'
           }}>
             <div>
-              <span style={{ fontSize: '10px', color: '#00E5FF', fontFamily: 'monospace', fontWeight: 700 }}>
+              <span style={{ fontSize: '10.5px', color: 'var(--accent-primary, #1e40af)', fontFamily: 'monospace', fontWeight: 700 }}>
                 SELECTED JURISDICTION:
               </span>
-              <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#FFFFFF' }}>
+              <div style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary, #0f172a)' }}>
                 🏛️ {selectedStation.stationName} — {selectedStation.city}
               </div>
-              <div style={{ fontSize: '12px', color: '#CBD5E1', marginTop: '2px' }}>
-                <strong>Suspect:</strong> <span style={{ color: '#FF8888' }}>{selectedStation.criminalName}</span> |{' '}
-                <strong>FIR:</strong> <span style={{ color: '#00E5FF' }}>{selectedStation.firNumber}</span> |{' '}
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary, #334155)', marginTop: '2px' }}>
+                <strong>Suspect:</strong> <span style={{ color: 'var(--status-critical, #dc2626)' }}>{selectedStation.criminalName}</span> |{' '}
+                <strong>FIR:</strong> <span style={{ color: 'var(--accent-primary, #1e40af)' }}>{selectedStation.firNumber}</span> |{' '}
                 <strong>Sections:</strong> {selectedStation.sections} |{' '}
                 <strong>IO:</strong> {selectedStation.ioOfficer}
               </div>
@@ -993,15 +968,8 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
 
             <button
               onClick={() => setSelectedStation(null)}
-              style={{
-                backgroundColor: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#94A3B8',
-                borderRadius: '4px',
-                padding: '5px 10px',
-                fontSize: '11px',
-                cursor: 'pointer'
-              }}
+              className="btn-ghost"
+              style={{ fontSize: '11px', padding: '4px 8px' }}
             >
               Dismiss
             </button>
@@ -1010,75 +978,69 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
       </div>
 
       {/* Police Station Cards Grid */}
-      <div style={{ marginBottom: '1.75rem' }}>
+      <div style={{ marginBottom: '20px' }}>
         <div style={{
           fontSize: '11px',
           fontWeight: 700,
-          color: '#00E5FF',
-          fontFamily: 'var(--font-mono, monospace)',
+          color: 'var(--accent-primary, #1e40af)',
+          fontFamily: 'monospace',
           marginBottom: '10px',
-          letterSpacing: '1px'
+          letterSpacing: '0.8px'
         }}>
-          🏛️ REGISTERED POLICE STATIONS DIRECTORY ({filteredStations.length} STATIONS FOUND)
+          POLICE STATIONS DIRECTORY ({filteredStations.length} STATIONS FOUND)
         </div>
 
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '0.85rem'
+          gap: '10px'
         }}>
           {filteredStations.map((stn) => (
             <div
               key={stn.id}
               onClick={() => handleFocusStation(stn)}
+              className="cl-card"
               style={{
-                backgroundColor: 'rgba(12, 17, 26, 0.9)',
-                border: selectedStation?.id === stn.id ? '1.5px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                padding: '12px 14px',
+                backgroundColor: 'var(--bg-card, #ffffff)',
+                border: selectedStation?.id === stn.id ? '1.5px solid var(--accent-primary, #1e40af)' : '1px solid var(--border-color, #e2e8f0)',
+                borderRadius: '6px',
+                padding: '12px',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
+                transition: 'all 0.12s ease',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '4px',
-                boxShadow: selectedStation?.id === stn.id ? '0 0 20px rgba(0, 229, 255, 0.2)' : 'none'
+                boxShadow: selectedStation?.id === stn.id ? '0 0 0 2px rgba(30, 64, 175, 0.15)' : 'var(--shadow-sm)'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF', fontWeight: 800 }}>
+                <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--accent-primary, #1e40af)', fontWeight: 800 }}>
                   {stn.firNumber}
                 </span>
-                <span style={{
-                  fontSize: '9.5px',
-                  backgroundColor: 'rgba(255, 85, 85, 0.15)',
-                  color: '#FF8888',
-                  padding: '2px 6px',
-                  borderRadius: '3px',
-                  fontWeight: 700
-                }}>
+                <span className="badge-critical" style={{ fontSize: '9.5px' }}>
                   {stn.status.split('/')[0]}
                 </span>
               </div>
 
-              <div style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>
-                🏛️ {stn.stationName}
+              <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary, #0f172a)' }}>
+                {stn.stationName}
               </div>
 
-              <div style={{ fontSize: '11px', color: '#94A3B8' }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)' }}>
                 📍 {stn.city}
               </div>
 
-              <div style={{ fontSize: '11.5px', color: '#CBD5E1', marginTop: '2px' }}>
-                <strong>Accused:</strong> <span style={{ color: '#FF8888', fontWeight: 700 }}>{stn.criminalName}</span>
+              <div style={{ fontSize: '11.5px', color: 'var(--text-secondary, #334155)', marginTop: '2px' }}>
+                <strong>Accused:</strong> <span style={{ color: 'var(--status-critical, #dc2626)', fontWeight: 700 }}>{stn.criminalName}</span>
               </div>
 
-              <div style={{ fontSize: '10.5px', color: '#FBBF24', fontFamily: 'monospace' }}>
+              <div style={{ fontSize: '10.5px', color: 'var(--status-warning, #d97706)', fontFamily: 'monospace' }}>
                 ⚖️ {stn.sections}
               </div>
 
-              <div style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px solid rgba(255, 255, 255, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '10.5px', color: '#94A3B8' }}>IO: {stn.ioOfficer}</span>
-                <span style={{ fontSize: '10.5px', color: '#00E5FF', fontWeight: 700 }}>📍 Focus on Map →</span>
+              <div style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px solid var(--border-color, #e2e8f0)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '10.5px', color: 'var(--text-muted, #64748b)' }}>IO: {stn.ioOfficer}</span>
+                <span style={{ fontSize: '10.5px', color: 'var(--accent-primary, #1e40af)', fontWeight: 700 }}>Focus on Map →</span>
               </div>
             </div>
           ))}
@@ -1086,15 +1048,15 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
       </div>
 
       {/* Category Pills for Timeline */}
-      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '16px' }}>
         {[
           { label: 'ALL CRIME EVENTS', value: 'ALL' },
-          { label: '🔴 HOMICIDE & BALLISTICS', value: 'HOMICIDE' },
-          { label: '🟣 SEXUAL OFFENSE SIT', value: 'SEXUAL_OFFENSE' },
-          { label: '🟠 ARMED HEISTS', value: 'ROBBERY' },
-          { label: '🟡 EXTORTION (MCOCA)', value: 'EXTORTION' },
-          { label: '🟢 NARCOTICS SMUGGLING', value: 'NARCOTICS' },
-          { label: '⚖️ JUDICIAL ORDERS', value: 'JUDICIAL_ORDER' }
+          { label: 'Homicide & Ballistics', value: 'HOMICIDE' },
+          { label: 'Sexual Offense SIT', value: 'SEXUAL_OFFENSE' },
+          { label: 'Armed Heists', value: 'ROBBERY' },
+          { label: 'Extortion (MCOCA)', value: 'EXTORTION' },
+          { label: 'Narcotics Smuggling', value: 'NARCOTICS' },
+          { label: 'Judicial Orders', value: 'JUDICIAL_ORDER' }
         ].map((cat, idx) => {
           const isSelected = filterType === cat.value;
           return (
@@ -1102,15 +1064,15 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
               key={idx}
               onClick={() => setFilterType(cat.value)}
               style={{
-                backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.15)' : 'rgba(12, 17, 26, 0.8)',
-                color: isSelected ? '#00E5FF' : '#94A3B8',
-                border: isSelected ? '1px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.08)',
+                backgroundColor: isSelected ? 'var(--accent-subtle, #eff6ff)' : 'var(--bg-card, #ffffff)',
+                color: isSelected ? 'var(--accent-primary, #1e40af)' : 'var(--text-muted, #64748b)',
+                border: isSelected ? '1px solid var(--accent-primary, #bfdbfe)' : '1px solid var(--border-color, #e2e8f0)',
                 borderRadius: '4px',
-                padding: '6px 12px',
-                fontSize: '11.5px',
-                fontWeight: isSelected ? 800 : 600,
+                padding: '5px 10px',
+                fontSize: '11px',
+                fontWeight: isSelected ? 700 : 500,
                 cursor: 'pointer',
-                fontFamily: 'var(--font-mono, monospace)'
+                transition: 'all 0.12s ease'
               }}
             >
               {cat.label}
@@ -1120,51 +1082,52 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
       </div>
 
       {/* Chronological Vertical Evidence Track */}
-      <div style={{
-        backgroundColor: 'rgba(12, 17, 26, 0.95)',
-        border: '1px solid rgba(0, 229, 255, 0.2)',
-        borderRadius: '8px',
-        padding: '1.5rem',
-        boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)'
+      <div className="cl-card" style={{
+        backgroundColor: 'var(--bg-card, #ffffff)',
+        border: '1px solid var(--border-color, #e2e8f0)',
+        borderRadius: '6px',
+        padding: '20px',
+        boxShadow: 'var(--shadow-sm)'
       }}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '1.25rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          paddingBottom: '0.75rem'
+          marginBottom: '16px',
+          borderBottom: '1px solid var(--border-color, #e2e8f0)',
+          paddingBottom: '12px'
         }}>
-          <h2 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#00E5FF', fontFamily: 'var(--font-mono, monospace)' }}>
+          <h2 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: 'var(--text-primary, #0f172a)', fontFamily: 'monospace' }}>
             CHRONOLOGICAL FORENSIC ACTIVITY TRAIL
           </h2>
-          <span style={{ fontSize: '11.5px', color: '#94A3B8' }}>
+          <span style={{ fontSize: '11.5px', color: 'var(--text-muted, #64748b)' }}>
             Showing {filteredEvents.length} Verified Incidents
           </span>
         </div>
 
         {filteredEvents.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '2.5rem', color: '#94A3B8' }}>
+          <div style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-muted, #64748b)' }}>
             No forensic events found matching your current search criteria.
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', position: 'relative' }}>
             {filteredEvents.map((evt) => (
               <div
                 key={evt.id}
+                className="cl-card"
                 style={{
-                  backgroundColor: 'rgba(7, 10, 16, 0.85)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  backgroundColor: 'var(--bg-card, #ffffff)',
+                  border: '1px solid var(--border-color, #e2e8f0)',
                   borderRadius: '6px',
-                  padding: '1rem 1.25rem',
-                  borderLeft: `4px solid ${evt.categoryColor || '#00E5FF'}`,
-                  transition: 'all 0.15s ease'
+                  padding: '14px 16px',
+                  borderLeft: `4px solid ${evt.categoryColor || 'var(--accent-primary, #1e40af)'}`,
+                  transition: 'all 0.12s ease'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px', marginBottom: '6px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '16px' }}>{evt.icon || '📌'}</span>
-                    <span style={{ fontSize: '14px', fontWeight: 800, color: '#FFFFFF' }}>
+                    <span style={{ fontSize: '15px' }}>{evt.icon || '📌'}</span>
+                    <span style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--text-primary, #0f172a)' }}>
                       {evt.title}
                     </span>
                   </div>
@@ -1172,16 +1135,17 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{
                       fontSize: '10px',
-                      backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                      color: '#00E5FF',
-                      padding: '2px 7px',
+                      backgroundColor: 'var(--accent-subtle, #eff6ff)',
+                      color: 'var(--accent-primary, #1e40af)',
+                      border: '1px solid var(--border-strong, #bfdbfe)',
+                      padding: '2px 6px',
                       borderRadius: '3px',
                       fontFamily: 'monospace',
                       fontWeight: 700
                     }}>
                       CONFIDENCE: {evt.confidence}
                     </span>
-                    <span style={{ fontSize: '11px', color: '#94A3B8', fontFamily: 'monospace' }}>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>
                       {evt.timestamp}
                     </span>
                   </div>
@@ -1192,38 +1156,31 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
                   gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                   gap: '6px',
                   fontSize: '11.5px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  backgroundColor: 'var(--bg-subtle, #f8fafc)',
+                  border: '1px solid var(--border-color, #e2e8f0)',
                   padding: '6px 10px',
                   borderRadius: '4px',
                   marginBottom: '8px'
                 }}>
-                  <div><span style={{ color: '#94A3B8' }}>Suspect:</span> <strong style={{ color: '#FF8888' }}>{evt.entity}</strong></div>
-                  <div><span style={{ color: '#94A3B8' }}>FIR:</span> <strong style={{ color: '#00E5FF' }}>{evt.firNumber}</strong></div>
-                  <div><span style={{ color: '#94A3B8' }}>Station:</span> <strong style={{ color: '#FFFFFF' }}>{evt.policeStation}</strong></div>
-                  <div><span style={{ color: '#94A3B8' }}>IO:</span> <strong style={{ color: '#CBD5E1' }}>{evt.ioOfficer}</strong></div>
+                  <div><span style={{ color: 'var(--text-muted, #64748b)' }}>Suspect:</span> <strong style={{ color: 'var(--status-critical, #dc2626)' }}>{evt.entity}</strong></div>
+                  <div><span style={{ color: 'var(--text-muted, #64748b)' }}>FIR:</span> <strong style={{ color: 'var(--accent-primary, #1e40af)' }}>{evt.firNumber}</strong></div>
+                  <div><span style={{ color: 'var(--text-muted, #64748b)' }}>Station:</span> <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{evt.policeStation}</strong></div>
+                  <div><span style={{ color: 'var(--text-muted, #64748b)' }}>IO:</span> <strong style={{ color: 'var(--text-secondary, #334155)' }}>{evt.ioOfficer}</strong></div>
                 </div>
 
-                <p style={{ margin: '0 0 10px 0', fontSize: '12.5px', color: '#CBD5E1', lineHeight: 1.5 }}>
+                <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: 'var(--text-secondary, #475569)', lineHeight: 1.5 }}>
                   {evt.description}
                 </p>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                  <div style={{ fontSize: '11px', color: '#94A3B8', fontFamily: 'monospace' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>
                     📍 Location: {evt.coordinates}
                   </div>
 
                   <button
                     onClick={() => setSelectedEvent(evt)}
-                    style={{
-                      backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                      border: '1px solid rgba(0, 229, 255, 0.35)',
-                      color: '#00E5FF',
-                      borderRadius: '4px',
-                      padding: '5px 12px',
-                      fontSize: '11.5px',
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
+                    className="btn-secondary"
+                    style={{ fontSize: '11.5px', padding: '4px 10px' }}
                   >
                     View Forensic Exhibit u/s 65B
                   </button>
@@ -1239,65 +1196,65 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
         <div style={{
           position: 'fixed',
           inset: 0,
-          backgroundColor: 'rgba(3, 7, 18, 0.88)',
-          backdropFilter: 'blur(8px)',
+          backgroundColor: 'rgba(15, 23, 42, 0.75)',
+          backdropFilter: 'blur(4px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 100000,
           padding: '1.5rem'
         }}>
-          <div style={{
+          <div className="cl-card" style={{
             maxWidth: '650px',
             width: '100%',
-            backgroundColor: '#0c111a',
-            border: '1.5px solid #00E5FF',
-            borderRadius: '10px',
-            padding: '1.75rem',
-            boxShadow: '0 0 50px rgba(0, 229, 255, 0.3)',
-            color: '#FFFFFF',
+            backgroundColor: 'var(--bg-modal, #ffffff)',
+            border: '1px solid var(--border-color, #e2e8f0)',
+            borderRadius: '8px',
+            padding: '24px',
+            boxShadow: 'var(--shadow-lg)',
+            color: 'var(--text-primary, #0f172a)',
             fontFamily: 'sans-serif'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(0, 229, 255, 0.25)', paddingBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--border-color, #e2e8f0)', paddingBottom: '12px' }}>
               <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: '#FFFFFF' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: 'var(--text-primary, #0f172a)' }}>
                   FORENSIC EXHIBIT INSPECTION &amp; CUSTODY LOG
                 </h3>
-                <span style={{ fontSize: '11px', color: '#00E5FF', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: '11px', color: 'var(--accent-primary, #1e40af)', fontFamily: 'monospace', fontWeight: 700 }}>
                   TAG: {selectedEvent.evidenceTag || 'EXHIBIT-CFSL-VERIFIED'}
                 </span>
               </div>
               <button
                 onClick={() => setSelectedEvent(null)}
-                style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: '18px', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted, #64748b)', fontSize: '18px', cursor: 'pointer' }}
               >
                 ✕
               </button>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '12.5px', color: '#CBD5E1' }}>
-              <div style={{ backgroundColor: 'rgba(0, 229, 255, 0.05)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '10px 12px', borderRadius: '6px' }}>
-                <strong style={{ color: '#FFFFFF', display: 'block', marginBottom: '3px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '12.5px', color: 'var(--text-secondary, #334155)' }}>
+              <div style={{ backgroundColor: 'var(--accent-subtle, #eff6ff)', border: '1px solid var(--border-strong, #bfdbfe)', padding: '10px 12px', borderRadius: '6px' }}>
+                <strong style={{ color: 'var(--accent-primary, #1e40af)', display: 'block', marginBottom: '3px' }}>
                   Admissibility Certification (Section 65B BSA / Evidence Act)
                 </strong>
-                <p style={{ margin: 0, fontSize: '11.5px', color: '#94A3B8' }}>
+                <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--text-secondary, #475569)' }}>
                   This forensic record is cryptographically signed and admissible in judicial proceedings before the High Court and Sessions Courts.
                 </p>
               </div>
 
               <div>
-                <strong style={{ color: '#FFFFFF' }}>Incident Summary:</strong>
-                <p style={{ margin: '4px 0 0 0', lineHeight: 1.5 }}>{selectedEvent.description}</p>
+                <strong style={{ color: 'var(--text-primary, #0f172a)' }}>Incident Summary:</strong>
+                <p style={{ margin: '4px 0 0 0', lineHeight: 1.5, color: 'var(--text-secondary, #475569)' }}>{selectedEvent.description}</p>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '8px 10px', borderRadius: '4px' }}>
-                  <span style={{ color: '#94A3B8', fontSize: '11px' }}>Investigating Officer:</span>
-                  <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{selectedEvent.ioOfficer}</div>
+                <div style={{ backgroundColor: 'var(--bg-subtle, #f8fafc)', border: '1px solid var(--border-color, #e2e8f0)', padding: '8px 10px', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px' }}>Investigating Officer:</span>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary, #0f172a)' }}>{selectedEvent.ioOfficer}</div>
                 </div>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '8px 10px', borderRadius: '4px' }}>
-                  <span style={{ color: '#94A3B8', fontSize: '11px' }}>Police Station:</span>
-                  <div style={{ fontWeight: 700, color: '#00E5FF' }}>{selectedEvent.policeStation}</div>
+                <div style={{ backgroundColor: 'var(--bg-subtle, #f8fafc)', border: '1px solid var(--border-color, #e2e8f0)', padding: '8px 10px', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted, #64748b)', fontSize: '11px' }}>Police Station:</span>
+                  <div style={{ fontWeight: 700, color: 'var(--accent-primary, #1e40af)' }}>{selectedEvent.policeStation}</div>
                 </div>
               </div>
 
@@ -1307,31 +1264,15 @@ const CRIMINAL_FIR_POLICE_STATIONS = [
                     navigator.clipboard?.writeText(`SHA256:${selectedEvent.id}-7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069`);
                     showToast('✓ Cryptographic SHA-256 exhibit hash copied to clipboard.');
                   }}
-                  style={{
-                    backgroundColor: 'transparent',
-                    border: '1px solid rgba(0, 229, 255, 0.3)',
-                    color: '#00E5FF',
-                    borderRadius: '4px',
-                    padding: '7px 12px',
-                    fontSize: '11.5px',
-                    fontWeight: 700,
-                    cursor: 'pointer'
-                  }}
+                  className="btn-secondary"
+                  style={{ fontSize: '11.5px' }}
                 >
-                  Copy Digital Seal
+                  Copy Digital Seal Hash
                 </button>
                 <button
                   onClick={() => setSelectedEvent(null)}
-                  style={{
-                    backgroundColor: '#00E5FF',
-                    color: '#07090E',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '7px 14px',
-                    fontSize: '11.5px',
-                    fontWeight: 800,
-                    cursor: 'pointer'
-                  }}
+                  className="btn-primary"
+                  style={{ fontSize: '11.5px' }}
                 >
                   Close
                 </button>

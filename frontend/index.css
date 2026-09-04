@@ -1,59 +1,71 @@
-/* Design tokens for the Login / Reports screens.
-   Names are deliberately distinct from the tokens in src/index.css
-   (--bg-dark, --text-primary, --cyan-glow, ...) so both systems coexist. */
-:root {
-  /* Surfaces */
-  --bg: #080b11;
-  --panel: #0f1319;
-  --panel-2: #141a23;
-  --panel-3: #10151d;
-  --border: #1e2531;
-  --border-2: #29323f;
-
-  /* Text */
-  --text: #8b97a8;
-  --text-dim: #5c6878;
-  --text-h: #e9eef5;
-
-  /* Accents — cyan matches src/index.css --cyan-glow (#00e5ff) */
-  --cyan: #00e5ff;
-  --cyan-2: #22d3ee;
-  --cyan-dim: rgba(0, 229, 255, 0.12);
-  --green: #4ade80;
-  --red: #ef8b8b;
-  --red-bg: rgba(239, 100, 100, 0.18);
-  --red-border: rgba(239, 120, 120, 0.5);
-
-  --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
-  --display: 'Space Grotesk', system-ui, 'Segoe UI', sans-serif;
-
-  color-scheme: dark;
-}
-
+:root,
 [data-theme="light"] {
-  /* Surfaces */
   --bg: #f8fafc;
+  --bg-main: #f8fafc;
   --panel: #ffffff;
   --panel-2: #f1f5f9;
   --panel-3: #e2e8f0;
-  --border: #cbd5e1;
-  --border-2: #94a3b8;
+  --border: #e2e8f0;
+  --border-2: #cbd5e1;
 
-  /* Text */
-  --text: #334155;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --card-text: #0f172a;
+  --card-text-secondary: #475569;
+  --card-text-muted: #64748b;
+  --card-bg-elevated: #f8fafc;
+
+  --text: #475569;
   --text-dim: #64748b;
   --text-h: #0f172a;
 
-  /* Accents */
-  --cyan: #0891b2;
-  --cyan-2: #06b6d4;
-  --cyan-dim: rgba(8, 145, 178, 0.12);
+  --cyan: #1e40af;
+  --cyan-2: #1d4ed8;
+  --cyan-dim: #eff6ff;
   --green: #16a34a;
   --red: #dc2626;
-  --red-bg: rgba(220, 38, 38, 0.1);
-  --red-border: rgba(220, 38, 38, 0.3);
+  --red-bg: #fef2f2;
+  --red-border: #fecaca;
+
+  --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   color-scheme: light;
+}
+
+[data-theme="dark"],
+.dark {
+  --bg: #0f172a;
+  --bg-main: #0f172a;
+  --panel: #1e293b;
+  --panel-2: #273449;
+  --panel-3: #334155;
+  --border: #334155;
+  --border-2: #475569;
+
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --card-text: #f8fafc;
+  --card-text-secondary: #cbd5e1;
+  --card-text-muted: #94a3b8;
+  --card-bg-elevated: #273449;
+
+  --text: #cbd5e1;
+  --text-dim: #94a3b8;
+  --text-h: #f8fafc;
+
+  --cyan: #3b82f6;
+  --cyan-2: #60a5fa;
+  --cyan-dim: rgba(59, 130, 246, 0.15);
+  --green: #4ade80;
+  --red: #f87171;
+  --red-bg: rgba(239, 68, 68, 0.15);
+  --red-border: rgba(239, 68, 68, 0.35);
+
+  --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  color-scheme: dark;
 }
 
 * {
@@ -66,28 +78,18 @@
   flex-direction: column;
 }
 
-/* ------------------------------------------------------------------
-   Everything below is scoped to the two screens this stylesheet owns.
-   Keeping it scoped means the global `html, body` rules in
-   src/index.css cannot restyle these pages, and these rules cannot
-   leak into the landing / dashboard / timeline / settings pages.
-   ------------------------------------------------------------------ */
 .auth,
 .reports {
   flex: 1;
   display: flex;
   flex-direction: column;
-  font: 16px/1.5 var(--mono);
+  font-family: var(--display);
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--text);
   background-color: var(--bg);
-  /* Faint tactical grid */
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
-  background-size: 42px 42px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 .auth :is(h1, h2, h3),
@@ -97,79 +99,22 @@
   margin: 0;
 }
 
-.auth p,
-.reports p {
-  margin: 0;
+.card,
+.cl-card,
+.glass-card,
+.card-item {
+  background-color: var(--card-bg, var(--panel, #ffffff));
+  border: 1px solid var(--card-border, var(--border, #e2e8f0));
+  color: var(--card-text, var(--text-h, #0f172a));
+  border-radius: 6px;
 }
 
-.auth a,
-.reports a {
-  color: var(--cyan);
-  text-decoration: none;
+.nested-card,
+.card-inner,
+.card-subtle {
+  background-color: var(--card-bg-elevated, var(--panel-2, #f8fafc));
+  border: 1px solid var(--card-border, var(--border, #e2e8f0));
+  color: var(--card-text, var(--text-h, #0f172a));
+  border-radius: 6px;
 }
 
-.auth button,
-.reports button {
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.auth input,
-.reports input {
-  font-family: var(--mono);
-}
-
-/* Small uppercase mono label */
-.auth .label,
-.reports .label {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text);
-}
-
-/* Brand wordmark */
-.logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--cyan);
-}
-
-.logo-text {
-  font-family: var(--display);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  color: var(--text-h);
-}
-
-.logo-text em {
-  font-style: normal;
-  color: var(--cyan);
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
-}
-
-/* Card shell used by both pages */
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-/* Status dot */
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  flex: none;
-}
-
-.auth :focus-visible,
-.reports :focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
-}

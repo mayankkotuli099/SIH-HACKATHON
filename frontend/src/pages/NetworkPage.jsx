@@ -26,7 +26,7 @@ const PREDEFINED_SUSPECT_NETWORKS = {
       { id: 'N_SCENE', label: 'SECTOR-18 CRIME SCENE', type: 'CRIME_SCENE', role: 'Double Homicide Location', risk: 'CRITICAL', riskScore: '100%', x: 140, y: 220, r: 12, color: '#FF5555', status: 'EVIDENCE_SEALED', details: 'Recovered 4x 9mm spent casings with matching firing pin impressions (FSL Ballistics #FSL-884).' },
       { id: 'N_VEHICLE', label: 'KTM DUKE GETAWAY (HR26)', type: 'VEHICLE', role: 'Getaway Vehicle Vector', risk: 'HIGH', riskScore: '88.2%', x: 210, y: 310, r: 11, color: '#00E676', status: 'ANPR_FLAGGED', details: 'Unregistered KTM Duke 390 captured crossing Kherki Daula Toll 14 mins post-incident.' },
       { id: 'N_HAWALA', label: 'HAWALA DROP (₹35 LAKHS)', type: 'FINANCIAL', role: 'Contract Bounty Escrow', risk: 'HIGH', riskScore: '91.5%', x: 390, y: 310, r: 12, color: '#A855F7', status: 'ACCOUNTS_FROZEN', details: 'Benami cash transit conduit routed via Chandni Chowk bullion operators to finance safehouses.' },
-      { id: 'N_BURNER', label: 'BURNER +91-98711-40291', type: 'SIGINT', role: 'Active Burner IMEI Intercept', risk: 'MEDIUM', riskScore: '85.0%', x: 460, y: 220, r: 11, color: '#00E5FF', status: 'TRIANGULATED', details: 'Cell tower triangulation pings moving along Meerut-Delhi Expressway corridors.' },
+      { id: 'N_BURNER', label: 'BURNER +91-98711-40291', type: 'SIGINT', role: 'Active Burner IMEI Intercept', risk: 'MEDIUM', riskScore: '85.0%', x: 460, y: 220, r: 11, color: '#0284c7', status: 'TRIANGULATED', details: 'Cell tower triangulation pings moving along Meerut-Delhi Expressway corridors.' },
     ],
     edges: [
       { from: 'N_BOSS', to: 'N_CENTER', label: 'HIT CONTRACT (₹50L)', type: 'COMMAND', color: '#FF5555', width: 2.5, dashed: false },
@@ -35,7 +35,7 @@ const PREDEFINED_SUSPECT_NETWORKS = {
       { from: 'N_CENTER', to: 'N_VEHICLE', label: 'GETAWAY ROUTE', type: 'TRANSIT', color: '#00E676', width: 2.0, dashed: true },
       { from: 'N_BOSS', to: 'N_HAWALA', label: 'HAWALA ESCROW', type: 'FINANCIAL', color: '#A855F7', width: 1.8, dashed: false },
       { from: 'N_HAWALA', to: 'N_CENTER', label: 'BOUNTY DISPERSAL', type: 'FINANCIAL', color: '#A855F7', width: 1.8, dashed: true },
-      { from: 'N_CENTER', to: 'N_BURNER', label: 'SIGINT ENCRYPTED CHAT', type: 'COMMUNICATION', color: '#00E5FF', width: 1.8, dashed: true },
+      { from: 'N_CENTER', to: 'N_BURNER', label: 'SIGINT ENCRYPTED CHAT', type: 'COMMUNICATION', color: '#0284c7', width: 1.8, dashed: true },
     ]
   },
 
@@ -60,7 +60,7 @@ const PREDEFINED_SUSPECT_NETWORKS = {
       { id: 'N_EXTORT', label: 'GURUGRAM INFRASTRUCTURE FIRM', type: 'TARGET', role: '₹50L Extortion Target', risk: 'CRITICAL', riskScore: '96.0%', x: 140, y: 220, r: 12, color: '#FBBF24', status: 'POLICE_PROTECTED', details: 'Received extortion threats via VoIP demands; CCTV captured Khan’s recce scouts.' },
       { id: 'N_ARMS', label: 'VIKRAM SINGH (ARMS BROKER)', type: 'ARMS_SUPPLIER', role: 'Military Arms Importer', risk: 'HIGH', riskScore: '95.2%', x: 460, y: 220, r: 12, color: '#FBBF24', status: 'WARRANT_ISSUED', details: 'Procures imported Glock-17 and AK-series rifles from clandestine cross-border routes.' },
       { id: 'N_VAULT', label: 'DUBAI BULLION VAULT ($1.8M)', type: 'FINANCIAL', role: 'Offshore Gold Reserves', risk: 'HIGH', riskScore: '97.1%', x: 210, y: 310, r: 12, color: '#A855F7', status: 'INTERPOL_FLAGGED', details: 'Benami shell company holding physical bullion assets laundered from syndicate extortion.' },
-      { id: 'N_SATCOM', label: 'SATELLITE RELAY (+971-50)', type: 'SIGINT', role: 'Encrypted Comms Hub', risk: 'HIGH', riskScore: '90.0%', x: 390, y: 310, r: 11, color: '#00E5FF', status: 'ACTIVE_INTERCEPT', details: 'Satellite VoIP relay routed through encrypted European proxies to evade domestic wiretaps.' },
+      { id: 'N_SATCOM', label: 'SATELLITE RELAY (+971-50)', type: 'SIGINT', role: 'Encrypted Comms Hub', risk: 'HIGH', riskScore: '90.0%', x: 390, y: 310, r: 11, color: '#0284c7', status: 'ACTIVE_INTERCEPT', details: 'Satellite VoIP relay routed through encrypted European proxies to evade domestic wiretaps.' },
     ],
     edges: [
       { from: 'N_CENTER', to: 'N_HITMAN', label: 'EXECUTION COMMAND', type: 'COMMAND', color: '#FF5555', width: 2.5, dashed: false },
@@ -68,7 +68,7 @@ const PREDEFINED_SUSPECT_NETWORKS = {
       { from: 'N_CENTER', to: 'N_EXTORT', label: '₹50L EXTORTION DEMAND', type: 'CRIME', color: '#FBBF24', width: 2.2, dashed: true },
       { from: 'N_ARMS', to: 'N_CENTER', label: 'AK-47 / GLOCK SUPPLY', type: 'WEAPON', color: '#FBBF24', width: 2.0, dashed: true },
       { from: 'N_HAWALA', to: 'N_VAULT', label: 'OFFSHORE WIRE', type: 'FINANCIAL', color: '#A855F7', width: 2.0, dashed: false },
-      { from: 'N_CENTER', to: 'N_SATCOM', label: 'SATELLITE LINK', type: 'COMMUNICATION', color: '#00E5FF', width: 1.8, dashed: true },
+      { from: 'N_CENTER', to: 'N_SATCOM', label: 'SATELLITE LINK', type: 'COMMUNICATION', color: '#0284c7', width: 1.8, dashed: true },
       { from: 'N_ARMS', to: 'N_HITMAN', label: 'WEAPON TRANSFER', type: 'WEAPON', color: '#FBBF24', width: 1.5, dashed: true },
     ]
   },
@@ -93,16 +93,16 @@ const PREDEFINED_SUSPECT_NETWORKS = {
       { id: 'N_TAXI', label: 'UNREGISTERED WHITE TAXI', type: 'VEHICLE', role: 'Abduction Transit Vector', risk: 'CRITICAL', riskScore: '96.5%', x: 430, y: 100, r: 14, color: '#FF5555', status: 'ANPR_ALERTLIST', details: 'Vehicle fitted with child-locks disabled from inside and tinted IR-blocking film.' },
       { id: 'N_PRISON', label: 'MAYANK KOTOLI (TIHAR NEXUS)', type: 'GANG_LINK', role: 'Former Inmate / Prison Associate', risk: 'CRITICAL', riskScore: '99.2%', x: 140, y: 220, r: 13, color: '#FF5555', status: 'GANG_AFFILIATE', details: 'Shared Ward #4 in Tihar Jail; established mutual hideout networks in Haryana border towns.' },
       { id: 'N_SAFEHOUSE', label: 'SECTOR-14 HIDEOUT', type: 'INFRASTRUCTURE', role: 'Triangulated Safehouse', risk: 'HIGH', riskScore: '91.0%', x: 460, y: 220, r: 12, color: '#00E676', status: 'RAID_CORDONED', details: 'Abandoned warehouse unit identified via cell tower triangulation and forensic trace analysis.' },
-      { id: 'N_DNA', label: 'FORENSIC DNA MATCH #FK-8821', type: 'FORENSIC', role: 'Biological Evidence Vector', risk: 'CRITICAL', riskScore: '100%', x: 210, y: 310, r: 12, color: '#00E5FF', status: 'COURT_EVIDENCE', details: '100% STR DNA match confirmed across 3 crime scene rape test kits by State FSL.' },
-      { id: 'N_BURNER', label: 'BURNER +91-98112-99011', type: 'SIGINT', role: 'Stalking Telemetry Device', risk: 'MEDIUM', riskScore: '84.0%', x: 390, y: 310, r: 11, color: '#00E5FF', status: 'SIGNAL_ACTIVE', details: 'Tower triangulation confirms device pings near bus terminals between 22:00 and 03:00 hrs.' },
+      { id: 'N_DNA', label: 'FORENSIC DNA MATCH #FK-8821', type: 'FORENSIC', role: 'Biological Evidence Vector', risk: 'CRITICAL', riskScore: '100%', x: 210, y: 310, r: 12, color: '#0284c7', status: 'COURT_EVIDENCE', details: '100% STR DNA match confirmed across 3 crime scene rape test kits by State FSL.' },
+      { id: 'N_BURNER', label: 'BURNER +91-98112-99011', type: 'SIGINT', role: 'Stalking Telemetry Device', risk: 'MEDIUM', riskScore: '84.0%', x: 390, y: 310, r: 11, color: '#0284c7', status: 'SIGNAL_ACTIVE', details: 'Tower triangulation confirms device pings near bus terminals between 22:00 and 03:00 hrs.' },
     ],
     edges: [
       { from: 'N_PLATES', to: 'N_TAXI', label: 'COUNTERFEIT NUMBER PLATES', type: 'LOGISTICS', color: '#FBBF24', width: 2.0, dashed: true },
       { from: 'N_CENTER', to: 'N_TAXI', label: 'TRANSIT OPERATIONS', type: 'VECTOR', color: '#FF5555', width: 2.5, dashed: false },
       { from: 'N_CENTER', to: 'N_PRISON', label: 'TIHAR PRISON NETWORK', type: 'ASSOCIATE', color: '#FF5555', width: 2.0, dashed: true },
       { from: 'N_CENTER', to: 'N_SAFEHOUSE', label: 'HABITATION BASE', type: 'INFRASTRUCTURE', color: '#00E676', width: 2.0, dashed: false },
-      { from: 'N_CENTER', to: 'N_DNA', label: 'STR DNA 100% MATCH', type: 'FORENSIC', color: '#00E5FF', width: 2.5, dashed: false },
-      { from: 'N_CENTER', to: 'N_BURNER', label: 'IMSI TRACKING', type: 'COMMUNICATION', color: '#00E5FF', width: 1.8, dashed: true },
+      { from: 'N_CENTER', to: 'N_DNA', label: 'STR DNA 100% MATCH', type: 'FORENSIC', color: '#0284c7', width: 2.5, dashed: false },
+      { from: 'N_CENTER', to: 'N_BURNER', label: 'IMSI TRACKING', type: 'COMMUNICATION', color: '#0284c7', width: 1.8, dashed: true },
     ]
   },
 
@@ -124,14 +124,14 @@ const PREDEFINED_SUSPECT_NETWORKS = {
       { id: 'N_CENTER', label: "SAMEER 'GHOST' QURESHI", type: 'HEIST_MASTER', role: 'Lead Vault Breaker', risk: 'HIGH', riskScore: '92.4%', x: 300, y: 190, r: 17, color: '#FF9900', status: 'ACTIVE_TRACKING', details: 'Master safe cracker with thermal lance training. Suspect in ₹14 Cr Axis Bank vault heist.' },
       { id: 'N_FENCER', label: "MAHESH 'TIGER' KHAN", type: 'GANG_BOSS', role: 'Syndicate Gold Fencer', risk: 'CRITICAL', riskScore: '98.5%', x: 170, y: 100, r: 14, color: '#FF5555', status: 'MCOCA_FLAGGED', details: 'Buys stolen gold bullion at 40% discount and launders value through jewelry syndicates.' },
       { id: 'N_VAULT', label: 'AXIS BANK VAULT (14KG GOLD)', type: 'CRIME_SCENE', role: 'Heist Target Location', risk: 'CRITICAL', riskScore: '99.0%', x: 430, y: 100, r: 13, color: '#FF5555', status: 'FORENSIC_MAPPED', details: 'Thermal lance breach of reinforced vault steel; glove DNA recovered on security keypad.' },
-      { id: 'N_BOLERO', label: 'GETAWAY BOLERO (HR26-XX-4902)', type: 'VEHICLE', role: 'Armed Getaway Vector', risk: 'HIGH', riskScore: '96.0%', x: 140, y: 220, r: 12, color: '#00E5FF', status: 'GPS_BEACON_HIT', details: 'Equipped with police scanner and fake police strobe lights to evade highway checkpoints.' },
+      { id: 'N_BOLERO', label: 'GETAWAY BOLERO (HR26-XX-4902)', type: 'VEHICLE', role: 'Armed Getaway Vector', risk: 'HIGH', riskScore: '96.0%', x: 140, y: 220, r: 12, color: '#0284c7', status: 'GPS_BEACON_HIT', details: 'Equipped with police scanner and fake police strobe lights to evade highway checkpoints.' },
       { id: 'N_MARKET', label: 'BULLION FENCER (CHANDNI CHOWK)', type: 'FINANCIAL', role: 'Black Market Melter', risk: 'HIGH', riskScore: '89.2%', x: 460, y: 220, r: 12, color: '#A855F7', status: 'SURVEILLED', details: 'Undercover surveillance active on smelting shop converting marked bullion into unmarked bars.' },
       { id: 'N_JAMMER', label: 'SIGNAL JAMMER TRUCK', type: 'EQUIPMENT', role: 'Electronic Warfare Unit', risk: 'MEDIUM', riskScore: '82.0%', x: 210, y: 310, r: 11, color: '#00E676', status: 'SEIZED_PARTS', details: 'High-power RF jammer blocking cellular alarms, CCTV Wi-Fi relays, and guard panic triggers.' },
       { id: 'N_HITMAN', label: 'MAYANK KOTOLI', type: 'LEAD_HITMAN', role: 'Armed Escort / Firepower', risk: 'CRITICAL', riskScore: '99.4%', x: 390, y: 310, r: 13, color: '#FF5555', status: 'ACTIVE_FUGITIVE', details: 'Provided armed perimeter suppression during multi-city bank vault operations.' },
     ],
     edges: [
       { from: 'N_CENTER', to: 'N_VAULT', label: 'THERMAL LANCE BREACH', type: 'HEIST', color: '#FF5555', width: 2.5, dashed: false },
-      { from: 'N_CENTER', to: 'N_BOLERO', label: 'EVASION GETAWAY', type: 'TRANSIT', color: '#00E5FF', width: 2.0, dashed: true },
+      { from: 'N_CENTER', to: 'N_BOLERO', label: 'EVASION GETAWAY', type: 'TRANSIT', color: '#0284c7', width: 2.0, dashed: true },
       { from: 'N_CENTER', to: 'N_FENCER', label: 'STOLEN GOLD TRANSFER', type: 'FINANCIAL', color: '#FF5555', width: 2.2, dashed: false },
       { from: 'N_FENCER', to: 'N_MARKET', label: 'SMELTING & RESALE', type: 'FINANCIAL', color: '#A855F7', width: 1.8, dashed: true },
       { from: 'N_JAMMER', to: 'N_CENTER', label: 'RF ALARM BLOCK', type: 'TACTICAL', color: '#00E676', width: 1.8, dashed: true },
@@ -159,16 +159,16 @@ const PREDEFINED_SUSPECT_NETWORKS = {
       { id: 'N_ARMS', label: 'STEYR TMP FIREARMS CRATE', type: 'WEAPONS_CACHE', role: 'Military Weapon Cache', risk: 'CRITICAL', riskScore: '98.0%', x: 430, y: 100, r: 13, color: '#FBBF24', status: 'CUSTOMS_HOLD', details: 'Seized 24x military 9mm submachine guns and suppressed tactical carbines.' },
       { id: 'N_KHAN', label: "MAHESH 'TIGER' KHAN", type: 'DISTRIBUTION', role: 'NCR Regional Distributor', risk: 'CRITICAL', riskScore: '98.5%', x: 140, y: 220, r: 13, color: '#FF5555', status: 'MCOCA_FLAGGED', details: 'Distributes contraband shipments across NCR through localized dealer networks.' },
       { id: 'N_WIRE', label: 'HSBC HK MARITIME TRUST ($4.2M)', type: 'FINANCIAL', role: 'Offshore Crypto/Wire Account', risk: 'HIGH', riskScore: '94.5%', x: 460, y: 220, r: 12, color: '#A855F7', status: 'ASSETS_FROZEN', details: 'Multi-layered wire transit account channeling narcotics proceeds into crypto liquidity pools.' },
-      { id: 'N_VESSEL', label: 'ARABIAN SEA CARGO VESSEL', type: 'MARITIME', role: 'Deep-Sea Smuggling Vessel', risk: 'HIGH', riskScore: '90.0%', x: 210, y: 310, r: 11, color: '#00E5FF', status: 'COAST_GUARD_TRACKED', details: 'AIS transponder blacked out periodically across international maritime corridors.' },
-      { id: 'N_ENCRYPT', label: 'ENCRYPTED THREEMA / SATCOM', type: 'SIGINT', role: 'Secure Command Channel', risk: 'MEDIUM', riskScore: '86.0%', x: 390, y: 310, r: 11, color: '#00E5FF', status: 'SIGNAL_INTERCEPTED', details: 'Encrypted telemetry decoded showing scheduled drops at Gujarat and Maharashtra ports.' },
+      { id: 'N_VESSEL', label: 'ARABIAN SEA CARGO VESSEL', type: 'MARITIME', role: 'Deep-Sea Smuggling Vessel', risk: 'HIGH', riskScore: '90.0%', x: 210, y: 310, r: 11, color: '#0284c7', status: 'COAST_GUARD_TRACKED', details: 'AIS transponder blacked out periodically across international maritime corridors.' },
+      { id: 'N_ENCRYPT', label: 'ENCRYPTED THREEMA / SATCOM', type: 'SIGINT', role: 'Secure Command Channel', risk: 'MEDIUM', riskScore: '86.0%', x: 390, y: 310, r: 11, color: '#0284c7', status: 'SIGNAL_INTERCEPTED', details: 'Encrypted telemetry decoded showing scheduled drops at Gujarat and Maharashtra ports.' },
     ],
     edges: [
       { from: 'N_CENTER', to: 'N_PORT', label: '100KG OPIOIDS SHIPMENT', type: 'NARCO', color: '#FF5555', width: 2.5, dashed: false },
       { from: 'N_CENTER', to: 'N_ARMS', label: 'TACTICAL SMG IMPORTS', type: 'WEAPON', color: '#FBBF24', width: 2.2, dashed: false },
       { from: 'N_CENTER', to: 'N_KHAN', label: 'SYNDICATE DISTRIBUTION', type: 'COMMAND', color: '#FF5555', width: 2.0, dashed: true },
       { from: 'N_CENTER', to: 'N_WIRE', label: '$4.2M OFFSHORE LAUNDERING', type: 'FINANCIAL', color: '#A855F7', width: 2.0, dashed: false },
-      { from: 'N_VESSEL', to: 'N_PORT', label: 'MARITIME FREIGHT ROUTE', type: 'LOGISTICS', color: '#00E5FF', width: 1.8, dashed: true },
-      { from: 'N_CENTER', to: 'N_ENCRYPT', label: 'SATCOM CODES', type: 'COMMUNICATION', color: '#00E5FF', width: 1.8, dashed: true },
+      { from: 'N_VESSEL', to: 'N_PORT', label: 'MARITIME FREIGHT ROUTE', type: 'LOGISTICS', color: '#0284c7', width: 1.8, dashed: true },
+      { from: 'N_CENTER', to: 'N_ENCRYPT', label: 'SATCOM CODES', type: 'COMMUNICATION', color: '#0284c7', width: 1.8, dashed: true },
     ]
   }
 };
@@ -292,7 +292,7 @@ export function buildCriminalGangNetwork(criminal) {
       x: 390,
       y: 310,
       r: 11,
-      color: '#00E5FF',
+      color: '#0284c7',
       status: 'TRIANGULATED',
       details: `Cell tower triangulation and packet intercepts logged under Section 65B BSA.`
     }
@@ -304,7 +304,7 @@ export function buildCriminalGangNetwork(criminal) {
     { from: 'N_CENTER', to: 'N_JURISDICTION', label: 'INCIDENT HOTSPOT', type: 'FORENSIC', color: '#FF5555', width: 2.2, dashed: false },
     { from: 'N_CENTER', to: 'N_FINANCIAL', label: 'HAWALA CAPITAL FLOW', type: 'FINANCIAL', color: '#A855F7', width: 1.8, dashed: false },
     { from: 'N_CENTER', to: 'N_TRANSIT', label: 'GETAWAY TRANSIT', type: 'TRANSIT', color: '#00E676', width: 1.8, dashed: true },
-    { from: 'N_CENTER', to: 'N_SIGINT', label: 'SIGINT WIREPING', type: 'COMMUNICATION', color: '#00E5FF', width: 1.8, dashed: true }
+    { from: 'N_CENTER', to: 'N_SIGINT', label: 'SIGINT WIREPING', type: 'COMMUNICATION', color: '#0284c7', width: 1.8, dashed: true }
   ];
 
   return {
@@ -466,7 +466,7 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
   const quickSuspectChips = useMemo(() => {
     return Object.values(allNetworksMap).map((net) => {
       const isCritical = net.risk === 'CRITICAL';
-      const color = isCritical ? '#FF5555' : (net.color || '#00E5FF');
+      const color = isCritical ? '#dc2626' : (net.color || '#2563eb');
       return {
         label: `${net.isCustom ? '✨ ' : ''}${net.name} (${net.type.split(' ')[0]})`,
         key: net.name.toUpperCase(),
@@ -503,103 +503,42 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
   return (
     <div style={{
       flex: 1,
-      backgroundColor: 'var(--bg-dark, #070c14)',
-      color: 'var(--text-primary, #F8FAFC)',
-      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-      padding: '1.5rem 2rem',
+      backgroundColor: 'var(--bg-app, #f8fafc)',
+      color: 'var(--text-primary, #0f172a)',
+      fontFamily: 'var(--font-sans, sans-serif)',
+      padding: '24px 28px',
       maxWidth: '1600px',
       margin: '0 auto',
       width: '100%',
       boxSizing: 'border-box'
     }}>
       
-      {/* Keyframe Animations & Global Cyber Styles */}
+      {/* Component Styles */}
       <style>{`
-        :root {
-          --bg-dark: #070c14;
-          --card-bg: rgba(11, 18, 30, 0.88);
-          --border-color: rgba(0, 229, 255, 0.18);
-          --cyan-glow: #00e5ff;
-          --coral-glow: #ff4d4d;
-          --orange-glow: #ff9900;
-          --text-muted: #64748b;
-          --text-secondary: #94a3b8;
-        }
-
-        /* Continuous Pulse Animation for High Risk Central Node */
-        @keyframes pulseGlow {
-          0% {
-            r: 22px;
-            opacity: 0.85;
-            stroke-width: 1.5px;
-          }
-          50% {
-            r: 34px;
-            opacity: 0.15;
-            stroke-width: 3px;
-          }
-          100% {
-            r: 22px;
-            opacity: 0.85;
-            stroke-width: 1.5px;
-          }
-        }
-
-        /* Subtle Floating Animation for Nodes */
-        @keyframes nodeFloat {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-3px); }
-          100% { transform: translateY(0px); }
-        }
-
-        /* Dashed Line Data Flow Animation */
-        @keyframes dashFlow {
-          to {
-            stroke-dashoffset: -20;
-          }
-        }
-
-        .pulse-ring {
-          animation: pulseGlow 2.4s infinite ease-in-out;
-          transform-origin: center;
-        }
-
-        .floating-group {
-          animation: nodeFloat 4s infinite ease-in-out;
-        }
-
-        .animated-edge {
-          stroke-dasharray: 4;
-          animation: dashFlow 1s linear infinite;
-        }
-
         .interactive-btn {
-          transition: all 0.2s ease;
+          transition: all 0.15s ease;
         }
         .interactive-btn:hover {
-          border-color: var(--cyan-glow) !important;
-          color: #ffffff !important;
-          box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+          border-color: var(--accent-primary, #1e40af) !important;
         }
 
         .node-group {
           cursor: pointer;
-          transition: transform 0.2s ease, filter 0.2s ease;
+          transition: transform 0.15s ease;
         }
         .node-group:hover {
-          filter: drop-shadow(0 0 10px currentColor);
-          transform: scale(1.04);
+          transform: scale(1.03);
         }
       `}</style>
 
       {/* ================= TOP SEARCH & SUSPECT CONTROL BANNER ================= */}
       <div style={{
-        backgroundColor: 'var(--card-bg)',
-        border: '1.5px solid var(--border-color)',
-        borderRadius: '10px',
-        padding: '1.25rem 1.5rem',
-        marginBottom: '1.5rem',
-        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'var(--card-bg, #ffffff)',
+        border: '1px solid var(--card-border, #e2e8f0)',
+        borderRadius: '6px',
+        padding: '16px 20px',
+        marginBottom: '20px',
+        boxShadow: 'var(--shadow-sm)',
         position: 'relative'
       }}>
         <div style={{
@@ -607,37 +546,37 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '1rem',
-          marginBottom: '1rem'
+          gap: '12px',
+          marginBottom: '14px'
         }}>
           <div>
             <div style={{
-              fontFamily: 'monospace',
               fontSize: '11px',
-              color: 'var(--cyan-glow)',
-              letterSpacing: '1.5px',
-              marginBottom: '4px'
+              fontWeight: 700,
+              color: '#1e40af',
+              letterSpacing: '0.8px',
+              marginBottom: '2px'
             }}>
-              // GANG NETWORK TOPOLOGY & INTELLIGENCE NEXUS
+              GANG SYNDICATE TOPOLOGY &amp; NEXUS
             </div>
             <h1 style={{
-              fontSize: '22px',
-              fontWeight: 900,
+              fontSize: '20px',
+              fontWeight: 800,
               margin: 0,
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              color: '#FFFFFF'
+              color: 'var(--card-text, #0f172a)'
             }}>
-              <span>🕸️</span>
-              <span>GANG NETWORK ANALYZER</span>
+              <span>Gang Network Analyzer</span>
               <span style={{
                 fontSize: '11px',
                 fontFamily: 'monospace',
                 fontWeight: 700,
-                color: '#07090E',
-                backgroundColor: currentNetwork.risk === 'CRITICAL' ? '#FF5555' : '#FBBF24',
-                padding: '3px 8px',
+                color: currentNetwork.risk === 'CRITICAL' ? '#dc2626' : '#d97706',
+                backgroundColor: currentNetwork.risk === 'CRITICAL' ? '#fef2f2' : '#fffbeb',
+                border: currentNetwork.risk === 'CRITICAL' ? '1px solid #fecaca' : '1px solid #fde68a',
+                padding: '2px 8px',
                 borderRadius: '4px'
               }}>
                 TARGET: {currentNetwork.name}
@@ -650,45 +589,31 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              style={{
-                backgroundColor: 'var(--cyan-glow)',
-                border: 'none',
-                color: '#07090E',
-                borderRadius: '6px',
-                padding: '7px 14px',
-                fontSize: '11.5px',
-                fontWeight: 800,
-                fontFamily: 'monospace',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)'
-              }}
+              className="btn-primary"
+              style={{ fontSize: '12px', padding: '6px 14px' }}
             >
-              <span>🚨</span>
-              <span>+ ADD CRIMINAL TO GANG MAP</span>
+              <span>+ Add Suspect to Map</span>
             </button>
 
             <div style={{
-              backgroundColor: 'rgba(0, 229, 255, 0.08)',
-              border: '1px solid rgba(0, 229, 255, 0.25)',
-              padding: '6px 12px',
+              backgroundColor: '#eff6ff',
+              border: '1px solid #bfdbfe',
+              padding: '5px 10px',
               borderRadius: '6px',
               fontSize: '11px',
               fontFamily: 'monospace',
-              color: 'var(--cyan-glow)'
+              color: '#1e40af'
             }}>
               NODES: <strong>{currentNetwork.nodes.length}</strong> | EDGES: <strong>{currentNetwork.edges.length}</strong>
             </div>
             <div style={{
-              backgroundColor: 'rgba(255, 85, 85, 0.1)',
-              border: '1px solid rgba(255, 85, 85, 0.3)',
-              padding: '6px 12px',
+              backgroundColor: '#fef2f2',
+              border: '1px solid #fecaca',
+              padding: '5px 10px',
               borderRadius: '6px',
               fontSize: '11px',
               fontFamily: 'monospace',
-              color: '#FF5555'
+              color: '#dc2626'
             }}>
               THREAT INDEX: <strong>{currentNetwork.riskScore}</strong>
             </div>
@@ -705,11 +630,11 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
             <div style={{ position: 'relative', flex: 1 }}>
               <span style={{
                 position: 'absolute',
-                left: '14px',
+                left: '12px',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                fontSize: '16px',
-                color: 'var(--cyan-glow)'
+                fontSize: '14px',
+                color: '#64748b'
               }}>
                 🔍
               </span>
@@ -725,15 +650,13 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                 style={{
                   width: '100%',
                   boxSizing: 'border-box',
-                  backgroundColor: 'rgba(7, 12, 20, 0.95)',
-                  border: '1.5px solid rgba(0, 229, 255, 0.4)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '6px',
-                  padding: '12px 14px 12px 42px',
-                  color: '#FFFFFF',
-                  fontSize: '13.5px',
-                  fontWeight: 600,
-                  outline: 'none',
-                  boxShadow: '0 0 15px rgba(0, 229, 255, 0.1)'
+                  padding: '9px 12px 9px 36px',
+                  color: 'var(--text-primary, #0f172a)',
+                  fontSize: '13px',
+                  outline: 'none'
                 }}
               />
               {searchQuery && (
@@ -750,7 +673,7 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: '#94A3B8',
+                    color: '#94a3b8',
                     cursor: 'pointer',
                     fontSize: '14px'
                   }}
@@ -762,26 +685,14 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
 
             <button
               type="submit"
-              className="interactive-btn"
+              className="btn-primary"
               style={{
-                backgroundColor: 'var(--cyan-glow)',
-                color: '#07090E',
-                border: 'none',
-                borderRadius: '6px',
-                padding: '12px 22px',
+                padding: '9px 18px',
                 fontSize: '12.5px',
-                fontWeight: 800,
-                letterSpacing: '0.5px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                whiteSpace: 'nowrap',
-                boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)'
+                whiteSpace: 'nowrap'
               }}
             >
-              <span>⚡</span>
-              <span>MAP GANG NETWORK</span>
+              <span>Map Network Graph</span>
             </button>
           </div>
 
@@ -791,46 +702,47 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
               position: 'absolute',
               top: '100%',
               left: 0,
-              right: '180px',
-              backgroundColor: 'rgba(11, 18, 30, 0.98)',
-              border: '1px solid var(--cyan-glow)',
-              borderRadius: '0 0 8px 8px',
+              right: '160px',
+              backgroundColor: 'var(--bg-modal, #ffffff)',
+              border: '1px solid var(--border-color, #cbd5e1)',
+              borderRadius: '0 0 6px 6px',
               marginTop: '4px',
               zIndex: 100,
-              boxShadow: '0 12px 30px rgba(0, 0, 0, 0.8)',
+              boxShadow: 'var(--shadow-lg)',
               maxHeight: '260px',
               overflowY: 'auto'
             }}>
               <div style={{
-                padding: '8px 12px',
+                padding: '6px 12px',
                 fontSize: '10.5px',
                 fontFamily: 'monospace',
-                color: 'var(--text-secondary)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+                color: 'var(--text-muted, #64748b)',
+                backgroundColor: 'var(--bg-subtle, #f8fafc)',
+                borderBottom: '1px solid var(--border-color, #e2e8f0)'
               }}>
-                SELECT REGISTERED SYNDICATE SUSPECT OR PRESS ENTER FOR CUSTOM NETWORK:
+                REGISTERED SYNDICATE SUSPECTS:
               </div>
               {filteredSuggestions.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => loadSuspectNetwork(item.name)}
                   style={{
-                    padding: '10px 14px',
+                    padding: '8px 12px',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     cursor: 'pointer',
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                    transition: 'background 0.15s ease'
+                    borderBottom: '1px solid var(--border-subtle, #f1f5f9)',
+                    transition: 'background 0.12s ease'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.12)'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-subtle, #f1f5f9)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                 >
                   <div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF' }}>
-                      {item.name} <span style={{ color: 'var(--cyan-glow)', fontSize: '11px', fontWeight: 500 }}>({item.id})</span>
+                    <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary, #0f172a)' }}>
+                      {item.name} <span style={{ color: 'var(--accent-primary, #1e40af)', fontSize: '11px', fontWeight: 500 }}>({item.id})</span>
                     </div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)' }}>
                       {item.type} • {item.alias}
                     </div>
                   </div>
@@ -838,9 +750,10 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                     fontSize: '10.5px',
                     fontWeight: 700,
                     fontFamily: 'monospace',
-                    color: item.risk === 'CRITICAL' ? '#FF5555' : '#FBBF24',
-                    backgroundColor: item.risk === 'CRITICAL' ? 'rgba(255, 85, 85, 0.15)' : 'rgba(251, 191, 36, 0.15)',
-                    padding: '2px 8px',
+                    color: item.risk === 'CRITICAL' ? '#dc2626' : '#d97706',
+                    backgroundColor: item.risk === 'CRITICAL' ? '#fef2f2' : '#fffbeb',
+                    border: item.risk === 'CRITICAL' ? '1px solid #fecaca' : '1px solid #fde68a',
+                    padding: '2px 6px',
                     borderRadius: '4px'
                   }}>
                     {item.riskScore}
@@ -854,12 +767,12 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
         {/* Quick Suspect Selection Chips */}
         <div style={{
           display: 'flex',
-          gap: '8px',
+          gap: '6px',
           alignItems: 'center',
           flexWrap: 'wrap'
         }}>
-          <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)' }}>
-            QUICK SELECT:
+          <span style={{ fontSize: '11px', fontFamily: 'monospace', color: '#64748b' }}>
+            QUICK TARGETS:
           </span>
           {quickSuspectChips.map((chip) => {
             const isSelected = activeSuspectKey === chip.key || currentNetwork.name.toUpperCase().includes(chip.key);
@@ -868,15 +781,14 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                 key={chip.key}
                 type="button"
                 onClick={() => loadSuspectNetwork(chip.key)}
-                className="interactive-btn"
                 style={{
-                  backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.18)' : 'rgba(255, 255, 255, 0.04)',
-                  border: `1px solid ${isSelected ? 'var(--cyan-glow)' : 'rgba(255, 255, 255, 0.12)'}`,
-                  color: isSelected ? 'var(--cyan-glow)' : 'var(--text-secondary)',
-                  padding: '5px 11px',
-                  borderRadius: '16px',
+                  backgroundColor: isSelected ? '#eff6ff' : '#f8fafc',
+                  border: `1px solid ${isSelected ? '#bfdbfe' : '#e2e8f0'}`,
+                  color: isSelected ? '#1e40af' : '#475569',
+                  padding: '4px 10px',
+                  borderRadius: '14px',
                   fontSize: '11px',
-                  fontWeight: isSelected ? 700 : 500,
+                  fontWeight: isSelected ? 600 : 500,
                   cursor: 'pointer'
                 }}
               >
@@ -899,21 +811,23 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
           <div style={{
-            backgroundColor: 'var(--card-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '8px',
-            padding: '1rem'
+            backgroundColor: 'var(--card-bg, #ffffff)',
+            border: '1px solid var(--card-border, #e2e8f0)',
+            borderRadius: '6px',
+            padding: '14px',
+            boxShadow: 'var(--shadow-sm)'
           }}>
             <div style={{
               fontSize: '11px',
               fontFamily: 'monospace',
-              color: 'var(--cyan-glow)',
-              letterSpacing: '1px',
+              color: '#1e40af',
+              letterSpacing: '0.5px',
+              fontWeight: 700,
               marginBottom: '4px'
             }}>
-              // TOPOLOGY VIEWS
+              TOPOLOGY VIEWS
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+            <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '12px' }}>
               Select neural analysis dimension
             </div>
 
@@ -941,10 +855,10 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     fontSize: '12px',
-                    fontWeight: activeTab === item.label ? '600' : '400',
-                    color: activeTab === item.label ? 'var(--cyan-glow)' : 'var(--text-secondary)',
-                    backgroundColor: activeTab === item.label ? 'rgba(0, 229, 255, 0.08)' : 'transparent',
-                    border: `1px solid ${activeTab === item.label ? 'rgba(0, 229, 255, 0.3)' : 'transparent'}`,
+                    fontWeight: activeTab === item.label ? '600' : '500',
+                    color: activeTab === item.label ? '#1e40af' : '#475569',
+                    backgroundColor: activeTab === item.label ? '#eff6ff' : 'transparent',
+                    border: `1px solid ${activeTab === item.label ? '#bfdbfe' : 'transparent'}`,
                     cursor: 'pointer',
                     textAlign: 'left'
                   }}
@@ -958,19 +872,20 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
 
           {/* Graph Filters */}
           <div style={{
-            backgroundColor: 'var(--card-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '8px',
-            padding: '1rem'
+            backgroundColor: 'var(--card-bg, #ffffff)',
+            border: '1px solid var(--card-border, #e2e8f0)',
+            borderRadius: '6px',
+            padding: '14px',
+            boxShadow: 'var(--shadow-sm)'
           }}>
-            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)', letterSpacing: '1px', marginBottom: '1rem', fontWeight: 700 }}>
+            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-muted, #64748b)', letterSpacing: '0.5px', marginBottom: '12px', fontWeight: 700 }}>
               FILTER CONNECTIONS
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '6px' }}>Threat Level</label>
-                <select value={filterRisk} onChange={(e) => setFilterRisk(e.target.value)} style={{ width: '100%', backgroundColor: 'rgba(7, 12, 20, 0.8)', border: '1px solid rgba(0, 229, 255, 0.2)', color: '#fff', padding: '8px', borderRadius: '4px', fontSize: '12px' }}>
+                <label style={{ display: 'block', fontSize: '11.5px', color: 'var(--text-secondary, #475569)', marginBottom: '4px' }}>Threat Level</label>
+                <select value={filterRisk} onChange={(e) => setFilterRisk(e.target.value)} style={{ width: '100%', backgroundColor: 'var(--bg-input, #ffffff)', border: '1px solid var(--border-color, #cbd5e1)', color: 'var(--text-primary, #0f172a)', padding: '6px 8px', borderRadius: '4px', fontSize: '12px' }}>
                   <option>All Levels</option>
                   <option>Critical & High Risk Only</option>
                   <option>Forensic & Weapon Links Only</option>
@@ -978,8 +893,8 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '6px' }}>Link Category</label>
-                <select value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ width: '100%', backgroundColor: 'rgba(7, 12, 20, 0.8)', border: '1px solid rgba(0, 229, 255, 0.2)', color: '#fff', padding: '8px', borderRadius: '4px', fontSize: '12px' }}>
+                <label style={{ display: 'block', fontSize: '11.5px', color: 'var(--text-secondary, #475569)', marginBottom: '4px' }}>Link Category</label>
+                <select value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ width: '100%', backgroundColor: 'var(--bg-input, #ffffff)', border: '1px solid var(--border-color, #cbd5e1)', color: 'var(--text-primary, #0f172a)', padding: '6px 8px', borderRadius: '4px', fontSize: '12px' }}>
                   <option>All Connections</option>
                   <option>Contract & Command Links</option>
                   <option>Hawala & Financial Drops</option>
@@ -989,22 +904,22 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
 
               <button
                 onClick={() => showToast(`✓ Topology filter active: ${filterRisk} · ${filterType}`)}
-                className="interactive-btn"
-                style={{ width: '100%', backgroundColor: 'rgba(0, 229, 255, 0.1)', border: '1px solid var(--cyan-glow)', color: 'var(--cyan-glow)', padding: '8px', borderRadius: '4px', fontWeight: '600', fontSize: '12px', cursor: 'pointer' }}
+                className="btn-secondary"
+                style={{ width: '100%', padding: '6px', fontSize: '12px', marginTop: '4px' }}
               >
-                APPLY FILTER
+                Apply Filter
               </button>
             </div>
           </div>
 
-          <div style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ backgroundColor: 'var(--card-bg-elevated, #f8fafc)', border: '1px solid var(--card-border, #e2e8f0)', borderRadius: '6px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontFamily: 'monospace' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>NEURAL ENGINE</span>
-              <span style={{ color: '#10b981', fontWeight: 600 }}>● SYNCHRONIZED</span>
+              <span style={{ color: 'var(--text-muted, #64748b)' }}>NEURAL ENGINE</span>
+              <span style={{ color: 'var(--status-verified, #16a34a)', fontWeight: 600 }}>● SYNCHRONIZED</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontFamily: 'monospace' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>CENTRALITY ALGO</span>
-              <span style={{ color: 'var(--cyan-glow)' }}>PageRank v4.2</span>
+              <span style={{ color: 'var(--text-muted, #64748b)' }}>CENTRALITY ALGO</span>
+              <span style={{ color: 'var(--accent-primary, #1e40af)', fontWeight: 600 }}>PageRank v4.2</span>
             </div>
           </div>
 
@@ -1014,25 +929,25 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
           <div style={{
-            backgroundColor: 'var(--card-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '8px',
-            padding: '1.25rem',
+            backgroundColor: 'var(--card-bg, #ffffff)',
+            border: '1px solid var(--card-border, #e2e8f0)',
+            borderRadius: '6px',
+            padding: '16px',
             position: 'relative',
             minHeight: '520px',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+            boxShadow: 'var(--shadow-sm)'
           }}>
             
             {/* Header / Suspect Subtitle */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
               <div>
-                <h2 style={{ fontSize: '18px', fontWeight: '800', letterSpacing: '0.5px', margin: 0, color: '#FFFFFF' }}>
-                  {currentNetwork.name} // GANG NETWORK TOPOLOGY
+                <h2 style={{ fontSize: '16px', fontWeight: '800', letterSpacing: '0.3px', margin: 0, color: 'var(--card-text, #0f172a)' }}>
+                  {currentNetwork.name} // GANG TOPOLOGY
                 </h2>
-                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                  Cluster: <strong style={{ color: 'var(--cyan-glow)' }}>{currentNetwork.cluster}</strong>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  Cluster: <strong style={{ color: '#1e40af' }}>{currentNetwork.cluster}</strong>
                 </span>
               </div>
 
@@ -1042,21 +957,21 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                     setSelectedNode(currentNetwork.nodes[0]);
                     showToast(`Target node centered on ${currentNetwork.name}`);
                   }}
-                  className="interactive-btn"
-                  style={{ backgroundColor: 'rgba(0,229,255,0.08)', border: '1px solid rgba(0,229,255,0.3)', color: 'var(--cyan-glow)', padding: '6px 12px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}
+                  className="btn-secondary"
+                  style={{ padding: '5px 10px', fontSize: '11.5px' }}
                 >
-                  🎯 CENTER TARGET
+                  🎯 Center Target
                 </button>
               </div>
             </div>
 
             {/* SVG Interactive Canvas */}
-            <div style={{ flex: 1, position: 'relative', width: '100%', height: '390px', backgroundColor: 'rgba(4, 8, 15, 0.75)', borderRadius: '6px', border: '1px solid rgba(0, 229, 255, 0.1)' }}>
+            <div style={{ flex: 1, position: 'relative', width: '100%', height: '390px', backgroundColor: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
               <svg width="100%" height="100%" viewBox="0 0 600 390" style={{ overflow: 'visible' }}>
                 
                 {/* Background Radar Rings */}
-                <circle cx="300" cy="190" r="100" fill="none" stroke="rgba(0, 229, 255, 0.05)" strokeDasharray="3 3" />
-                <circle cx="300" cy="190" r="160" fill="none" stroke="rgba(0, 229, 255, 0.03)" strokeDasharray="4 4" />
+                <circle cx="300" cy="190" r="100" fill="none" stroke="#e2e8f0" strokeDasharray="3 3" />
+                <circle cx="300" cy="190" r="160" fill="none" stroke="#e2e8f0" strokeDasharray="4 4" />
 
                 {/* Graph Edges */}
                 <g>
@@ -1075,9 +990,9 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                           y1={src.y}
                           x2={tgt.x}
                           y2={tgt.y}
-                          stroke={edge.color || 'rgba(0, 229, 255, 0.4)'}
-                          strokeWidth={edge.width || 1.5}
-                          className={edge.dashed ? 'animated-edge' : ''}
+                          stroke={edge.color || '#94a3b8'}
+                          strokeWidth={edge.width || 1.6}
+                          strokeDasharray={edge.dashed ? '4 4' : 'none'}
                         />
                         {/* Edge Label */}
                         <rect
@@ -1085,15 +1000,15 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                           y={midY - 7}
                           width="70"
                           height="14"
-                          fill="rgba(7, 12, 20, 0.9)"
+                          fill="#ffffff"
                           rx="3"
-                          stroke={edge.color}
-                          strokeWidth="0.5"
+                          stroke={edge.color || '#cbd5e1'}
+                          strokeWidth="1"
                         />
                         <text
                           x={midX}
-                          y={midY + 3}
-                          fill="#FFFFFF"
+                          y={midY + 3.5}
+                          fill="#0f172a"
                           fontSize="7.5"
                           fontFamily="monospace"
                           textAnchor="middle"
@@ -1107,7 +1022,7 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                 </g>
 
                 {/* Graph Nodes */}
-                <g className="floating-group">
+                <g>
                   {currentNetwork.nodes.map((node) => {
                     const isCenter = node.id === 'N_CENTER';
                     const isSelected = selectedNode && selectedNode.id === node.id;
@@ -1140,7 +1055,7 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                             cy={node.y}
                             r={node.r + 7}
                             fill="none"
-                            stroke="var(--cyan-glow)"
+                            stroke="#1e40af"
                             strokeWidth="2"
                             strokeDasharray="2 2"
                           />
@@ -1152,21 +1067,19 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                           cy={node.y}
                           r={node.r}
                           fill={node.color}
-                          stroke={isSelected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.3)'}
-                          strokeWidth={isSelected ? 2 : 1}
-                          style={{ filter: `drop-shadow(0 0 8px ${node.color})` }}
+                          stroke={isSelected ? '#0f172a' : '#ffffff'}
+                          strokeWidth={isSelected ? 2.5 : 1.5}
                         />
 
                         {/* Text Label */}
                         <text
                           x={node.x}
-                          y={node.y > 190 ? node.y + node.r + 14 : node.y - node.r - 8}
-                          fill="#FFFFFF"
-                          fontSize={isCenter ? '10.5' : '9'}
+                          y={node.y > 190 ? node.y + node.r + 13 : node.y - node.r - 7}
+                          fill="#0f172a"
+                          fontSize={isCenter ? '10' : '8.5'}
                           fontFamily="sans-serif"
                           textAnchor="middle"
-                          fontWeight={isCenter ? '900' : '700'}
-                          style={{ textShadow: '0 2px 4px #000000' }}
+                          fontWeight={isCenter ? '800' : '600'}
                         >
                           {node.label}
                         </text>
@@ -1174,9 +1087,9 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
                         {/* Sub-label for risk */}
                         <text
                           x={node.x}
-                          y={node.y > 190 ? node.y + node.r + 24 : node.y - node.r - 18}
+                          y={node.y > 190 ? node.y + node.r + 22 : node.y - node.r - 16}
                           fill={node.color}
-                          fontSize="7.5"
+                          fontSize="7"
                           fontFamily="monospace"
                           textAnchor="middle"
                           fontWeight="700"
@@ -1196,28 +1109,28 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              borderTop: '1px solid rgba(255,255,255,0.08)',
+              borderTop: '1px solid #e2e8f0',
               paddingTop: '10px',
               marginTop: '10px',
               fontSize: '11px',
-              color: 'var(--text-secondary)'
+              color: '#64748b'
             }}>
               <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FF5555' }}></span> Primary Target / Crime Scene
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#dc2626' }}></span> Primary Target / Scene
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FBBF24' }}></span> Armorer / Weaponry
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#d97706' }}></span> Armorer / Weaponry
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#A855F7' }}></span> Hawala / Financial Escrow
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#2563eb' }}></span> Hawala / Financial Escrow
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00E5FF' }}></span> Sigint & Getaway Vector
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#16a34a' }}></span> Sigint &amp; Getaway Vector
                 </span>
               </div>
 
-              <span style={{ fontFamily: 'monospace', color: 'var(--cyan-glow)' }}>
+              <span style={{ fontFamily: 'monospace', color: '#1e40af', fontWeight: 600 }}>
                 CLICK ANY NODE TO INSPECT
               </span>
             </div>
@@ -1226,10 +1139,11 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
 
           {/* ================= SELECTED NODE INSPECTOR ================= */}
           <div style={{
-            backgroundColor: 'var(--card-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '8px',
-            padding: '1.25rem'
+            backgroundColor: 'var(--card-bg, #ffffff)',
+            border: '1px solid var(--card-border, #e2e8f0)',
+            borderRadius: '6px',
+            padding: '16px',
+            boxShadow: 'var(--shadow-sm)'
           }}>
             <div style={{
               display: 'flex',
@@ -1237,14 +1151,14 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
               alignItems: 'center',
               marginBottom: '10px'
             }}>
-              <div style={{ fontSize: '11px', color: 'var(--cyan-glow)', fontFamily: 'monospace' }}>
-                🎯 SELECTED NODE INTELLIGENCE DOSSIER
+              <div style={{ fontSize: '11px', color: '#1e40af', fontFamily: 'monospace', fontWeight: 700 }}>
+                SELECTED NODE INTELLIGENCE DOSSIER
               </div>
               <span style={{
                 fontSize: '10px',
                 fontFamily: 'monospace',
-                color: selectedNode?.color || '#00E5FF',
-                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                color: selectedNode?.color || '#1e40af',
+                backgroundColor: '#f1f5f9',
                 padding: '2px 8px',
                 borderRadius: '4px',
                 fontWeight: 700
@@ -1261,56 +1175,51 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
               marginBottom: '10px'
             }}>
               <div>
-                <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#FFFFFF' }}>{selectedNode?.label}</div>
-                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>ROLE: {selectedNode?.role}</div>
+                <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>{selectedNode?.label}</div>
+                <div style={{ fontSize: '11.5px', color: '#64748b' }}>ROLE: {selectedNode?.role}</div>
               </div>
               <div>
-                <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>THREAT / RISK</div>
-                <div style={{ fontSize: '15px', fontWeight: 'bold', color: selectedNode?.color }}>
+                <div style={{ fontSize: '10px', color: '#64748b' }}>THREAT / RISK</div>
+                <div style={{ fontSize: '14px', fontWeight: 'bold', color: selectedNode?.color || '#dc2626' }}>
                   {selectedNode?.riskScore} ({selectedNode?.risk})
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>NODE TYPE</div>
-                <div style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--cyan-glow)' }}>{selectedNode?.type}</div>
+                <div style={{ fontSize: '10px', color: '#64748b' }}>NODE TYPE</div>
+                <div style={{ fontSize: '11.5px', fontWeight: 'bold', color: '#1e40af' }}>{selectedNode?.type}</div>
               </div>
               <div>
                 <button
                   onClick={() => {
                     if (onNavigate) {
-                      onNavigate('entities');
+                      onNavigate('entities', { suspect: selectedNode?.label });
                     } else {
                       showToast(`Navigating to 360° Dossier for ${selectedNode?.label}`);
                     }
                   }}
-                  className="interactive-btn"
+                  className="btn-primary"
                   style={{
-                    backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                    border: '1px solid var(--cyan-glow)',
-                    color: 'var(--cyan-glow)',
                     padding: '6px 12px',
-                    borderRadius: '4px',
                     fontSize: '11px',
-                    cursor: 'pointer',
-                    fontWeight: 700
+                    whiteSpace: 'nowrap'
                   }}
                 >
-                  VIEW DOSSIER →
+                  View Dossier →
                 </button>
               </div>
             </div>
 
             {/* Tactical Detail Snippet */}
             <div style={{
-              backgroundColor: 'rgba(7, 12, 20, 0.8)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              backgroundColor: '#f8fafc',
+              border: '1px solid #e2e8f0',
               borderRadius: '6px',
               padding: '10px 14px',
               fontSize: '12px',
-              color: '#CBD5E1',
+              color: '#334155',
               lineHeight: 1.5
             }}>
-              <strong>FORENSIC & OPERATIONAL INTEL:</strong> {selectedNode?.details || currentNetwork.description}
+              <strong style={{ color: '#0f172a' }}>FORENSIC &amp; OPERATIONAL INTEL:</strong> {selectedNode?.details || currentNetwork.description}
             </div>
           </div>
 
@@ -1320,131 +1229,105 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
           {/* Suspect Profile Card */}
-          <div style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '1rem' }}>
-            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)', marginBottom: '0.75rem', fontWeight: 700 }}>
+          <div style={{ backgroundColor: 'var(--card-bg, #ffffff)', border: '1px solid var(--card-border, #e2e8f0)', borderRadius: '6px', padding: '14px', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-muted, #64748b)', marginBottom: '0.75rem', fontWeight: 700 }}>
               SUSPECT PROFILE SUMMARY
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>CRIMINAL ID</span>
-                <strong style={{ color: 'var(--cyan-glow)' }}>{currentNetwork.id}</strong>
+                <span style={{ color: 'var(--text-muted, #64748b)' }}>CRIMINAL ID</span>
+                <strong style={{ color: 'var(--accent-primary, #1e40af)', fontFamily: 'monospace' }}>{currentNetwork.id}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>ALIAS</span>
-                <strong>{currentNetwork.alias}</strong>
+                <span style={{ color: 'var(--text-muted, #64748b)' }}>ALIAS</span>
+                <strong style={{ color: 'var(--card-text, #0f172a)' }}>{currentNetwork.alias}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>CATEGORY</span>
-                <strong style={{ color: '#FF5555' }}>{currentNetwork.category}</strong>
+                <span style={{ color: 'var(--text-muted, #64748b)' }}>CATEGORY</span>
+                <strong style={{ color: 'var(--status-critical, #dc2626)' }}>{currentNetwork.category}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>POLICE STATION</span>
-                <span>{currentNetwork.policeStation}</span>
+                <span style={{ color: 'var(--text-muted, #64748b)' }}>POLICE STATION</span>
+                <span style={{ color: 'var(--card-text, #0f172a)' }}>{currentNetwork.policeStation}</span>
               </div>
             </div>
           </div>
 
           {/* Network Statistics */}
-          <div style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '1rem' }}>
-            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)', marginBottom: '0.75rem', fontWeight: 700 }}>
+          <div style={{ backgroundColor: 'var(--card-bg, #ffffff)', border: '1px solid var(--card-border, #e2e8f0)', borderRadius: '6px', padding: '14px', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-muted, #64748b)', marginBottom: '0.75rem', fontWeight: 700 }}>
               TOPOLOGY METRICS
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Mapped Nodes</span>
-                <strong>{currentNetwork.nodes.length}</strong>
+                <span style={{ color: 'var(--text-muted, #64748b)' }}>Mapped Nodes</span>
+                <strong style={{ color: 'var(--card-text, #0f172a)' }}>{currentNetwork.nodes.length}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Active Edges / Vectors</span>
-                <strong>{currentNetwork.edges.length}</strong>
+                <span style={{ color: 'var(--text-muted, #64748b)' }}>Active Vectors</span>
+                <strong style={{ color: 'var(--card-text, #0f172a)' }}>{currentNetwork.edges.length}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Network Density</span>
-                <strong style={{ color: 'var(--cyan-glow)' }}>0.82</strong>
+                <span style={{ color: 'var(--text-muted, #64748b)' }}>Network Density</span>
+                <strong style={{ color: 'var(--accent-primary, #1e40af)' }}>0.82</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Betweenness Centrality</span>
-                <strong style={{ color: '#FF5555' }}>0.94 (Max)</strong>
+                <span style={{ color: 'var(--text-muted, #64748b)' }}>Betweenness Centrality</span>
+                <strong style={{ color: 'var(--status-critical, #dc2626)' }}>0.94 (High)</strong>
               </div>
             </div>
           </div>
 
           {/* Tactical Quick Actions */}
-          <div style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '1rem' }}>
-            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)', marginBottom: '0.75rem', fontWeight: 700 }}>
-              TACTICAL COMMAND ACTIONS
+          <div style={{ backgroundColor: 'var(--card-bg, #ffffff)', border: '1px solid var(--card-border, #e2e8f0)', borderRadius: '6px', padding: '14px', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#64748b', marginBottom: '0.75rem', fontWeight: 700 }}>
+              TACTICAL ACTIONS
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <button
-                onClick={() => showToast(`🚨 Tactical STF Intercept alert broadcasted for ${currentNetwork.name} across NCR jurisdiction.`)}
-                className="interactive-btn"
+                onClick={() => showToast(`🚨 STF Intercept alert broadcasted for ${currentNetwork.name} across NCR jurisdiction.`)}
+                className="btn-danger"
                 style={{
-                  backgroundColor: 'rgba(255, 85, 85, 0.15)',
-                  border: '1px solid #FF5555',
-                  color: '#FF5555',
-                  padding: '9px',
-                  borderRadius: '4px',
-                  fontSize: '11.5px',
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px'
+                  width: '100%',
+                  fontSize: '12px',
+                  padding: '8px',
+                  justifyContent: 'center'
                 }}
               >
-                <span>🚨</span>
-                <span>DISPATCH STF INTERCEPT</span>
+                <span>Dispatch STF Intercept</span>
               </button>
 
               <button
-                onClick={() => showToast(`📄 Exporting complete Gang Network Intelligence Dossier for ${currentNetwork.name}...`)}
-                className="interactive-btn"
+                onClick={() => showToast(`📄 Exporting complete Gang Network Report for ${currentNetwork.name}...`)}
+                className="btn-secondary"
                 style={{
-                  backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                  border: '1px solid rgba(0, 229, 255, 0.3)',
-                  color: 'var(--cyan-glow)',
-                  padding: '9px',
-                  borderRadius: '4px',
-                  fontSize: '11.5px',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px'
+                  width: '100%',
+                  fontSize: '12px',
+                  padding: '8px',
+                  justifyContent: 'center'
                 }}
               >
-                <span>📄</span>
-                <span>EXPORT GRAPH REPORT</span>
+                <span>Export Graph Report</span>
               </button>
 
               <button
                 onClick={() => {
                   if (onNavigate) {
-                    onNavigate('entities');
+                    onNavigate('entities', { suspect: currentNetwork.name });
                   } else {
-                    showToast(`Navigating to Entity 360 page`);
+                    showToast(`Navigating to 360° Dossier`);
                   }
                 }}
-                className="interactive-btn"
+                className="btn-primary"
                 style={{
-                  backgroundColor: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  color: '#fff',
-                  padding: '9px',
-                  borderRadius: '4px',
-                  fontSize: '11.5px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px'
+                  width: '100%',
+                  fontSize: '12px',
+                  padding: '8px',
+                  justifyContent: 'center'
                 }}
               >
-                <span>👤</span>
-                <span>OPEN 360° DOSSIER</span>
+                <span>Open 360° Dossier</span>
               </button>
             </div>
           </div>
@@ -1453,22 +1336,21 @@ export default function NetworkTopologyPage({ onNavigate: _onNavigate }) {
 
       </div>
 
-      {/* Floating Tactical Toast Notification */}
+      {/* Toast Notification */}
       {toastMessage && (
         <div style={{
           position: 'fixed',
-          top: '80px',
+          bottom: '24px',
           right: '24px',
-          backgroundColor: 'rgba(0, 229, 255, 0.95)',
-          color: '#07090E',
-          padding: '12px 20px',
+          backgroundColor: 'var(--card-bg, #ffffff)',
+          color: 'var(--card-text, #0f172a)',
+          border: '1px solid var(--card-border, #e2e8f0)',
+          padding: '10px 18px',
           borderRadius: '6px',
-          fontWeight: 800,
-          fontFamily: 'monospace',
           fontSize: '13px',
-          boxShadow: '0 0 25px rgba(0, 229, 255, 0.6)',
-          zIndex: 99999,
-          border: '1px solid #FFFFFF'
+          fontWeight: 600,
+          boxShadow: 'var(--shadow-lg)',
+          zIndex: 99999
         }}>
           {toastMessage}
         </div>

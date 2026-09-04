@@ -111,26 +111,25 @@ export default function OperationalWorkflow() {
                 width: '64px',
                 height: '64px',
                 borderRadius: '8px',
-                backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.12)' : 'rgba(16, 22, 34, 0.6)',
-                border: isSelected ? '1.5px solid var(--cyan-glow)' : '1px solid rgba(0, 229, 255, 0.15)',
-                color: isSelected ? 'var(--cyan-glow)' : 'var(--text-secondary)',
+                backgroundColor: isSelected ? '#eff6ff' : '#ffffff',
+                border: isSelected ? '1.5px solid #1e40af' : '1px solid #e2e8f0',
+                color: isSelected ? '#1e40af' : 'var(--text-secondary)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '1.5rem',
-                boxShadow: isSelected ? '0 0 24px rgba(0, 229, 255, 0.35)' : 'none',
+                boxShadow: isSelected ? '0 4px 6px -1px rgba(30, 64, 175, 0.1)' : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                 position: 'relative',
-                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                transition: 'all 0.2s ease'
               }}>
                 {step.icon}
                 {isSelected && (
                   <div style={{
                     position: 'absolute',
                     bottom: '-12px',
-                    width: '40px',
+                    width: '32px',
                     height: '2px',
-                    backgroundColor: 'var(--cyan-glow)',
-                    boxShadow: '0 0 8px var(--cyan-glow)'
+                    backgroundColor: '#1e40af'
                   }} />
                 )}
               </div>
@@ -140,8 +139,8 @@ export default function OperationalWorkflow() {
                 fontFamily: 'var(--font-mono)',
                 fontSize: '13px',
                 fontWeight: 700,
-                letterSpacing: '1px',
-                color: isSelected ? 'var(--cyan-glow)' : 'var(--text-primary)',
+                letterSpacing: '0.5px',
+                color: isSelected ? '#1e40af' : 'var(--text-primary)',
                 marginBottom: '0.65rem'
               }}>
                 {step.number}

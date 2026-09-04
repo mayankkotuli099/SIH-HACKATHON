@@ -60,8 +60,8 @@
 
 /* ---- evidence chain of custody ---- */
 .evidence {
-  background: var(--panel-2);
-  border: 1px solid var(--border);
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -72,19 +72,19 @@
   justify-content: space-between;
   gap: 12px;
   padding: 11px 14px;
-  background: #181f29;
-  border-bottom: 1px solid var(--border);
+  background: var(--bg-table-header, #f8fafc);
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
 }
 
 .evidence-head h3 {
-  font-family: var(--display);
-  font-size: 14.5px;
-  font-weight: 400;
-  color: #c7d0dc;
+  font-family: var(--display, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #0f172a);
 }
 
 .evidence-lock {
-  color: var(--cyan);
+  color: var(--accent-primary, #1e40af);
   flex: none;
   opacity: 0.9;
 }
@@ -93,27 +93,27 @@
 .reports .label.evidence-meta {
   padding: 12px 14px 0;
   font-size: 10px;
-  color: var(--text-dim);
+  color: var(--text-muted, #64748b);
 }
 
 .evidence-hash {
   padding: 4px 14px 0;
   font-size: 11.5px;
   line-height: 1.5;
-  color: #c9d3df;
+  color: var(--text-secondary, #475569);
   word-break: break-all;
 }
 
 .reports .label.evidence-sig {
   padding: 9px 14px 13px;
   font-size: 10px;
-  color: var(--text-dim);
+  color: var(--text-muted, #64748b);
 }
 
 .evidence-sig em {
   font-style: normal;
   font-weight: 700;
-  color: var(--green);
+  color: var(--status-verified, #16a34a);
 }
 
 /* ---- AI executive brief ---- */
@@ -139,11 +139,11 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid var(--cyan);
+  border: 2px solid var(--accent-primary, #1e40af);
 }
 
 .brief-item.alt::before {
-  border-color: var(--red);
+  border-color: var(--status-critical, #dc2626);
 }
 
 .brief-item:not(:last-child)::after {
@@ -153,7 +153,7 @@
   top: 18px;
   bottom: -22px;
   width: 1px;
-  background: var(--border-2);
+  background: var(--border-color, #e2e8f0);
 }
 
 .brief-row {
@@ -164,17 +164,17 @@
 }
 
 .brief-row h3 {
-  font-family: var(--mono);
+  font-family: var(--font-mono, monospace);
   font-size: 12.5px;
-  font-weight: 500;
-  letter-spacing: 0.13em;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--text-h);
+  color: var(--text-primary, #0f172a);
 }
 
 .brief-time {
   font-size: 10.5px;
-  color: var(--text-dim);
+  color: var(--text-muted, #64748b);
   white-space: nowrap;
 }
 
@@ -187,14 +187,14 @@
 .brief-value {
   margin-top: 4px;
   font-size: 12.5px;
-  color: #cfd8e3;
+  color: var(--text-primary, #0f172a);
 }
 
 .brief-text {
   margin-top: 5px;
-  font-size: 11.5px;
-  line-height: 1.65;
-  color: var(--text);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary, #475569);
 }
 
 /* nexus diagram */
@@ -206,31 +206,31 @@
 }
 
 .nexus-edge {
-  stroke: var(--border-2);
+  stroke: var(--border-color, #e2e8f0);
   stroke-width: 1.2;
 }
 
 .nexus-node {
-  fill: var(--panel-2);
-  stroke: #2f6b73;
+  fill: var(--bg-surface, #ffffff);
+  stroke: var(--border-strong, #cbd5e1);
   stroke-width: 1.2;
 }
 
 .nexus-node.hub {
-  stroke: var(--cyan-2);
+  stroke: var(--accent-primary, #1e40af);
 }
 
 .nexus-node.target {
-  fill: rgba(239, 100, 100, 0.07);
-  stroke: var(--red-border);
+  fill: var(--status-critical-bg, #fef2f2);
+  stroke: var(--status-critical, #dc2626);
 }
 
 /* ---- transcript ---- */
 .transcript {
   margin-top: 22px;
   padding: 14px;
-  background: var(--panel-2);
-  border: 1px solid var(--border);
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 6px;
 }
 
@@ -239,21 +239,21 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  color: var(--text-dim);
+  color: var(--text-muted, #64748b);
 }
 
 .transcript-body {
   margin-top: 11px;
   font-size: 12.5px;
-  line-height: 1.85;
-  color: #c3cddb;
+  line-height: 1.7;
+  color: var(--text-secondary, #334155);
 }
 
 .transcript-body mark {
   padding: 1px 5px;
   border-radius: 3px;
-  background: var(--red-bg);
-  color: #ffdcdc;
+  background: var(--status-critical-bg, #fef2f2);
+  color: var(--status-critical, #dc2626);
 }
 
 /* ---- export compliance ---- */
@@ -269,27 +269,29 @@
   justify-content: space-between;
   gap: 14px;
   padding: 15px 17px;
-  background: var(--panel-2);
-  border: 1px solid var(--border);
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 6px;
 }
 
 .export-label {
-  font-family: var(--display);
-  font-size: 15px;
-  color: #d3dbe6;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #0f172a);
 }
 
 .switch {
   flex: none;
-  width: 45px;
+  width: 44px;
   height: 24px;
-  padding: 3px;
+  padding: 2px;
   display: flex;
   align-items: center;
-  border: none;
+  border: 1px solid var(--border-color, #cbd5e1);
   border-radius: 99px;
-  background: #39424f;
+  background: var(--bg-subtle, #e2e8f0);
+  cursor: pointer;
   transition: background 0.2s;
 }
 
@@ -297,43 +299,43 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #8f9aa9;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.1));
   transition:
     transform 0.2s,
     background 0.2s;
 }
 
 .switch.on {
-  background: rgba(0, 229, 255, 0.28);
+  background: var(--accent-primary, #1e40af);
+  border-color: var(--accent-primary, #1e40af);
 }
 
 .switch.on .switch-knob {
-  transform: translateX(21px);
-  background: var(--cyan);
+  transform: translateX(20px);
+  background: #ffffff;
 }
 
 .dossier {
   width: 100%;
-  height: 52px;
+  height: 44px;
   margin-top: 21px;
   border: none;
-  border-radius: 3px;
-  background: var(--cyan);
-  color: #04222a;
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
+  border-radius: 6px;
+  background: var(--accent-primary, #1e40af);
+  color: #ffffff;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  box-shadow: 0 0 28px rgba(0, 229, 255, 0.4);
-  transition:
-    filter 0.2s,
-    box-shadow 0.2s;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s ease;
 }
 
 .dossier:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 0 38px rgba(0, 229, 255, 0.6);
+  background: var(--accent-hover, #1d4ed8);
 }
 
 @media (max-width: 1080px) {

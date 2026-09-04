@@ -1,24 +1,43 @@
 /**
- * Theme Management for CrimeLens (Dark / Light Mode)
+ * Theme Management for CrimeLens — Centralized Dual Theme System
+ * Supports Pure Light Forensics Theme (Default) and Layered Dark Forensics Theme
  */
 
 export function getInitialTheme() {
-  if (typeof window === 'undefined') return 'dark';
-  const saved = localStorage.getItem('crimelens_theme');
-  if (saved === 'light' || saved === 'dark') return saved;
-  return 'dark'; // Default to Cyber Dark
+  if (typeof window === 'undefined') return 'light';
+  try {
+    const stored = localStorage.getItem('crimelens_theme');
+    if (stored === 'dark' || stored === 'light') {
+      return stored;
+    }
+  } catch (e) {}
+  return 'light';
 }
 
-export function applyTheme(theme) {
-  if (typeof document === 'undefined') return;
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('crimelens_theme', theme);
-  window.dispatchEvent(new CustomEvent('crimelens-theme-change', { detail: theme }));
+export function applyTheme(theme = 'light') {
+  if (typeof document === 'undefined') return theme;
+  const targetTheme = theme === 'dark' ? 'dark' : 'light';
+  
+  document.documentElement.setAttribute('data-theme', targetTheme);
+  if (targetTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+
+  try {
+    localStorage.setItem('crimelens_theme', targetTheme);
+  } catch (e) {}
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('crimelens-theme-change', { detail: targetTheme }));
+  }
+
+  return targetTheme;
 }
 
 export function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') || getInitialTheme();
+  const current = getInitialTheme();
   const next = current === 'dark' ? 'light' : 'dark';
-  applyTheme(next);
-  return next;
+  return applyTheme(next);
 }

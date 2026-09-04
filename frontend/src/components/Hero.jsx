@@ -39,20 +39,20 @@ export default function Hero({ onExplore, onNavigate }) {
         gap: '8px',
         padding: '6px 16px',
         borderRadius: '9999px',
-        backgroundColor: 'rgba(0, 229, 255, 0.04)',
-        border: '1px solid rgba(0, 229, 255, 0.2)',
+        backgroundColor: '#eff6ff',
+        border: '1px solid #bfdbfe',
         marginBottom: '2.5rem',
-        boxShadow: '0 0 15px rgba(0, 229, 255, 0.06)'
+        boxShadow: 'var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05))'
       }}>
-        <span className="pulse-dot" />
+        <span className="pulse-dot" style={{ backgroundColor: '#1e40af' }} />
         <span style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '11px',
-          letterSpacing: '1.5px',
+          letterSpacing: '1px',
           fontWeight: 600,
-          color: 'var(--cyan-glow)'
+          color: '#1e40af'
         }}>
-          SYSTEM ONLINE // V 4.2.0 ACTIVE
+          STATE CRIME FORENSICS // V 4.2.0 ACTIVE
         </span>
       </div>
 
@@ -68,10 +68,9 @@ export default function Hero({ onExplore, onNavigate }) {
       }}>
         Uncover Connections.<br />
         <span style={{
-          background: 'linear-gradient(135deg, #00E5FF 0%, #2979FF 100%)',
+          background: 'linear-gradient(135deg, #1e40af 0%, #2563eb 100%)',
           WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          textShadow: '0 0 30px rgba(0, 229, 255, 0.35)'
+          WebkitTextFillColor: 'transparent'
         }}>
           Expose Hidden Networks.
         </span>

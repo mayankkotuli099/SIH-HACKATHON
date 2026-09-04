@@ -275,9 +275,9 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
     <div style={{
       position: 'fixed',
       inset: 0,
-      backgroundColor: 'rgba(5, 7, 12, 0.85)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
+      backgroundColor: 'rgba(15, 23, 42, 0.6)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
       zIndex: 99999,
       display: 'flex',
       alignItems: 'center',
@@ -286,17 +286,18 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
       boxSizing: 'border-box'
     }}>
       <div style={{
-        backgroundColor: '#0A0E17',
-        border: '1.5px solid rgba(0, 229, 255, 0.35)',
-        borderRadius: '12px',
+        backgroundColor: 'var(--bg-modal, #ffffff)',
+        border: '1px solid var(--border-color, #cbd5e1)',
+        borderRadius: '10px',
         width: '100%',
         maxWidth: '1100px',
         maxHeight: '92vh',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 229, 255, 0.2)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
         overflow: 'hidden',
-        position: 'relative'
+        position: 'relative',
+        color: 'var(--text-primary, #0f172a)'
       }}>
         {/* Toast Alert */}
         {successToast && (
@@ -304,57 +305,57 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
             position: 'absolute',
             top: '16px',
             right: '24px',
-            backgroundColor: '#00E5FF',
-            color: '#07090E',
+            backgroundColor: 'var(--bg-surface, #ffffff)',
+            color: 'var(--text-primary, #0f172a)',
+            border: '1px solid var(--border-color, #e2e8f0)',
             padding: '10px 18px',
             borderRadius: '6px',
-            fontWeight: 800,
-            fontFamily: 'var(--font-mono, monospace)',
+            fontWeight: 600,
             fontSize: '12px',
-            boxShadow: '0 0 20px rgba(0, 229, 255, 0.6)',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.12)',
             zIndex: 1000,
             display: 'flex',
             alignItems: 'center',
             gap: '8px'
           }}>
-            <CheckCircle2 size={16} />
+            <CheckCircle2 size={16} color="#16a34a" />
             <span>{successToast}</span>
           </div>
         )}
 
         {/* Modal Header */}
         <div style={{
-          padding: '1.25rem 1.75rem',
-          borderBottom: '1px solid rgba(0, 229, 255, 0.2)',
+          padding: '16px 20px',
+          borderBottom: '1px solid var(--border-color, #e2e8f0)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          backgroundColor: 'rgba(0, 229, 255, 0.03)'
+          backgroundColor: 'var(--bg-surface, #ffffff)'
         }}>
           <div>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              fontFamily: 'var(--font-mono, monospace)',
+              gap: '6px',
               fontSize: '11px',
-              color: '#00E5FF',
-              letterSpacing: '1.5px'
+              fontWeight: 700,
+              color: 'var(--text-accent, #1e40af)',
+              letterSpacing: '0.8px'
             }}>
-              <Radio size={14} className="pulse-dot" />
+              <Radio size={13} />
               <span>FORENSIC TELEMETRY // CDR &amp; TRANSACTION INGESTION HUB</span>
             </div>
-            <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#FFFFFF', margin: '4px 0 0 0' }}>
-              MULTI-SOURCE DIGITAL EVIDENCE INGESTION
+            <h2 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary, #0f172a)', margin: '2px 0 0 0' }}>
+              Multi-Source Digital Evidence Ingestion
             </h2>
           </div>
 
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              color: '#94A3B8',
+              background: 'transparent',
+              border: '1px solid var(--border-color, #e2e8f0)',
+              color: 'var(--text-muted, #64748b)',
               borderRadius: '6px',
               width: '32px',
               height: '32px',
@@ -364,24 +365,24 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
               cursor: 'pointer'
             }}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
         {/* Preset Dataset Selector Ribbon */}
         <div style={{
-          padding: '1rem 1.75rem',
-          backgroundColor: 'rgba(12, 17, 26, 0.95)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          padding: '12px 20px',
+          backgroundColor: 'var(--bg-subtle, #f8fafc)',
+          borderBottom: '1px solid var(--border-color, #e2e8f0)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '12px'
         }}>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>
-              DEMO PRESETS:
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>
+              PRESETS:
             </span>
             {Object.entries(SAMPLE_DATASETS).map(([key, data]) => {
               const isSelected = selectedPresetKey === key;
@@ -390,41 +391,39 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
                   key={key}
                   onClick={() => setSelectedPresetKey(key)}
                   style={{
-                    backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-                    border: isSelected ? '1px solid #00E5FF' : '1px solid rgba(255, 255, 255, 0.12)',
-                    color: isSelected ? '#00E5FF' : '#94A3B8',
-                    borderRadius: '6px',
-                    padding: '6px 12px',
+                    backgroundColor: isSelected ? 'var(--bg-subtle, #eff6ff)' : 'var(--bg-card, #ffffff)',
+                    border: isSelected ? '1px solid var(--border-strong, #bfdbfe)' : '1px solid var(--border-color, #e2e8f0)',
+                    color: isSelected ? 'var(--text-accent, #1e40af)' : 'var(--text-secondary, #475569)',
+                    borderRadius: '4px',
+                    padding: '5px 10px',
                     fontSize: '11.5px',
-                    fontWeight: 700,
-                    fontFamily: 'var(--font-mono, monospace)',
+                    fontWeight: isSelected ? 700 : 500,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px'
                   }}
                 >
-                  {data.type === 'CDR' && <PhoneCall size={13} />}
-                  {data.type === 'FINANCIAL' && <DollarSign size={13} />}
-                  {data.type === 'TOWER_DUMP' && <Radio size={13} />}
+                  {data.type === 'CDR' && <PhoneCall size={12} />}
+                  {data.type === 'FINANCIAL' && <DollarSign size={12} />}
+                  {data.type === 'TOWER_DUMP' && <Radio size={12} />}
                   <span>{data.name.split(' (')[0]}</span>
                 </button>
               );
             })}
           </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '6px' }}>
             <button
               onClick={() => setActiveTab('preview')}
               style={{
-                backgroundColor: activeTab === 'preview' ? 'rgba(0, 229, 255, 0.2)' : 'transparent',
-                border: activeTab === 'preview' ? '1px solid #00E5FF' : '1px solid transparent',
-                color: activeTab === 'preview' ? '#00E5FF' : '#94A3B8',
+                backgroundColor: activeTab === 'preview' ? 'var(--bg-subtle, #eff6ff)' : 'var(--bg-card, #ffffff)',
+                border: activeTab === 'preview' ? '1px solid var(--border-strong, #bfdbfe)' : '1px solid var(--border-color, #e2e8f0)',
+                color: activeTab === 'preview' ? 'var(--text-accent, #1e40af)' : 'var(--text-muted, #64748b)',
                 borderRadius: '4px',
-                padding: '5px 10px',
+                padding: '4px 10px',
                 fontSize: '11px',
-                fontWeight: 700,
-                fontFamily: 'var(--font-mono, monospace)',
+                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -433,34 +432,32 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
             <button
               onClick={() => setActiveTab('overlaps')}
               style={{
-                backgroundColor: activeTab === 'overlaps' ? 'rgba(255, 85, 85, 0.2)' : 'transparent',
-                border: activeTab === 'overlaps' ? '1px solid #FF5555' : '1px solid transparent',
-                color: activeTab === 'overlaps' ? '#FF8888' : '#94A3B8',
+                backgroundColor: activeTab === 'overlaps' ? 'rgba(239, 68, 68, 0.1)' : 'var(--bg-card, #ffffff)',
+                border: activeTab === 'overlaps' ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid var(--border-color, #e2e8f0)',
+                color: activeTab === 'overlaps' ? 'var(--status-critical, #dc2626)' : 'var(--text-muted, #64748b)',
                 borderRadius: '4px',
-                padding: '5px 10px',
+                padding: '4px 10px',
                 fontSize: '11px',
-                fontWeight: 700,
-                fontFamily: 'var(--font-mono, monospace)',
+                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px'
               }}
             >
-              <Zap size={12} color="#FF5555" />
+              <Zap size={12} color="#dc2626" />
               <span>AI ANOMALIES (3)</span>
             </button>
             <button
               onClick={() => setActiveTab('custom_csv')}
               style={{
-                backgroundColor: activeTab === 'custom_csv' ? 'rgba(0, 230, 118, 0.2)' : 'transparent',
-                border: activeTab === 'custom_csv' ? '1px solid #00E676' : '1px solid transparent',
-                color: activeTab === 'custom_csv' ? '#00E676' : '#94A3B8',
+                backgroundColor: activeTab === 'custom_csv' ? 'var(--bg-subtle, #eff6ff)' : 'var(--bg-card, #ffffff)',
+                border: activeTab === 'custom_csv' ? '1px solid var(--border-strong, #bfdbfe)' : '1px solid var(--border-color, #e2e8f0)',
+                color: activeTab === 'custom_csv' ? 'var(--text-accent, #1e40af)' : 'var(--text-muted, #64748b)',
                 borderRadius: '4px',
-                padding: '5px 10px',
+                padding: '4px 10px',
                 fontSize: '11px',
-                fontWeight: 700,
-                fontFamily: 'var(--font-mono, monospace)',
+                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -475,18 +472,18 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
 
         {/* Content Body Area */}
         <div style={{
-          padding: '1.5rem 1.75rem',
+          padding: '16px 20px',
           flex: 1,
           overflowY: 'auto',
-          backgroundColor: '#07090E'
+          backgroundColor: 'var(--bg-main, #f8fafc)'
         }}>
           {/* Active Preset Summary Banner */}
           <div style={{
-            backgroundColor: 'rgba(0, 229, 255, 0.04)',
-            border: '1px solid rgba(0, 229, 255, 0.2)',
-            borderRadius: '8px',
+            backgroundColor: 'var(--bg-card, #ffffff)',
+            border: '1px solid var(--border-color, #e2e8f0)',
+            borderRadius: '6px',
             padding: '12px 16px',
-            marginBottom: '1.25rem',
+            marginBottom: '16px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -494,25 +491,16 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
             gap: '10px'
           }}>
             <div>
-              <div style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>
+              <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary, #0f172a)' }}>
                 📁 {activeDataset.name}
               </div>
-              <div style={{ fontSize: '11px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)', marginTop: '2px' }}>
-                SOURCE: <strong style={{ color: '#00E5FF' }}>{activeDataset.source}</strong> • TIME: {activeDataset.timestampRange}
+              <div style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace', marginTop: '2px' }}>
+                SOURCE: <strong style={{ color: 'var(--text-accent, #1e40af)' }}>{activeDataset.source}</strong> • TIME: {activeDataset.timestampRange}
               </div>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{
-                backgroundColor: 'rgba(0, 230, 118, 0.12)',
-                border: '1px solid rgba(0, 230, 118, 0.3)',
-                color: '#00E676',
-                fontSize: '10.5px',
-                fontWeight: 700,
-                padding: '3px 8px',
-                borderRadius: '4px',
-                fontFamily: 'var(--font-mono, monospace)'
-              }}>
+              <span className="badge-verified">
                 ✓ {activeDataset.records.length} PARSED RECORDS
               </span>
             </div>
@@ -523,41 +511,41 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
             <div>
               <div style={{
                 overflowX: 'auto',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(12, 17, 26, 0.9)'
+                border: '1px solid var(--border-color, #e2e8f0)',
+                borderRadius: '6px',
+                backgroundColor: 'var(--bg-card, #ffffff)'
               }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
                   <thead>
-                    <tr style={{ backgroundColor: 'rgba(0, 229, 255, 0.08)', borderBottom: '1px solid rgba(0, 229, 255, 0.2)' }}>
+                    <tr style={{ backgroundColor: 'var(--bg-subtle, #f8fafc)', borderBottom: '1px solid var(--border-color, #e2e8f0)' }}>
                       {activeDataset.type === 'CDR' && (
                         <>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>TIMESTAMP</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>CALLER (A-PARTY)</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>RECEIVER (B-PARTY)</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>DURATION</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>TOWER / CELL ID</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>FLAGGED RISK</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>TIMESTAMP</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>CALLER (A-PARTY)</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>RECEIVER (B-PARTY)</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>DURATION</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>TOWER / CELL ID</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>FLAGGED RISK</th>
                         </>
                       )}
                       {activeDataset.type === 'FINANCIAL' && (
                         <>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>TIMESTAMP</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>SENDER ENTITY</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>BENEFICIARY ACCOUNT</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>AMOUNT</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>CHANNEL / UTR</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>AML STATUS</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>TIMESTAMP</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>SENDER ENTITY</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>BENEFICIARY ACCOUNT</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>AMOUNT</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>CHANNEL / UTR</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>AML STATUS</th>
                         </>
                       )}
                       {activeDataset.type === 'TOWER_DUMP' && (
                         <>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>TIMESTAMP</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>MAST NAME / CELL ID</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>TRIANGULATED IMSI / SUSPECT</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>SIGNAL (dBm)</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>PROXIMITY</th>
-                          <th style={{ padding: '10px 12px', color: '#00E5FF' }}>INTELLIGENCE ALERT</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>TIMESTAMP</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>MAST NAME / CELL ID</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>TRIANGULATED IMSI / SUSPECT</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>SIGNAL (dBm)</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>PROXIMITY</th>
+                          <th style={{ padding: '10px 12px', color: 'var(--text-secondary, #475569)', fontWeight: 600 }}>INTELLIGENCE ALERT</th>
                         </>
                       )}
                     </tr>
@@ -565,36 +553,27 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
                   <tbody>
                     {activeDataset.records.map((r, idx) => (
                       <tr key={r.id || idx} style={{
-                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                        backgroundColor: idx % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.015)'
+                        borderBottom: '1px solid var(--border-color, #f1f5f9)',
+                        backgroundColor: idx % 2 === 0 ? 'var(--bg-card, #ffffff)' : 'var(--bg-subtle, #f8fafc)'
                       }}>
                         {activeDataset.type === 'CDR' && (
                           <>
-                            <td style={{ padding: '10px 12px', fontFamily: 'var(--font-mono, monospace)', color: '#94A3B8' }}>{r.timestamp}</td>
+                            <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: 'var(--text-muted, #64748b)' }}>{r.timestamp}</td>
                             <td style={{ padding: '10px 12px' }}>
-                              <strong style={{ color: '#FF8888' }}>{r.callerName}</strong>
-                              <div style={{ fontSize: '10.5px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>{r.callerNumber}</div>
+                              <strong style={{ color: 'var(--status-critical, #dc2626)' }}>{r.callerName}</strong>
+                              <div style={{ fontSize: '10.5px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>{r.callerNumber}</div>
                             </td>
                             <td style={{ padding: '10px 12px' }}>
-                              <strong style={{ color: '#00E5FF' }}>{r.receiverName}</strong>
-                              <div style={{ fontSize: '10.5px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>{r.receiverNumber}</div>
+                              <strong style={{ color: 'var(--text-accent, #1e40af)' }}>{r.receiverName}</strong>
+                              <div style={{ fontSize: '10.5px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>{r.receiverNumber}</div>
                             </td>
-                            <td style={{ padding: '10px 12px', fontFamily: 'var(--font-mono, monospace)' }}>{r.durationSec}s ({r.callType})</td>
+                            <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: 'var(--text-secondary, #334155)' }}>{r.durationSec}s ({r.callType})</td>
                             <td style={{ padding: '10px 12px' }}>
-                              <span style={{ color: '#FFFFFF' }}>{r.towerLocation}</span>
-                              <div style={{ fontSize: '10px', color: '#64748B', fontFamily: 'var(--font-mono, monospace)' }}>{r.cellTowerId}</div>
+                              <span style={{ color: 'var(--text-primary, #0f172a)', fontWeight: 500 }}>{r.towerLocation}</span>
+                              <div style={{ fontSize: '10px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>{r.cellTowerId}</div>
                             </td>
                             <td style={{ padding: '10px 12px' }}>
-                              <span style={{
-                                backgroundColor: 'rgba(255, 85, 85, 0.15)',
-                                color: '#FF6B6B',
-                                border: '1px solid rgba(255, 85, 85, 0.3)',
-                                padding: '3px 8px',
-                                borderRadius: '4px',
-                                fontSize: '10.5px',
-                                fontWeight: 700,
-                                fontFamily: 'var(--font-mono, monospace)'
-                              }}>
+                              <span className="badge-critical">
                                 ⚠️ {r.riskFlag}
                               </span>
                             </td>
@@ -603,32 +582,24 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
 
                         {activeDataset.type === 'FINANCIAL' && (
                           <>
-                            <td style={{ padding: '10px 12px', fontFamily: 'var(--font-mono, monospace)', color: '#94A3B8' }}>{r.timestamp}</td>
+                            <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: 'var(--text-muted, #64748b)' }}>{r.timestamp}</td>
                             <td style={{ padding: '10px 12px' }}>
-                              <strong style={{ color: '#FFFFFF' }}>{r.senderName}</strong>
-                              <div style={{ fontSize: '10.5px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>{r.senderAcc}</div>
+                              <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{r.senderName}</strong>
+                              <div style={{ fontSize: '10.5px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>{r.senderAcc}</div>
                             </td>
                             <td style={{ padding: '10px 12px' }}>
-                              <strong style={{ color: '#00E5FF' }}>{r.receiverName}</strong>
-                              <div style={{ fontSize: '10.5px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>{r.receiverAcc}</div>
+                              <strong style={{ color: 'var(--text-accent, #1e40af)' }}>{r.receiverName}</strong>
+                              <div style={{ fontSize: '10.5px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>{r.receiverAcc}</div>
                             </td>
-                            <td style={{ padding: '10px 12px', color: '#00E676', fontWeight: 800, fontFamily: 'var(--font-mono, monospace)' }}>
+                            <td style={{ padding: '10px 12px', color: 'var(--status-success, #16a34a)', fontWeight: 800, fontFamily: 'monospace' }}>
                               {r.amount}
                             </td>
                             <td style={{ padding: '10px 12px', fontSize: '11px' }}>
-                              <span style={{ color: '#FFFFFF' }}>{r.channel}</span>
-                              <div style={{ fontSize: '10px', color: '#64748B', fontFamily: 'var(--font-mono, monospace)' }}>{r.utr}</div>
+                              <span style={{ color: 'var(--text-primary, #0f172a)' }}>{r.channel}</span>
+                              <div style={{ fontSize: '10px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>{r.utr}</div>
                             </td>
                             <td style={{ padding: '10px 12px' }}>
-                              <span style={{
-                                backgroundColor: 'rgba(251, 191, 36, 0.15)',
-                                color: '#FBBF24',
-                                border: '1px solid rgba(251, 191, 36, 0.3)',
-                                padding: '3px 8px',
-                                borderRadius: '4px',
-                                fontSize: '10.5px',
-                                fontWeight: 700
-                              }}>
+                              <span className="badge-warning">
                                 {r.status}
                               </span>
                             </td>
@@ -637,24 +608,16 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
 
                         {activeDataset.type === 'TOWER_DUMP' && (
                           <>
-                            <td style={{ padding: '10px 12px', fontFamily: 'var(--font-mono, monospace)', color: '#94A3B8' }}>{r.timestamp}</td>
+                            <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: 'var(--text-muted, #64748b)' }}>{r.timestamp}</td>
                             <td style={{ padding: '10px 12px' }}>
-                              <strong style={{ color: '#FFFFFF' }}>{r.towerName}</strong>
-                              <div style={{ fontSize: '10.5px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>{r.towerId}</div>
+                              <strong style={{ color: 'var(--text-primary, #0f172a)' }}>{r.towerName}</strong>
+                              <div style={{ fontSize: '10.5px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>{r.towerId}</div>
                             </td>
-                            <td style={{ padding: '10px 12px', color: '#FF8888', fontWeight: 700 }}>{r.activeImsi}</td>
-                            <td style={{ padding: '10px 12px', fontFamily: 'var(--font-mono, monospace)', color: '#00E5FF' }}>{r.signalDbm} dBm</td>
-                            <td style={{ padding: '10px 12px', fontFamily: 'var(--font-mono, monospace)' }}>~{r.distanceM} meters</td>
+                            <td style={{ padding: '10px 12px', color: 'var(--status-critical, #dc2626)', fontWeight: 700 }}>{r.activeImsi}</td>
+                            <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: 'var(--text-accent, #1e40af)' }}>{r.signalDbm} dBm</td>
+                            <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: 'var(--text-secondary, #475569)' }}>~{r.distanceM} meters</td>
                             <td style={{ padding: '10px 12px' }}>
-                              <span style={{
-                                backgroundColor: 'rgba(255, 85, 85, 0.15)',
-                                color: '#FF6B6B',
-                                border: '1px solid rgba(255, 85, 85, 0.3)',
-                                padding: '3px 8px',
-                                borderRadius: '4px',
-                                fontSize: '10.5px',
-                                fontWeight: 700
-                              }}>
+                              <span className="badge-critical">
                                 🚨 {r.overlapAlert}
                               </span>
                             </td>
@@ -670,111 +633,100 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
 
           {/* TAB 2: AI OVERLAPS & FORENSIC INSIGHTS */}
           {activeTab === 'overlaps' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ fontSize: '12px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)', marginBottom: '4px' }}>
-                AUTOMATED HEURISTIC CORRELATION DETECTED 3 HIGH-RISK THREAT VECTORS:
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{
+                backgroundColor: 'var(--bg-card, #ffffff)',
+                border: '1px solid var(--border-color, #e2e8f0)',
+                borderLeft: '4px solid #dc2626',
+                borderRadius: '6px',
+                padding: '14px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <strong style={{ color: 'var(--status-critical, #dc2626)', fontSize: '13px' }}>🚨 Co-Location Temporal Overlap: Sector 18 Homicide</strong>
+                  <span className="badge-critical">99.8% CONFIDENCE</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary, #475569)', lineHeight: 1.4 }}>
+                  CDR signals confirm Mayank Kotoli and Devendra Rawat pinged identical cell mast (TWR-DEL-SEC18-04) within a 4-minute window of the primary shooting incident at 18:14 IST.
+                </p>
               </div>
 
-              {intelligenceInsights.map((ins, idx) => (
-                <div key={idx} style={{
-                  backgroundColor: 'rgba(12, 17, 26, 0.95)',
-                  border: '1px solid rgba(255, 85, 85, 0.3)',
-                  borderLeft: '4px solid #FF5555',
-                  borderRadius: '8px',
-                  padding: '14px 18px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '12px'
-                }}>
-                  <div style={{ maxWidth: '750px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <span style={{
-                        fontSize: '9.5px',
-                        fontWeight: 800,
-                        backgroundColor: 'rgba(255, 85, 85, 0.2)',
-                        color: '#FF6B6B',
-                        padding: '2px 6px',
-                        borderRadius: '3px',
-                        fontFamily: 'var(--font-mono, monospace)'
-                      }}>
-                        {ins.type}
-                      </span>
-                      <strong style={{ fontSize: '13.5px', color: '#FFFFFF' }}>{ins.title}</strong>
-                    </div>
-                    <p style={{ margin: 0, fontSize: '12.5px', color: '#CBD5E1', lineHeight: 1.5 }}>
-                      {ins.desc}
-                    </p>
-                  </div>
-
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '10.5px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>AI CONFIDENCE</div>
-                    <div style={{ fontSize: '16px', fontWeight: 800, color: '#00E676', fontFamily: 'var(--font-mono, monospace)' }}>
-                      {ins.confidence}
-                    </div>
-                  </div>
+              <div style={{
+                backgroundColor: 'var(--bg-card, #ffffff)',
+                border: '1px solid var(--border-color, #e2e8f0)',
+                borderLeft: '4px solid #d97706',
+                borderRadius: '6px',
+                padding: '14px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <strong style={{ color: 'var(--status-warning, #d97706)', fontSize: '13px' }}>⚡ Rapid Burner Swap &amp; IMEI Rotation</strong>
+                  <span className="badge-warning">HIGH SUSPICION</span>
                 </div>
-              ))}
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary, #475569)', lineHeight: 1.4 }}>
+                  Sameer Qureshi rotated 3 distinct SIM cards across a single IMEI handset over an 8-hour window post-heist, terminating calls after fewer than 45 seconds.
+                </p>
+              </div>
+
+              <div style={{
+                backgroundColor: 'var(--bg-card, #ffffff)',
+                border: '1px solid var(--border-color, #e2e8f0)',
+                borderLeft: '4px solid #1e40af',
+                borderRadius: '6px',
+                padding: '14px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <strong style={{ color: 'var(--text-accent, #1e40af)', fontSize: '13px' }}>🌐 Inter-State Hawala Structuring Chain</strong>
+                  <span className="badge-info">PMLA TRIGGER</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary, #475569)', lineHeight: 1.4 }}>
+                  Multiple structured deposits below the ₹50,000 threshold channeled through benami accounts within 90 minutes of the Axis Bank breach.
+                </p>
+              </div>
             </div>
           )}
 
-          {/* TAB 3: CUSTOM CSV DROPZONE */}
+          {/* TAB 3: CUSTOM CSV PASTE */}
           {activeTab === 'custom_csv' && (
-            <div>
-              <div style={{
-                border: '2px dashed rgba(0, 229, 255, 0.3)',
-                borderRadius: '8px',
-                padding: '1.5rem',
-                textAlign: 'center',
-                backgroundColor: 'rgba(0, 229, 255, 0.02)',
-                marginBottom: '1rem'
-              }}>
-                <FileSpreadsheet size={32} color="#00E5FF" style={{ margin: '0 auto 8px auto' }} />
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#FFFFFF', margin: '0 0 4px 0' }}>
-                  Upload or Paste Custom Raw CDR / Bank Transaction CSV
-                </h4>
-                <p style={{ fontSize: '12px', color: '#94A3B8', margin: '0 0 12px 0' }}>
-                  Accepts standard telecom CDR headers: <code style={{ color: '#00E5FF' }}>timestamp,caller,receiver,duration,tower_id,imei</code>
-                </p>
-
-                <textarea
-                  rows={6}
-                  value={customCsvText}
-                  onChange={(e) => setCustomCsvText(e.target.value)}
-                  placeholder={`timestamp,caller,receiver,duration_sec,cell_id,imei\n2024-10-27 18:40:00,+91-9871140291,+91-9988211049,120,TWR-SEC18-04,864201938472910\n2024-10-27 18:45:10,+91-9811299011,+91-9871140291,95,TWR-SEC18-04,869201948271049`}
-                  style={{
-                    width: '100%',
-                    backgroundColor: 'rgba(7, 10, 16, 0.95)',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                    borderRadius: '6px',
-                    padding: '10px 12px',
-                    color: '#FFFFFF',
-                    fontFamily: 'var(--font-mono, monospace)',
-                    fontSize: '11.5px',
-                    boxSizing: 'border-box',
-                    outline: 'none'
-                  }}
-                />
-
-                <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                  <button
-                    onClick={handleApplyCustomCsv}
-                    style={{
-                      backgroundColor: '#00E5FF',
-                      border: 'none',
-                      color: '#07090E',
-                      fontWeight: 800,
-                      fontFamily: 'var(--font-mono, monospace)',
-                      padding: '8px 18px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    PARSE &amp; INGEST CSV RECORDS
-                  </button>
-                </div>
+            <div style={{
+              backgroundColor: 'var(--bg-card, #ffffff)',
+              border: '1px solid var(--border-color, #e2e8f0)',
+              borderRadius: '6px',
+              padding: '16px'
+            }}>
+              <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary, #0f172a)', marginBottom: '6px' }}>
+                Ingest Raw CSV Forensic Feed
+              </div>
+              <p style={{ fontSize: '11.5px', color: 'var(--text-muted, #64748b)', margin: '0 0 12px 0' }}>
+                Paste comma-separated CDR, Tower Dump, or Bank Ledger logs. Schema will be normalized automatically.
+              </p>
+              <textarea
+                value={customCsvInput}
+                onChange={(e) => setCustomCsvInput(e.target.value)}
+                rows={7}
+                placeholder="timestamp,caller,receiver,duration,tower_id,risk_level..."
+                style={{
+                  width: '100%',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
+                  borderRadius: '6px',
+                  padding: '10px 12px',
+                  color: 'var(--text-primary, #0f172a)',
+                  fontFamily: 'monospace',
+                  fontSize: '11.5px',
+                  boxSizing: 'border-box',
+                  outline: 'none'
+                }}
+              />
+              <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                <button
+                  onClick={handleApplyCustomCsv}
+                  className="btn-primary"
+                  style={{ fontSize: '12px' }}
+                >
+                  Parse &amp; Ingest Records
+                </button>
               </div>
             </div>
           )}
@@ -782,31 +734,24 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
 
         {/* Modal Footer Bar */}
         <div style={{
-          padding: '1rem 1.75rem',
-          borderTop: '1px solid rgba(0, 229, 255, 0.2)',
+          padding: '12px 20px',
+          borderTop: '1px solid var(--border-color, #e2e8f0)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          backgroundColor: 'rgba(12, 17, 26, 0.98)',
+          backgroundColor: 'var(--bg-surface, #ffffff)',
           flexWrap: 'wrap',
           gap: '12px'
         }}>
-          <div style={{ fontSize: '11.5px', color: '#94A3B8', fontFamily: 'var(--font-mono, monospace)' }}>
-            STATUS: <strong style={{ color: '#00E676' }}>READY FOR SYNDICATE CORRELATION</strong>
+          <div style={{ fontSize: '11.5px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>
+            STATUS: <strong style={{ color: 'var(--status-success, #16a34a)' }}>READY FOR SYNDICATE CORRELATION</strong>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
             <button
               onClick={onClose}
-              style={{
-                backgroundColor: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#94A3B8',
-                borderRadius: '6px',
-                padding: '8px 14px',
-                fontSize: '12px',
-                cursor: 'pointer'
-              }}
+              className="btn-secondary"
+              style={{ fontSize: '12px', padding: '6px 14px' }}
             >
               Cancel
             </button>
@@ -814,31 +759,18 @@ export default function CDRForensicsIngestion({ isOpen, onClose, onIngestSuccess
             <button
               onClick={handleSyncToLiveState}
               disabled={isProcessing}
-              style={{
-                backgroundColor: '#00E5FF',
-                border: 'none',
-                color: '#07090E',
-                borderRadius: '6px',
-                padding: '8px 18px',
-                fontSize: '12px',
-                fontWeight: 800,
-                fontFamily: 'var(--font-mono, monospace)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 0 20px rgba(0, 229, 255, 0.4)'
-              }}
+              className="btn-primary"
+              style={{ fontSize: '12px', padding: '6px 16px' }}
             >
               {isProcessing ? (
                 <>
-                  <RefreshCw size={14} className="spin" />
-                  <span>SYNCING TO GRAPH...</span>
+                  <RefreshCw size={13} className="spin" />
+                  <span>Syncing to Graph...</span>
                 </>
               ) : (
                 <>
-                  <Database size={14} />
-                  <span>SYNC WITH INTELLIGENCE GRAPH &amp; TIMELINE</span>
+                  <Database size={13} />
+                  <span>Sync with Intelligence Graph</span>
                 </>
               )}
             </button>

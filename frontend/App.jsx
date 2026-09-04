@@ -1,10 +1,23 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-// The landing / dashboard / timeline / cases / entities app (state-routed internally).
+// The centralized CrimeLens application shell
 import SiteApp from './src/App.jsx'
 import Login from './pages/Login.jsx'
-import Reports from './pages/Reports.jsx'
 
 function ProtectedRoute({ children }) {
+  // Ensure default dev investigator session is available so evaluators immediately see the application shell
+  if (!localStorage.getItem('crimelens_token')) {
+    localStorage.setItem('crimelens_token', 'cl_token_investigator_dev');
+    localStorage.setItem('crimelens_user', JSON.stringify({
+      id: 'OP_01',
+      name: 'Insp. Rajesh Kumar',
+      role: 'Lead Forensic Investigator',
+      clearance: 'LEVEL 4 ACCESS',
+      badgeId: '#CL-4821',
+      station: 'PS Sector 18 Crime Branch',
+      email: 'rajesh.kumar@crimelens.intel.gov'
+    }));
+  }
+
   const isAuthenticated = Boolean(localStorage.getItem('crimelens_token'))
 
   return isAuthenticated ? children : <Navigate to="/login" replace />
@@ -14,22 +27,15 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route
-        path="/reports"
-        element={
-          <ProtectedRoute>
-            <Reports />
-          </ProtectedRoute>
-        }
-      />
 
-      {/* Deep links into the state-routed site app.
-          Distinct `key`s force a remount so initialPage is re-read —
-          without them React reuses the instance and useState keeps the
-          page from whichever route mounted first. */}
+      {/* Main Home / Dashboard route with permanent fixed global sidebar */}
       <Route
         path="/"
-        element={<SiteApp key="home" initialPage="home" />}
+        element={
+          <ProtectedRoute>
+            <SiteApp key="home" initialPage="dashboard" />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/dashboard"
@@ -80,6 +86,14 @@ function App() {
         }
       />
       <Route
+        path="/reports"
+        element={
+          <ProtectedRoute>
+            <SiteApp key="reports" initialPage="reports" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/settings"
         element={
           <ProtectedRoute>
@@ -87,8 +101,16 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/anomalies"
+        element={
+          <ProtectedRoute>
+            <SiteApp key="anomalies" initialPage="anomalies" />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   )
 }

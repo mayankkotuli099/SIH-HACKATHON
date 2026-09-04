@@ -1,389 +1,464 @@
 import React, { useState, useEffect } from 'react';
+import {
+  LayoutDashboard,
+  Folder,
+  Users,
+  Navigation,
+  Network,
+  Clock,
+  Radio,
+  Shield,
+  Database,
+  FileText,
+  Settings,
+  X,
+  ChevronRight
+} from 'lucide-react';
+
+const NAV_GROUPS = [
+  {
+    title: 'MAIN',
+    items: [
+      {
+        id: 'dashboard',
+        label: 'Dashboard',
+        icon: LayoutDashboard,
+        badge: null,
+        desc: 'Command telemetry & crime prediction'
+      },
+      {
+        id: 'cases',
+        label: 'Cases',
+        icon: Folder,
+        badge: '5 ACTIVE',
+        badgeType: 'critical',
+        desc: 'FIR repository & case investigations'
+      },
+      {
+        id: 'entities',
+        label: 'Criminal Data',
+        icon: Users,
+        badge: 'DOSSIER',
+        badgeType: 'verified',
+        desc: 'Criminal 360° intelligence dossiers & MO'
+      }
+    ]
+  },
+  {
+    title: 'INTELLIGENCE',
+    items: [
+      {
+        id: 'location',
+        label: 'Tracking',
+        icon: Navigation,
+        badge: 'LIVE GIS',
+        badgeType: 'info',
+        desc: 'GIS geospatial telemetry & cell tower vectors'
+      },
+      {
+        id: 'network',
+        label: 'Connections',
+        icon: Network,
+        badge: null,
+        desc: 'Gang syndicate & money flow topology'
+      },
+      {
+        id: 'timeline',
+        label: 'Timeline',
+        icon: Clock,
+        badge: null,
+        desc: 'Forensic event chronology & trace map'
+      },
+      {
+        id: 'anomalies',
+        label: 'Predictions',
+        icon: Radio,
+        badge: 'LIVE',
+        badgeType: 'warning',
+        desc: 'Real-time threat anomalies & AI stream'
+      }
+    ]
+  },
+  {
+    title: 'FORENSICS',
+    items: [
+      {
+        id: 'evidence',
+        label: 'Evidence',
+        icon: Shield,
+        badge: '65B BSA',
+        badgeType: 'verified',
+        desc: 'Catalogued forensic exhibits & chain of custody'
+      },
+      {
+        id: 'ingestion',
+        label: 'Digital Forensics',
+        icon: Database,
+        badge: 'TELECOM',
+        badgeType: 'warning',
+        desc: 'CDR, IP logs & telecom data ingestion hub'
+      }
+    ]
+  },
+  {
+    title: 'OUTPUT',
+    items: [
+      {
+        id: 'reports',
+        label: 'Reports/Charge-Sheets',
+        icon: FileText,
+        badge: 'BNSS 193',
+        badgeType: 'warning',
+        desc: 'Court-ready police chargesheet Form 173'
+      }
+    ]
+  },
+  {
+    title: 'SYSTEM',
+    items: [
+      {
+        id: 'settings',
+        label: 'Settings',
+        icon: Settings,
+        badge: null,
+        desc: 'Access control, CCTNS sync & audit logs'
+      }
+    ]
+  }
+];
 
 export default function Sidebar({
   activePage = 'dashboard',
   onNavigate,
-  isCollapsed = false,
-  onToggle
+  mobileOpen = false,
+  onCloseMobile
 }) {
-  // Local fallback if onToggle is not provided
-  const [collapsed, setCollapsed] = useState(isCollapsed);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('crimelens_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
 
   useEffect(() => {
-    setCollapsed(isCollapsed);
-  }, [isCollapsed]);
+    const handleStorageChange = () => {
+      try {
+        const stored = localStorage.getItem('crimelens_user');
+        if (stored) setCurrentUser(JSON.parse(stored));
+      } catch {}
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
-  const handleToggle = () => {
-    if (onToggle) {
-      onToggle();
-    } else {
-      setCollapsed(!collapsed);
+  const userName = currentUser?.name || 'Insp. Rajesh Kumar';
+  const userRole = currentUser?.role || 'Lead Investigator';
+  const initials = userName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase() || 'RK';
+
+  const handleItemClick = (itemId) => {
+    if (onNavigate) {
+      onNavigate(itemId);
+    }
+    if (onCloseMobile) {
+      onCloseMobile();
     }
   };
 
-  const navSections = [
-    {
-      group: 'INVESTIGATION & INTELLIGENCE',
-      items: [
-        { id: 'dashboard', label: 'DASHBOARD', icon: '📊', badge: null, desc: 'Live Telemetry & KPIs' },
-        { id: 'cases', label: 'FIR & CASES', icon: '📁', badge: 'ACTIVE', badgeColor: '#00E5FF', desc: 'Case Files & FIR Records' },
-        { id: 'entities', label: 'CRIMINAL 360', icon: '👤', badge: 'DOSSIER', badgeColor: '#00E676', desc: 'Biometric & Profile Intel' },
-        { id: 'location', label: 'GIS GEO-TRACK', icon: '🗺️', badge: 'LIVE GIS', badgeColor: '#00E676', desc: 'Geospatial Vectors & Trajectory Playback' },
-        { id: 'timeline', label: 'TIMELINE & MAP', icon: '⏱️', badge: 'LIVE', badgeColor: '#00E5FF', desc: 'Chronological Event Trace & Map' },
-        { id: 'ingestion', label: 'CDR INGESTION', icon: '📡', badge: 'FORENSIC', badgeColor: '#A855F7', desc: 'CDR & Financial Log Ingestion Hub' },
-        { id: 'reports', label: 'CHARGESHEETS', icon: '📄', badge: 'BNSS 193', badgeColor: '#FBBF24', desc: 'Form 173 Final Reports' }
-      ]
-    },
-    {
-      group: 'THREAT DETECTION & AI',
-      items: [
-        { id: 'network', label: 'GANG NETWORK', icon: '🕸️', badge: null, desc: 'Cluster & Node Linkage' },
-        { id: 'ai_assistant', label: 'AI COPILOT', icon: '🤖', badge: 'GPT-4.5', badgeColor: '#A855F7', desc: 'Neural Investigation Agent' }
-      ]
-    }
-  ];
-
   return (
     <aside
-      style={{
-        width: collapsed ? '74px' : '260px',
-        minWidth: collapsed ? '74px' : '260px',
-        height: 'calc(100vh - 68px)',
-        position: 'sticky',
-        top: '68px',
-        backgroundColor: 'rgba(9, 13, 21, 0.96)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderRight: '1px solid rgba(0, 229, 255, 0.15)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        transition: 'width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), min-width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)',
-        zIndex: 40,
-        boxShadow: '4px 0 24px rgba(0, 0, 0, 0.4)',
-        userSelect: 'none',
-        flexShrink: 0
-      }}
+      className={`crimelens-sidebar ${mobileOpen ? 'mobile-open' : ''}`}
+      aria-label="Application Navigation Sidebar"
     >
-      {/* Top Header & Operator / Collapse Toggle Bar */}
-      <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Toggle Bar */}
+      {/* 1. Header & Branding */}
+      <div
+        style={{
+          height: '58px',
+          padding: '0 16px',
+          borderBottom: '1px solid var(--border-color, #e2e8f0)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: 'var(--bg-sidebar, #ffffff)',
+          flexShrink: 0
+        }}
+      >
+        <div
+          onClick={() => handleItemClick('dashboard')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+          title="CrimeLens - Law Enforcement Intelligence (Kavach AI)"
+        >
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '6px',
+              backgroundColor: 'var(--accent-primary, #1e40af)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ffffff',
+              flexShrink: 0,
+              boxShadow: '0 1px 2px 0 rgba(30, 64, 175, 0.2)'
+            }}
+          >
+            <Shield size={18} strokeWidth={2.4} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span
+              style={{
+                fontWeight: 800,
+                fontSize: '16px',
+                letterSpacing: '0.4px',
+                color: 'var(--text-primary, #0f172a)',
+                lineHeight: '1.2'
+              }}
+            >
+              CRIME<span style={{ color: 'var(--accent-primary, #1e40af)' }}>LENS</span>
+            </span>
+            <span
+              style={{
+                fontSize: '10px',
+                fontWeight: 700,
+                letterSpacing: '0.8px',
+                color: 'var(--text-muted, #64748b)',
+                textTransform: 'uppercase',
+                lineHeight: '1'
+              }}
+            >
+              Kavach AI
+            </span>
+          </div>
+        </div>
+
+        {/* Mobile drawer close button */}
+        <button
+          type="button"
+          className="sidebar-mobile-close"
+          onClick={onCloseMobile}
+          title="Close navigation drawer"
+          aria-label="Close navigation"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: 'var(--text-muted, #64748b)',
+            padding: '4px',
+            borderRadius: '4px',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* 2. Scrollable Navigation Sections */}
+      <div className="crimelens-sidebar-nav">
+        {NAV_GROUPS.map((group, gIdx) => (
+          <div key={gIdx} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            {/* Section Heading */}
+            <div className="sidebar-nav-group-title">
+              {group.title}
+            </div>
+
+            {/* Navigation Items */}
+            {group.items.map((item) => {
+              const isActive =
+                (item.id === 'dashboard' && (activePage === 'dashboard' || activePage === 'home')) ||
+                activePage === item.id;
+              const Icon = item.icon;
+
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleItemClick(item.id)}
+                  title={`${item.label} — ${item.desc}`}
+                  className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
+                >
+                  {/* Active Indicator Bar */}
+                  {isActive && <div className="sidebar-nav-indicator" />}
+
+                  {/* Left: Icon & Label */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                    <Icon
+                      size={18}
+                      strokeWidth={isActive ? 2.2 : 1.8}
+                      color={isActive ? '#1e40af' : '#64748b'}
+                      style={{ flexShrink: 0 }}
+                    />
+                    <span
+                      style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontSize: '13px'
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                  </div>
+
+                  {/* Right: Badge */}
+                  {item.badge && (
+                    <span
+                      style={{
+                        fontSize: '9.5px',
+                        fontWeight: 700,
+                        padding: '1px 6px',
+                        borderRadius: '4px',
+                        flexShrink: 0,
+                        letterSpacing: '0.3px',
+                        backgroundColor:
+                          item.badgeType === 'critical'
+                            ? '#fef2f2'
+                            : item.badgeType === 'verified'
+                            ? '#f0fdf4'
+                            : item.badgeType === 'warning'
+                            ? '#fffbeb'
+                            : '#eff6ff',
+                        color:
+                          item.badgeType === 'critical'
+                            ? '#dc2626'
+                            : item.badgeType === 'verified'
+                            ? '#16a34a'
+                            : item.badgeType === 'warning'
+                            ? '#d97706'
+                            : '#1e40af',
+                        border:
+                          item.badgeType === 'critical'
+                            ? '1px solid #fecaca'
+                            : item.badgeType === 'verified'
+                            ? '1px solid #bbf7d0'
+                            : item.badgeType === 'warning'
+                            ? '1px solid #fde68a'
+                            : '1px solid #bfdbfe'
+                      }}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      {/* 3. Bottom Investigator Profile / System Status Footer */}
+      <div
+        style={{
+          borderTop: '1px solid var(--border-color, #e2e8f0)',
+          padding: '12px 14px',
+          backgroundColor: 'var(--bg-subtle, #f8fafc)',
+          flexShrink: 0
+        }}
+      >
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'space-between',
-            padding: collapsed ? '14px 8px' : '14px 16px',
-            borderBottom: '1px solid rgba(0, 229, 255, 0.08)',
-            backgroundColor: 'rgba(0, 229, 255, 0.03)'
+            justifyContent: 'space-between',
+            gap: '10px'
           }}
         >
-          {!collapsed && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="pulse-dot" style={{ width: '7px', height: '7px' }} />
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '10.5px',
-                  letterSpacing: '1.5px',
-                  color: 'var(--cyan-glow)',
-                  fontWeight: 700
-                }}
-              >
-                TACTICAL PANEL
-              </span>
-            </div>
-          )}
-
-          <button
-            onClick={handleToggle}
-            title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-            style={{
-              background: 'rgba(0, 229, 255, 0.08)',
-              border: '1px solid rgba(0, 229, 255, 0.25)',
-              borderRadius: '6px',
-              color: 'var(--cyan-glow)',
-              width: '32px',
-              height: '32px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 0 10px rgba(0, 229, 255, 0.1)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.2)';
-              e.currentTarget.style.borderColor = 'var(--cyan-glow)';
-              e.currentTarget.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.25)';
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
-          >
-            {collapsed ? (
-              // Expand Icon (Chevron Right / Panel Open)
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            ) : (
-              // Collapse Icon (Chevron Left / Panel Close)
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            )}
-          </button>
-        </div>
-
-        {/* Operator Profile Card */}
-        <div style={{ padding: collapsed ? '12px 8px' : '12px 14px' }}>
           <div
+            onClick={() => handleItemClick('settings')}
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              padding: collapsed ? '8px 4px' : '10px 12px',
-              backgroundColor: 'rgba(0, 229, 255, 0.04)',
-              border: '1px solid rgba(0, 229, 255, 0.12)',
-              borderRadius: '6px',
-              justifyContent: collapsed ? 'center' : 'flex-start'
+              cursor: 'pointer',
+              minWidth: 0,
+              flex: 1
             }}
-            title={collapsed ? 'OPERATOR_01 (LEVEL 4 ACCESS)' : ''}
+            title="View Investigator Clearance & Settings"
           >
             <div
               style={{
                 width: '34px',
                 height: '34px',
-                minWidth: '34px',
-                borderRadius: '6px',
-                backgroundColor: 'rgba(0, 229, 255, 0.15)',
-                border: '1px solid rgba(0, 229, 255, 0.3)',
+                borderRadius: '50%',
+                backgroundColor: 'var(--accent-subtle, #eff6ff)',
+                border: '1px solid var(--border-strong, #bfdbfe)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--cyan-glow)',
-                position: 'relative'
+                color: 'var(--accent-primary, #1e40af)',
+                fontWeight: 700,
+                fontSize: '12.5px',
+                flexShrink: 0
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              <span
+              {initials}
+            </div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div
                 style={{
-                  position: 'absolute',
-                  bottom: '-2px',
-                  right: '-2px',
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#00E676',
-                  border: '1.5px solid #07090E',
-                  boxShadow: '0 0 6px #00E676'
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  color: 'var(--text-primary, #0f172a)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
                 }}
-              />
-            </div>
-
-            {!collapsed && (
-              <div style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    letterSpacing: '1px',
-                    color: '#FFFFFF'
-                  }}
-                >
-                  OPERATOR_01
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '9.5px',
-                    color: 'var(--cyan-glow)',
-                    letterSpacing: '0.5px'
-                  }}
-                >
-                  CLEARANCE LVL 4
-                </div>
+              >
+                {userName}
               </div>
-            )}
+              <div
+                style={{
+                  fontSize: '10.5px',
+                  color: 'var(--text-muted, #64748b)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}
+              >
+                <span className="pulse-dot" style={{ width: '5px', height: '5px' }} />
+                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {userRole}
+                </span>
+              </div>
+            </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => handleItemClick('settings')}
+            title="System Settings & Audit"
+            aria-label="Settings"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--text-muted, #64748b)',
+              padding: '6px',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'color 0.15s ease'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent-primary, #1e40af)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted, #64748b)')}
+          >
+            <Settings size={16} />
+          </button>
         </div>
-
-        {/* Navigation Sections */}
-        <div
-          style={{
-            padding: collapsed ? '6px 8px' : '6px 12px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
-            overflowY: 'auto',
-            maxHeight: 'calc(100vh - 270px)'
-          }}
-        >
-          {navSections.map((section, sIdx) => (
-            <div key={sIdx}>
-              {!collapsed && (
-                <div
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '9.5px',
-                    fontWeight: 700,
-                    letterSpacing: '1.5px',
-                    color: 'var(--text-muted)',
-                    padding: '4px 8px 6px 8px',
-                    textTransform: 'uppercase'
-                  }}
-                >
-                  {section.group}
-                </div>
-              )}
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                {section.items.map((item) => {
-                  const isActive = activePage === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => onNavigate && onNavigate(item.id)}
-                      title={collapsed ? `${item.label} - ${item.desc}` : item.desc}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: collapsed ? 'center' : 'space-between',
-                        padding: collapsed ? '10px 0' : '9px 12px',
-                        background: isActive
-                          ? 'linear-gradient(90deg, rgba(0, 229, 255, 0.18) 0%, rgba(0, 229, 255, 0.04) 100%)'
-                          : 'transparent',
-                        border: isActive ? '1px solid var(--cyan-glow)' : '1px solid transparent',
-                        borderRadius: '6px',
-                        color: isActive ? 'var(--cyan-glow)' : 'var(--text-secondary)',
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '11px',
-                        fontWeight: isActive ? 700 : 500,
-                        letterSpacing: '0.8px',
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                        position: 'relative',
-                        boxShadow: isActive ? '0 0 14px rgba(0, 229, 255, 0.2)' : 'none'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.08)';
-                          e.currentTarget.style.color = '#FFFFFF';
-                          e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.3)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = 'var(--text-secondary)';
-                          e.currentTarget.style.borderColor = 'transparent';
-                        }
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '11px' }}>
-                        <span style={{ fontSize: '15px', lineHeight: 1 }}>{item.icon}</span>
-                        {!collapsed && (
-                          <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                            {item.label}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Badge if present and expanded */}
-                      {!collapsed && item.badge && (
-                        <span
-                          style={{
-                            fontSize: '8.5px',
-                            fontWeight: 700,
-                            fontFamily: 'var(--font-mono)',
-                            letterSpacing: '0.5px',
-                            padding: '2px 6px',
-                            borderRadius: '3px',
-                            backgroundColor: `${item.badgeColor || '#00E5FF'}22`,
-                            color: item.badgeColor || '#00E5FF',
-                            border: `1px solid ${item.badgeColor || '#00E5FF'}66`
-                          }}
-                        >
-                          {item.badge}
-                        </span>
-                      )}
-
-                      {/* Collapsed dot badge */}
-                      {collapsed && item.badge && (
-                        <span
-                          style={{
-                            position: 'absolute',
-                            top: '6px',
-                            right: '12px',
-                            width: '6px',
-                            height: '6px',
-                            borderRadius: '50%',
-                            backgroundColor: item.badgeColor || 'var(--cyan-glow)',
-                            boxShadow: `0 0 6px ${item.badgeColor || 'var(--cyan-glow)'}`
-                          }}
-                        />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom Footer Actions */}
-      <div
-        style={{
-          borderTop: '1px solid rgba(0, 229, 255, 0.12)',
-          padding: collapsed ? '12px 8px' : '12px 14px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '6px',
-          backgroundColor: 'rgba(0, 229, 255, 0.02)'
-        }}
-      >
-        {/* Quick Toggle / Full Bar Expand-Collapse Button */}
-        <button
-          onClick={handleToggle}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            padding: '8px 0',
-            background: 'rgba(0, 229, 255, 0.06)',
-            border: '1px dashed rgba(0, 229, 255, 0.25)',
-            borderRadius: '4px',
-            color: 'var(--cyan-glow)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10px',
-            letterSpacing: '1px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.15)';
-            e.currentTarget.style.borderColor = 'var(--cyan-glow)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(0, 229, 255, 0.06)';
-            e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.25)';
-          }}
-        >
-          {collapsed ? (
-            <span>» EXPAND</span>
-          ) : (
-            <span>« COLLAPSE SIDEBAR</span>
-          )}
-        </button>
       </div>
     </aside>
   );

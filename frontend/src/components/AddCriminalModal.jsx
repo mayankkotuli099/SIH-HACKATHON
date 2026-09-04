@@ -119,9 +119,9 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
         bottom: 0,
         width: '100vw',
         height: '100vh',
-        backgroundColor: 'rgba(3, 7, 18, 0.88)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
+        backgroundColor: 'rgba(15, 23, 42, 0.6)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -131,50 +131,49 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
       }}
     >
       <div style={{
-        backgroundColor: '#0c111a',
-        border: '1.5px solid #00E5FF',
+        backgroundColor: 'var(--bg-modal, #ffffff)',
+        border: '1px solid var(--border-color, #cbd5e1)',
         borderRadius: '10px',
         width: '100%',
         maxWidth: '680px',
         maxHeight: '88vh',
         overflowY: 'auto',
-        boxShadow: '0 0 60px rgba(0, 229, 255, 0.35)',
-        padding: '2rem',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+        padding: '24px 28px',
         boxSizing: 'border-box',
-        color: '#FFFFFF',
-        fontFamily: 'var(--font-sans, sans-serif)',
+        color: 'var(--text-primary, #0f172a)',
         margin: 'auto',
         position: 'relative'
       }}>
-        {/* Modal Header with Indian Police Badge styling */}
+        {/* Modal Header */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderBottom: '1px solid rgba(0, 229, 255, 0.25)',
-          paddingBottom: '1.25rem',
-          marginBottom: '1.5rem'
+          borderBottom: '1px solid var(--border-color, #e2e8f0)',
+          paddingBottom: '16px',
+          marginBottom: '20px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(0, 229, 255, 0.15)',
-              border: '1px solid #00E5FF',
+              width: '38px',
+              height: '38px',
+              borderRadius: '6px',
+              backgroundColor: 'var(--bg-subtle, #eff6ff)',
+              border: '1px solid var(--border-strong, #bfdbfe)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '22px'
+              fontSize: '18px'
             }}>
               🚨
             </div>
             <div>
-              <h2 style={{ fontSize: '18px', fontWeight: 800, margin: 0, letterSpacing: '0.5px' }}>
-                INDIAN POLICE CRIMINAL INTAKE & CCTNS ENTRY
+              <h2 style={{ fontSize: '17px', fontWeight: 800, margin: 0, color: 'var(--text-primary, #0f172a)' }}>
+                Register Suspect / Offender Profile
               </h2>
-              <p style={{ margin: '3px 0 0 0', fontSize: '11.5px', color: '#00E5FF', fontFamily: 'var(--font-mono, monospace)' }}>
-                LAW ENFORCEMENT RECORDING SYSTEM // STATE CRIME BRANCH
+              <p style={{ margin: '2px 0 0 0', fontSize: '11px', color: 'var(--text-accent, #1e40af)', fontWeight: 600 }}>
+                CCTNS CRIME RECORD INGESTION // STATE CRIME BRANCH
               </p>
             </div>
           </div>
@@ -183,9 +182,9 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
             onClick={onClose}
             style={{
               background: 'none',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-color, #e2e8f0)',
               borderRadius: '4px',
-              color: '#94a3b8',
+              color: 'var(--text-muted, #64748b)',
               cursor: 'pointer',
               padding: '4px 10px',
               fontSize: '14px',
@@ -196,11 +195,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Row 1: Name and Aliases */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 FULL LEGAL NAME OF SUSPECT / OFFENDER *
               </label>
               <input
@@ -211,11 +210,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(0, 229, 255, 0.35)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FFFFFF',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #0f172a)',
                   fontSize: '13px',
                   outline: 'none',
                   boxSizing: 'border-box'
@@ -223,7 +222,7 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 ALIASES / GANG MONIKERS
               </label>
               <input
@@ -233,11 +232,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, aliases: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FFFFFF',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #0f172a)',
                   fontSize: '13px',
                   outline: 'none',
                   boxSizing: 'border-box'
@@ -247,9 +246,9 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
           </div>
 
           {/* Row 2: Crime Category & Threat Level */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 PRIMARY CRIME CLASSIFICATION *
               </label>
               <select
@@ -257,27 +256,27 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, crimeType: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(0, 229, 255, 0.35)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#00E5FF',
-                  fontWeight: 700,
-                  fontSize: '12.5px',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #0f172a)',
+                  fontWeight: 600,
+                  fontSize: '12px',
                   outline: 'none',
                   boxSizing: 'border-box'
                 }}
               >
-                <option value="HOMICIDE & CONTRACT KILLING">🔴 Homicide & Contract Murder (BNS 103 / IPC 302)</option>
-                <option value="SEXUAL ASSAULT & SERIAL RAPE">🟣 Sexual Assault & Serial Rape (BNS 64 / IPC 376D)</option>
-                <option value="ARMED ROBBERY & BANK HEISTS">🟠 Armed Robbery & Bank Dacoity (BNS 310 / IPC 392)</option>
-                <option value="KIDNAPPING & RANSOM EXTORTION">🟡 Kidnapping & Ransom Extortion (BNS 140 / IPC 364A)</option>
-                <option value="NARCOTICS & ILLICIT ARMS TRAFFICKING">🟢 Narcotics & NDPS Trafficking (Commercial Quantity)</option>
-                <option value="ORGANIZED GANG SYNDICATE & MCOCA">🔵 Organized Crime Gang & MCOCA Racket</option>
+                <option value="HOMICIDE & CONTRACT KILLING">🔴 Homicide &amp; Contract Murder (BNS 103 / IPC 302)</option>
+                <option value="SEXUAL ASSAULT & SERIAL RAPE">🟣 Sexual Assault &amp; Serial Rape (BNS 64 / IPC 376D)</option>
+                <option value="ARMED ROBBERY & BANK HEISTS">🟠 Armed Robbery &amp; Bank Dacoity (BNS 310 / IPC 392)</option>
+                <option value="KIDNAPPING & RANSOM EXTORTION">🟡 Kidnapping &amp; Ransom Extortion (BNS 140 / IPC 364A)</option>
+                <option value="NARCOTICS & ILLICIT ARMS TRAFFICKING">🟢 Narcotics &amp; NDPS Trafficking (Commercial Quantity)</option>
+                <option value="ORGANIZED GANG SYNDICATE & MCOCA">🔵 Organized Crime Gang &amp; MCOCA Racket</option>
               </select>
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 WARRANT / THREAT LEVEL
               </label>
               <select
@@ -285,13 +284,13 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, threatLevel: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(255, 85, 85, 0.4)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid rgba(239, 68, 68, 0.4)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FF5555',
+                  padding: '8px 12px',
+                  color: 'var(--status-critical, #ef4444)',
                   fontWeight: 700,
-                  fontSize: '12.5px',
+                  fontSize: '12px',
                   outline: 'none',
                   boxSizing: 'border-box'
                 }}
@@ -304,10 +303,10 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
           </div>
 
           {/* Row 3: FIR Number & Police Station */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
-                FIR NUMBER & LEGAL SECTIONS
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
+                FIR NUMBER &amp; LEGAL SECTIONS
               </label>
               <input
                 type="text"
@@ -316,11 +315,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, firNumbers: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FFFFFF',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #0f172a)',
                   fontSize: '13px',
                   outline: 'none',
                   boxSizing: 'border-box'
@@ -328,7 +327,7 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 POLICE STATION / JURISDICTION
               </label>
               <input
@@ -338,11 +337,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, policeStation: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FFFFFF',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #0f172a)',
                   fontSize: '13px',
                   outline: 'none',
                   boxSizing: 'border-box'
@@ -352,9 +351,9 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
           </div>
 
           {/* Row 4: Weapon Used & Wanted Reward */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 WEAPON USED / FIREARM SIGNATURE
               </label>
               <input
@@ -364,11 +363,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, weaponSignature: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FFFFFF',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #0f172a)',
                   fontSize: '13px',
                   outline: 'none',
                   boxSizing: 'border-box'
@@ -376,7 +375,7 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 STATE REWARD / BOUNTY
               </label>
               <input
@@ -386,11 +385,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, wantedReward: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(251, 191, 36, 0.3)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid rgba(245, 158, 11, 0.4)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FBBF24',
+                  padding: '8px 12px',
+                  color: 'var(--status-warning, #d97706)',
                   fontWeight: 700,
                   fontSize: '13px',
                   outline: 'none',
@@ -402,7 +401,7 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
 
           {/* Row 5: Modus Operandi */}
           <div>
-            <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+            <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
               MODUS OPERANDI / CRIME PATTERN DESCRIPTION
             </label>
             <textarea
@@ -412,11 +411,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
               onChange={(e) => setFormData({ ...formData, modusOperandi: e.target.value })}
               style={{
                 width: '100%',
-                backgroundColor: '#070a10',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                backgroundColor: 'var(--bg-input, #ffffff)',
+                border: '1px solid var(--border-color, #cbd5e1)',
                 borderRadius: '4px',
-                padding: '9px 12px',
-                color: '#FFFFFF',
+                padding: '8px 12px',
+                color: 'var(--text-primary, #0f172a)',
                 fontSize: '12.5px',
                 outline: 'none',
                 boxSizing: 'border-box',
@@ -426,9 +425,9 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
           </div>
 
           {/* Row 6: Scars & Marks + Phone */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 IDENTIFICATION SCARS / TATTOOS
               </label>
               <input
@@ -438,11 +437,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, scarsAndMarks: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FFFFFF',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #0f172a)',
                   fontSize: '13px',
                   outline: 'none',
                   boxSizing: 'border-box'
@@ -450,7 +449,7 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px', fontFamily: 'var(--font-mono, monospace)' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary, #475569)', marginBottom: '6px', fontFamily: 'monospace' }}>
                 PHONE / VEHICLE PLATE
               </label>
               <input
@@ -460,11 +459,11 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 style={{
                   width: '100%',
-                  backgroundColor: '#070a10',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backgroundColor: 'var(--bg-input, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
                   borderRadius: '4px',
-                  padding: '9px 12px',
-                  color: '#FFFFFF',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary, #0f172a)',
                   fontSize: '13px',
                   outline: 'none',
                   boxSizing: 'border-box'
@@ -474,40 +473,22 @@ export default function AddCriminalModal({ isOpen, onClose, onCriminalAdded, onS
           </div>
 
           {/* Submit and Cancel Buttons */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '8px', borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '16px' }}>
             <button
               type="button"
               onClick={onClose}
-              style={{
-                backgroundColor: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#94a3b8',
-                borderRadius: '6px',
-                padding: '10px 18px',
-                fontWeight: 600,
-                fontSize: '13px',
-                cursor: 'pointer'
-              }}
+              className="btn-secondary"
+              style={{ fontSize: '13px', padding: '8px 16px' }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              style={{
-                backgroundColor: '#00E5FF',
-                border: 'none',
-                color: '#07090E',
-                borderRadius: '6px',
-                padding: '10px 22px',
-                fontWeight: 800,
-                fontSize: '13px',
-                cursor: loading ? 'wait' : 'pointer',
-                fontFamily: 'var(--font-mono, monospace)',
-                boxShadow: '0 0 20px rgba(0, 229, 255, 0.4)'
-              }}
+              className="btn-primary"
+              style={{ fontSize: '13px', padding: '8px 20px' }}
             >
-              {loading ? 'REGISTERING IN CCTNS...' : '✓ REGISTER CRIMINAL RECORD'}
+              {loading ? 'Registering in CCTNS...' : '✓ Register Criminal Record'}
             </button>
           </div>
         </form>

@@ -16,9 +16,9 @@ export default function CoreEngine() {
           <path d="M14 18h6" />
         </svg>
       ),
-      iconColor: 'var(--cyan-glow)',
-      iconBg: 'rgba(0, 229, 255, 0.1)',
-      borderAccent: 'rgba(0, 229, 255, 0.2)'
+      iconColor: '#1e40af',
+      iconBg: '#eff6ff',
+      borderAccent: '#bfdbfe'
     },
     {
       id: 'ml',
@@ -30,9 +30,9 @@ export default function CoreEngine() {
           <circle cx="12" cy="6.5" r="1.5" fill="currentColor" />
         </svg>
       ),
-      iconColor: 'var(--accent-green)',
-      iconBg: 'rgba(0, 230, 118, 0.1)',
-      borderAccent: 'rgba(0, 230, 118, 0.2)'
+      iconColor: '#16a34a',
+      iconBg: '#f0fdf4',
+      borderAccent: '#bbf7d0'
     },
     {
       id: 'graph',
@@ -48,9 +48,9 @@ export default function CoreEngine() {
           <path d="M18 9v6" />
         </svg>
       ),
-      iconColor: 'var(--accent-blue)',
-      iconBg: 'rgba(41, 121, 255, 0.1)',
-      borderAccent: 'rgba(41, 121, 255, 0.2)'
+      iconColor: '#2563eb',
+      iconBg: '#eff6ff',
+      borderAccent: '#bfdbfe'
     },
     {
       id: 'entity',
@@ -61,9 +61,9 @@ export default function CoreEngine() {
           <path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11v.5" />
         </svg>
       ),
-      iconColor: 'var(--cyan-glow)',
-      iconBg: 'rgba(0, 229, 255, 0.1)',
-      borderAccent: 'rgba(0, 229, 255, 0.2)'
+      iconColor: '#7c3aed',
+      iconBg: '#f5f3ff',
+      borderAccent: '#ddd6fe'
     }
   ];
 
@@ -123,7 +123,7 @@ export default function CoreEngine() {
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: '1.5rem',
-              boxShadow: `0 0 12px ${item.iconBg}`
+              boxShadow: 'var(--shadow-sm)'
             }}>
               {item.icon}
             </div>

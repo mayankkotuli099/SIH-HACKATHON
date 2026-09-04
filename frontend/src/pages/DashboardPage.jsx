@@ -1,4 +1,21 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import {
+  Folder,
+  AlertTriangle,
+  FileText,
+  Navigation,
+  Search,
+  Building,
+  CheckCircle2,
+  Shield,
+  ArrowRight,
+  TrendingUp,
+  Cpu,
+  Radio,
+  ExternalLink,
+  Filter,
+  Plus
+} from 'lucide-react';
 import { api } from '../services/api.js';
 import AddCriminalModal from '../components/AddCriminalModal.jsx';
 
@@ -16,828 +33,595 @@ export const POLICE_STATIONS = [
     emergencyHotline: '112 / 0124-2391001',
     cctnsStatus: 'LIVE CCTNS NODE'
   },
-  {
-    id: 'PS-14',
-    name: 'Women Safety PS Sector 14',
-    code: 'STN-NCR-014',
-    district: 'Gurugram Commissionerate',
-    zone: 'South-West Sub-Division',
-    sho: 'Inspector Meena Sangwan',
-    status: 'ONLINE',
-    ping: '18ms',
-    activeOfficers: 18,
-    emergencyHotline: '1091 / 0124-2221414',
-    cctnsStatus: 'LIVE CCTNS NODE'
-  },
-  {
-    id: 'PS-SADAR',
-    name: 'PS Sadar Bazar Anti-Robbery',
-    code: 'STN-DEL-042',
-    district: 'Delhi Central District',
-    zone: 'Old Delhi & Chandni Chowk',
-    sho: 'Inspector Sandeep Hooda',
-    status: 'ONLINE',
-    ping: '22ms',
-    activeOfficers: 28,
-    emergencyHotline: '011-23512345',
-    cctnsStatus: 'LIVE CCTNS NODE'
-  },
-  {
-    id: 'PS-STF',
-    name: 'Special Cell STF Delhi HQ',
-    code: 'STN-STF-001',
-    district: 'Special Operations Command',
-    zone: 'Inter-State Gang & Terror Grid',
-    sho: 'ACP Rajesh Verma',
-    status: 'ONLINE',
-    ping: '9ms',
-    activeOfficers: 42,
-    emergencyHotline: '011-24361000',
-    cctnsStatus: 'HIGH SEC CCTNS'
-  },
-  {
-    id: 'PS-CYBER',
-    name: 'Cyber Crime PS Sector 43',
-    code: 'STN-CYB-043',
-    district: 'Cyber Command Wing',
-    zone: 'Fintech & Digital Fraud Hub',
-    sho: 'Inspector Amit Kulkarni',
-    status: 'ONLINE',
-    ping: '11ms',
-    activeOfficers: 16,
-    emergencyHotline: '1930 / 0124-2884300',
-    cctnsStatus: 'LIVE CCTNS NODE'
-  }
+  // {
+  //   id: 'PS-14',
+  //   name: 'Women Safety PS Sector 14',
+  //   code: 'STN-NCR-014',
+  //   district: 'Gurugram Commissionerate',
+  //   zone: 'South-West Sub-Division',
+  //   sho: 'Inspector Meena Sangwan',
+  //   status: 'ONLINE',
+  //   ping: '18ms',
+  //   activeOfficers: 18,
+  //   emergencyHotline: '1091 / 0124-2221414',
+  //   cctnsStatus: 'LIVE CCTNS NODE'
+  // },
+  // {
+  //   id: 'PS-SADAR',
+  //   name: 'PS Sadar Bazar Anti-Robbery',
+  //   code: 'STN-DEL-042',
+  //   district: 'Delhi Central District',
+  //   zone: 'Old Delhi & Chandni Chowk',
+  //   sho: 'Inspector Sandeep Hooda',
+  //   status: 'ONLINE',
+  //   ping: '22ms',
+  //   activeOfficers: 28,
+  //   emergencyHotline: '011-23512345',
+  //   cctnsStatus: 'LIVE CCTNS NODE'
+  // },
+  // {
+  //   id: 'PS-STF',
+  //   name: 'Special Cell STF Delhi HQ',
+  //   code: 'STN-STF-001',
+  //   district: 'Special Operations Command',
+  //   zone: 'Inter-State Gang & Terror Grid',
+  //   sho: 'ACP Rajesh Verma',
+  //   status: 'ONLINE',
+  //   ping: '9ms',
+  //   activeOfficers: 42,
+  //   emergencyHotline: '011-24361000',
+  //   cctnsStatus: 'HIGH SEC CCTNS'
+  // },
+  // {
+  //   id: 'PS-CYBER',
+  //   name: 'Cyber Crime PS Sector 43',
+  //   code: 'STN-CYB-043',
+  //   district: 'Cyber Command Wing',
+  //   zone: 'Fintech & Digital Fraud Hub',
+  //   sho: 'Inspector Amit Kulkarni',
+  //   status: 'ONLINE',
+  //   ping: '11ms',
+  //   activeOfficers: 16,
+  //   emergencyHotline: '1930 / 0124-2884300',
+  //   cctnsStatus: 'LIVE CCTNS NODE'
+  // }
 ];
 
 export default function DashboardPage({ onNavigate }) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [severityFilter, setSeverityFilter] = useState('ALL');
+  const [predictionInput, setPredictionInput] = useState('');
+  const [selectedScenario, setSelectedScenario] = useState('HOMICIDE_9MM');
   const [activeCluster, setActiveCluster] = useState('CLUSTER_HOMICIDE_GANG');
   const [selectedNode, setSelectedNode] = useState(null);
-  const [selectedLogDetail, setSelectedLogDetail] = useState(null);
-  const [isNewQueryModalOpen, setIsNewQueryModalOpen] = useState(false);
   const [isAddCriminalModalOpen, setIsAddCriminalModalOpen] = useState(false);
-  const [isLiveFeedActive, setIsLiveFeedActive] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
+  const [showStationDetails, setShowStationDetails] = useState(false);
 
-  // Connected Police Station State
+  // Connected Police Station
   const [selectedStationId, setSelectedStationId] = useState(() => {
     try {
-      const stored = localStorage.getItem('crimelens_station_id');
-      return stored || 'PS-18';
+      return localStorage.getItem('crimelens_station_id') || 'PS-18';
     } catch {
       return 'PS-18';
     }
   });
-  const [showStationDetails, setShowStationDetails] = useState(false);
 
   const activeStation = useMemo(() => {
     return POLICE_STATIONS.find((s) => s.id === selectedStationId) || POLICE_STATIONS[0];
   }, [selectedStationId]);
 
-  // AI Suspect Prediction State
-  const [predictionInput, setPredictionInput] = useState('');
-  const [selectedScenario, setSelectedScenario] = useState('HOMICIDE_9MM');
-
-  // Predefined AI Suspect Prediction Scenarios & Neural Matching Knowledge Base
-  const PREDICTION_SCENARIOS = {
-    HOMICIDE_9MM: {
-      id: 'HOMICIDE_9MM',
-      title: '🎯 Contract Homicide / 9mm Ambush',
-      crimeType: 'Contract Assassination (BNS 103)',
-      location: 'Sector 18 Market, Gurugram',
-      weapon: '9mm Beretta 92FS / Double-Tap MO',
-      vehicle: 'Unregistered KTM Duke 390 (Orange/Black)',
-      predictedSuspects: [
-        {
-          name: 'MAYANK KOTOLI',
-          id: 'CRM-9942',
-          alias: 'The Trigger / MK-99',
-          probability: 99.4,
-          risk: 'CRITICAL',
-          confidence: 'Forensic Ballistics Match (99.4%)',
-          role: 'Lead Contract Hitman',
-          modusOperandi: 'Ambush contract killings on rival gang leaders using point-blank double-tap; getaway via unregistered KTM Duke bikes.',
-          evidence: 'Spent 9mm casings matched FSL forensic firing pin impressions; cell tower pinged Kherki Daula toll 14 mins post-incident.',
-          status: 'ACTIVE FUGITIVE'
-        },
-        {
-          name: "MAHESH 'TIGER' KHAN",
-          id: 'CRM-0014',
-          alias: 'Tiger / Bada Don',
-          probability: 88.5,
-          risk: 'CRITICAL',
-          confidence: 'Syndicate Command Link',
-          role: 'Contract Benefactor / Client',
-          modusOperandi: 'Finances contract hits through ₹50L Hawala escrow via Chandni Chowk bullion operators.',
-          evidence: 'Intercepted wiretap recorded murder sanction call 48 hrs prior.',
-          status: 'MCOCA SURVEILLED'
-        },
-        {
-          name: "SURESH 'CHHOTA' GOLI",
-          id: 'CRM-4494',
-          alias: 'The Armorer',
-          probability: 78.0,
-          risk: 'HIGH',
-          confidence: 'Weapon Supply Vector',
-          role: 'Firearms Supplier',
-          modusOperandi: 'Distributes wiped-serial Berettas and hollow-point ammo across NCR.',
-          evidence: 'Arms courier caught with matching 9mm batch crates.',
-          status: 'RAID PENDING'
-        }
-      ]
-    },
-    EXTORTION_MCOCA: {
-      id: 'EXTORTION_MCOCA',
-      title: '💼 Builder Syndicate Extortion & Threats',
-      crimeType: 'Organized Extortion & MCOCA Syndicate',
-      location: 'Cyber City DLF Phase 2, Gurugram',
-      weapon: 'AK-47 Threats / VoIP Encrypted Relay',
-      vehicle: 'Black Fortuner HR26 Proxy Plated',
-      predictedSuspects: [
-        {
-          name: "MAHESH 'TIGER' KHAN",
-          id: 'CRM-0014',
-          alias: 'Tiger / Bada Don',
-          probability: 98.5,
-          risk: 'CRITICAL',
-          confidence: 'Voice Biometric Match (99.1%)',
-          role: 'Syndicate Apex Commander',
-          modusOperandi: 'Extortion rackets targeting infrastructure developers with multi-million rupee ransom demands via VoIP.',
-          evidence: 'Voiceprint matched Dubai satellite relay intercept demanding ₹50 Lakhs ransom from builder.',
-          status: 'WARRANT ISSUED'
-        },
-        {
-          name: 'SAMEER ALI',
-          id: 'CRM-1092',
-          alias: 'Hawala Banker',
-          probability: 84.0,
-          risk: 'HIGH',
-          confidence: 'Hawala Ledger Intercept',
-          role: 'Financial Conduit',
-          modusOperandi: 'Routes syndicate extortion deposits through multi-tiered shell accounts in Hong Kong & Dubai.',
-          evidence: 'Benami UPI accounts frozen holding ₹35 Lakhs split transfers.',
-          status: 'MONITORED'
-        }
-      ]
-    },
-    VAULT_BREACH: {
-      id: 'VAULT_BREACH',
-      title: '🏦 Bank Vault Heist / Thermal Lance',
-      crimeType: 'Commercial Bank Vault Breach (BNS 310)',
-      location: 'Axis Bank Commercial Hub, Noida',
-      weapon: 'Thermal Lance & High-Power RF Signal Jammer',
-      vehicle: 'Bolero Camper with Strobe Jammers',
-      predictedSuspects: [
-        {
-          name: "SAMEER 'GHOST' QURESHI",
-          id: 'CRM-8821',
-          alias: 'Ghost / The Drill',
-          probability: 96.8,
-          risk: 'HIGH',
-          confidence: 'Physical Toolmark & DNA Match',
-          role: 'Master Safe Cracker',
-          modusOperandi: 'High-precision vault breaching, laser sensor neutralization, and electronic RF jamming.',
-          evidence: 'Glove residue DNA recovered on vault keypad; RF frequency matched seized signal jammer.',
-          status: 'ACTIVE TRACKING'
-        },
-        {
-          name: "MAHESH 'TIGER' KHAN",
-          id: 'CRM-0014',
-          alias: 'Tiger / Fencer',
-          probability: 79.5,
-          risk: 'CRITICAL',
-          confidence: 'Bullion Fencing Nexus',
-          role: 'Stolen Gold Receiver',
-          modusOperandi: 'Purchases stolen bullion at 40% discount for melting in Chandni Chowk underground kilns.',
-          evidence: 'Black market melting ledger cross-referenced with 14kg stolen gold bars.',
-          status: 'SURVEILLED'
-        }
-      ]
-    },
-    PREDATOR_HIGHWAY: {
-      id: 'PREDATOR_HIGHWAY',
-      title: '🚗 Ring Road Transit Assault & Fake Taxi',
-      crimeType: 'Serial Sexual Offense & Aggravated Assault',
-      location: 'Mehrauli-Gurugram Transit Corridor',
-      weapon: 'Hunting Knife & Chloroform Spray',
-      vehicle: 'White Sedan with Disabled Inside Locks & Counterfeit Plates',
-      predictedSuspects: [
-        {
-          name: "DEVENDRA 'D-7' RAWAT",
-          id: 'CRM-7721',
-          alias: 'D-7 / Highway Predator',
-          probability: 99.8,
-          risk: 'CRITICAL',
-          confidence: '100% STR DNA Profile Match',
-          role: 'Serial Offender',
-          modusOperandi: 'Stalks commuters near dark transit hubs using cabs fitted with inside door-locks removed.',
-          evidence: '100% STR DNA match confirmed across 3 crime scene forensics kits (FSL #FK-8821).',
-          status: 'ACTIVE FUGITIVE'
-        },
-        {
-          name: "RAJU 'MECHANIC' VERMA",
-          id: 'CRM-3310',
-          alias: 'The Plate Maker',
-          probability: 82.0,
-          risk: 'HIGH',
-          confidence: 'Counterfeit Stamping Press Match',
-          role: 'Fake Number Plate Fabricator',
-          modusOperandi: 'Stamps forged commercial license plates for predatory vehicles.',
-          evidence: 'Seized hydraulic press with matching font dye in Sector 14 workshop raid.',
-          status: 'DETAINED'
-        }
-      ]
-    },
-    NARCO_MARITIME: {
-      id: 'NARCO_MARITIME',
-      title: '🚢 Port Container Synthetic Opioids & Arms',
-      crimeType: 'NDPS Act & Military Arms Smuggling',
-      location: 'Port Terminal C / ICD Dadri Yard',
-      weapon: 'Steyr TMP 9mm Military SMGs',
-      vehicle: 'Maritime Container #CT-991',
-      predictedSuspects: [
-        {
-          name: "ELENA 'CZAR' ROSTOVA",
-          id: 'CRM-5512',
-          alias: 'The Chemist / Czarina',
-          probability: 96.0,
-          risk: 'CRITICAL',
-          confidence: 'Interpol Red Notice Fingerprint Match',
-          role: 'International Cartel Director',
-          modusOperandi: 'Maritime container smuggling of synthetic opioids and military carbines across Northern India.',
-          evidence: 'Fingerprint match on Port Terminal C container seal; $4.2M wire trail flagged in HSBC HK.',
-          status: 'MARITIME SURVEILLANCE'
-        }
-      ]
-    }
-  };
-
-  // Compute active predicted suspects based on selected scenario or custom query
-  const activePrediction = useMemo(() => {
-    if (predictionInput.trim()) {
-      const q = predictionInput.toLowerCase();
-      // Match keywords in custom input
-      if (q.includes('shoot') || q.includes('kill') || q.includes('9mm') || q.includes('beretta') || q.includes('kotoli') || q.includes('homicide')) {
-        return PREDICTION_SCENARIOS.HOMICIDE_9MM;
-      }
-      if (q.includes('extort') || q.includes('threat') || q.includes('ransom') || q.includes('tiger') || q.includes('khan') || q.includes('don')) {
-        return PREDICTION_SCENARIOS.EXTORTION_MCOCA;
-      }
-      if (q.includes('bank') || q.includes('vault') || q.includes('gold') || q.includes('heist') || q.includes('lance') || q.includes('qureshi')) {
-        return PREDICTION_SCENARIOS.VAULT_BREACH;
-      }
-      if (q.includes('rape') || q.includes('assault') || q.includes('taxi') || q.includes('predator') || q.includes('rawat') || q.includes('d-7')) {
-        return PREDICTION_SCENARIOS.PREDATOR_HIGHWAY;
-      }
-      if (q.includes('drug') || q.includes('narco') || q.includes('opioid') || q.includes('elena') || q.includes('rostova') || q.includes('port')) {
-        return PREDICTION_SCENARIOS.NARCO_MARITIME;
-      }
-      // Dynamic fallback based on input
-      return {
-        id: 'CUSTOM_QUERY',
-        title: `🔍 Custom Incident Query: "${predictionInput.slice(0, 30)}..."`,
-        crimeType: 'Correlated Investigation Vector',
-        location: 'NCR Inter-State Jurisdiction',
-        weapon: 'Correlated Modus Operandi',
-        vehicle: 'Under Surveillance Vector',
-        predictedSuspects: [
-          {
-            name: 'MAYANK KOTOLI',
-            id: 'CRM-9942',
-            alias: 'The Trigger',
-            probability: 94.2,
-            risk: 'CRITICAL',
-            confidence: 'Neural Modus Operandi Match (94.2%)',
-            role: 'Primary Violent Offender',
-            modusOperandi: 'Contract assassinations & armed syndicate strikes.',
-            evidence: 'Correlated crime signature matches active fugitive profile.',
-            status: 'ACTIVE FUGITIVE'
-          },
-          {
-            name: "MAHESH 'TIGER' KHAN",
-            id: 'CRM-0014',
-            alias: 'Tiger Don',
-            probability: 89.0,
-            risk: 'CRITICAL',
-            confidence: 'Syndicate Network Correlation',
-            role: 'Command Mastermind',
-            modusOperandi: 'Extortion and armed logistics nexus.',
-            evidence: 'Inter-state telecommunication metadata correlation.',
-            status: 'MCOCA FLAG'
-          }
-        ]
-      };
-    }
-    return PREDICTION_SCENARIOS[selectedScenario] || PREDICTION_SCENARIOS.HOMICIDE_9MM;
-  }, [predictionInput, selectedScenario]);
-
-  // Toast notification helper
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Top KPI Metrics
-  const [metrics, setMetrics] = useState([
-    {
-      id: 'entities',
-      title: 'TOTAL ENTITIES',
-      value: 12458,
-      displayValue: '12,458',
-      change: '+3.4% this week',
-      icon: '🛡️',
-      color: '#00E5FF',
-      targetPage: 'entities'
+  // Structured AI Prediction Scenarios with Explainable Forensics
+  const PREDICTION_SCENARIOS = {
+    HOMICIDE_9MM: {
+      id: 'HOMICIDE_9MM',
+      title: 'Contract Assassination (BNS Sec 103 / IPC 302)',
+      location: 'Sector 18 Market, Gurugram',
+      weapon: '9mm Beretta 92FS / Double-Tap Signature',
+      vehicle: 'Unregistered KTM Duke 390 (Orange/Black)',
+      suspect: {
+        name: 'MAYANK KOTOLI',
+        id: 'CRM-9942',
+        alias: 'The Trigger / MK-99',
+        confidence: 99.4,
+        threatLevel: 'CRITICAL',
+        status: 'ACTIVE FUGITIVE',
+        role: 'Lead Syndicate Hitman',
+        reason: 'Firing pin marks on spent 9mm casings matched laboratory reference #FSL-884 with 99.4% confidence; MO matches previous contract killings.',
+        verifiedEvidence: '4 spent cartridge casings; CCTV footage from Sector 18 junction; blood spatter STR DNA test.',
+        recommendedAction: 'Execute Non-Bailable Arrest Warrant (NBW-2024-402); alert Meerut expressway toll plazas.'
+      }
     },
-    {
-      id: 'relationships',
-      title: 'NETWORK EDGES',
-      value: 35789,
-      displayValue: '35,789',
-      change: 'Active Gang Vectors',
-      icon: '🕸️',
-      color: '#A855F7',
-      targetPage: 'network'
+    EXTORTION_MCOCA: {
+      id: 'EXTORTION_MCOCA',
+      title: 'Organized Crime & Syndicate Extortion (MCOCA Act)',
+      location: 'NCR Commercial Real Estate Belt',
+      weapon: 'Imported Glock-17 / Clandestine AK-47',
+      vehicle: 'Armored SUV convoy / Proxy Benami registration',
+      suspect: {
+        name: "MAHESH 'TIGER' KHAN",
+        id: 'CRM-0014',
+        alias: 'Tiger Don / MK-01',
+        confidence: 98.5,
+        threatLevel: 'CRITICAL',
+        status: 'MCOCA WARRANT',
+        role: 'Syndicate Apex Commander',
+        reason: 'VoIP audio recording matched suspect voiceprint with 99.1% acoustic match; bank transfer routed to Dubai escrow.',
+        verifiedEvidence: 'VoIP intercept audio file; bank deposit slips (₹35 Lakhs); FIR-2024-001 witness deposition.',
+        recommendedAction: 'Submit MCOCA Section 3 attachment petition; freeze flagged Hawala conduit accounts.'
+      }
     },
+    VAULT_BREACH: {
+      id: 'VAULT_BREACH',
+      title: 'Commercial Bank Vault Heist & Gold Bullion (BNS Sec 310)',
+      location: 'Commercial Bank Vault, Sadar Bazar',
+      weapon: 'Thermal Lance / Frequency Jammer',
+      vehicle: 'White Mahindra Bolero Camper (HR-26)',
+      suspect: {
+        name: "SAMEER 'GHOST' QURESHI",
+        id: 'CRM-8821',
+        alias: 'The Drill / SQ-Lock',
+        confidence: 92.4,
+        threatLevel: 'HIGH',
+        status: 'ACTIVE TRACKING',
+        role: 'Safe-Cracking Specialist',
+        reason: 'Precision thermal lance burn patterns on Class-A vault door; glove fiber recovered at point of entry.',
+        verifiedEvidence: '14 kg bullion heist FIR-2024-103; ANPR camera match on Manesar toll barrier.',
+        recommendedAction: 'Deploy surveillance at Chandni Chowk bullion fencers; intercept getaway vehicle vector.'
+      }
+    },
+    PREDATOR_HIGHWAY: {
+      id: 'PREDATOR_HIGHWAY',
+      title: 'Highway Serial Assault & Kidnapping (BNS Sec 64)',
+      location: 'Transit Junction / IFFCO Chowk Highway',
+      weapon: 'Chloroform Spray / Hunting Blade',
+      vehicle: 'Yellow Commercial Taxi with Forged Plates',
+      suspect: {
+        name: "DEVENDRA 'D-7' RAWAT",
+        id: 'CRM-7721',
+        alias: 'Highway Predator / Night Stalker',
+        confidence: 100.0,
+        threatLevel: 'CRITICAL',
+        status: 'ACTIVE FUGITIVE',
+        role: 'Serial Violent Offender',
+        reason: 'Biological STR DNA profile extracted from forensic rape kit #FK-8821 confirmed 100% identity match in national DNA registry.',
+        verifiedEvidence: 'Forensic DNA Report #DNA-GUR-2024; fake taxi number plate seized by Sector 14 police.',
+        recommendedAction: 'Issue Inter-State Blue Notice; alert women transit safety patrols along Ring Road.'
+      }
+    },
+    NARCO_MARITIME: {
+      id: 'NARCO_MARITIME',
+      title: 'Maritime Opioids & Military Arms Smuggling (NDPS Act)',
+      location: 'Port Terminal C / Yard 4',
+      weapon: 'Steyr TMP Military Submachine Guns',
+      vehicle: 'Maritime Cargo Container #CT-991',
+      suspect: {
+        name: "ELENA 'CZAR' ROSTOVA",
+        id: 'CRM-5512',
+        alias: 'The Chemist / Czarina',
+        confidence: 96.0,
+        threatLevel: 'CRITICAL',
+        status: 'INTERPOL WATCH',
+        role: 'Cartel Logistics Director',
+        reason: 'Latent fingerprint on cargo container mechanical seal matched Interpol Red Notice biometric database.',
+        verifiedEvidence: '100 kg synthetic opioids seizure report; 8 military carbines recovered; $4.2M wire trail.',
+        recommendedAction: 'Seal customs transit container; coordinate extradition alert with Interpol New Delhi NCB.'
+      }
+    }
+  };
+
+  const activePrediction = useMemo(() => {
+    if (predictionInput.trim()) {
+      const q = predictionInput.toLowerCase();
+      if (q.includes('shoot') || q.includes('kill') || q.includes('9mm') || q.includes('beretta') || q.includes('kotoli') || q.includes('homicide')) {
+        return PREDICTION_SCENARIOS.HOMICIDE_9MM;
+      }
+      if (q.includes('extort') || q.includes('threat') || q.includes('ransom') || q.includes('tiger') || q.includes('khan')) {
+        return PREDICTION_SCENARIOS.EXTORTION_MCOCA;
+      }
+      if (q.includes('bank') || q.includes('vault') || q.includes('gold') || q.includes('heist') || q.includes('qureshi')) {
+        return PREDICTION_SCENARIOS.VAULT_BREACH;
+      }
+      if (q.includes('rape') || q.includes('assault') || q.includes('taxi') || q.includes('predator') || q.includes('rawat')) {
+        return PREDICTION_SCENARIOS.PREDATOR_HIGHWAY;
+      }
+      if (q.includes('drug') || q.includes('narco') || q.includes('opioid') || q.includes('rostova')) {
+        return PREDICTION_SCENARIOS.NARCO_MARITIME;
+      }
+    }
+    return PREDICTION_SCENARIOS[selectedScenario] || PREDICTION_SCENARIOS.HOMICIDE_9MM;
+  }, [predictionInput, selectedScenario]);
+
+  // Top 4 High-Priority Investigation Metrics
+  const KPI_METRICS = [
     {
-      id: 'cases',
-      title: 'ACTIVE CASES',
-      value: 245,
-      displayValue: '245',
-      change: '12 Require Attention',
-      icon: '📁',
-      color: '#00E676',
+      id: 'active_cases',
+      label: 'ACTIVE CASES',
+      value: '245',
+      trend: '+12 Requiring Attention',
+      status: 'normal',
+      icon: Folder,
       targetPage: 'cases'
     },
     {
-      id: 'high-risk',
-      title: 'HIGH-RISK TARGETS',
-      value: 32,
-      displayValue: '32 ⚠️',
-      change: 'Immediate STF Alert',
-      icon: '🚨',
-      color: '#FF5555',
-      isWarning: true,
+      id: 'critical_alerts',
+      label: 'CRITICAL ALERTS & MANHUNTS',
+      value: '32',
+      trend: 'Active NBW Warrants',
+      status: 'critical',
+      icon: AlertTriangle,
       targetPage: 'entities'
+    },
+    {
+      id: 'evidence_items',
+      label: 'CATALOGUED EVIDENCE ITEMS',
+      value: '1,248',
+      trend: '99.4% Verified Chain of Custody',
+      status: 'verified',
+      icon: FileText,
+      targetPage: 'cases'
+    },
+    {
+      id: 'active_investigations',
+      label: 'ACTIVE INVESTIGATION VECTORS',
+      value: '18',
+      trend: 'Live CDR & GIS Trajectories',
+      status: 'info',
+      icon: Navigation,
+      targetPage: 'location'
     }
-  ]);
+  ];
 
-  // Cluster graph definitions
-  const clusterData = {
+  // Cluster graph definitions (Clean light intelligence layout)
+  const CLUSTERS = {
     CLUSTER_HOMICIDE_GANG: {
-      name: 'HOMICIDE & CONTRACT KILLING SYNDICATE',
+      name: 'Homicide & Contract Killing Syndicate',
       nodesCount: '1,432',
-      edgesCount: '4,891',
       threatLevel: 'CRITICAL',
-      threatColor: '#FF5555',
       nodes: [
-        { id: 'N1', name: "MAYANK KOTOLI", type: 'LEAD_HITMAN', x: 60, y: 70, r: 14, color: '#FF5555', risk: '99.4%', status: 'FUGITIVE' },
-        { id: 'N2', name: "MAHESH 'TIGER' KHAN", type: 'GANG_KINGPIN', x: 140, y: 35, r: 15, color: '#00E5FF', risk: '98.5%', status: 'MCOCA' },
-        { id: 'N3', name: 'SECTOR-18 CRIME SCENE', type: 'HOMICIDE_SCENE', x: 210, y: 70, r: 11, color: '#FF5555', risk: '100%', status: 'SEALED' },
-        { id: 'N4', name: 'SURESH ARMORER KATAS', type: 'ARMS_SUPPLIER', x: 140, y: 110, r: 12, color: '#FBBF24', risk: '94.0%', status: 'RAID' },
-        { id: 'N5', name: 'KTM DUKE GETAWAY', type: 'VEHICLE', x: 80, y: 130, r: 9, color: '#00E676', risk: '88.2%', status: 'ANPR HIT' },
-        { id: 'N6', name: 'HAWALA DROP ₹35L', type: 'FINANCIAL', x: 190, y: 130, r: 10, color: '#A855F7', risk: '91.5%', status: 'FROZEN' },
+        { id: 'N1', name: 'MAYANK KOTOLI', role: 'Hitman', x: 70, y: 80, r: 12, color: '#dc2626', risk: '99.4%' },
+        { id: 'N2', name: "TIGER KHAN", role: 'Syndicate Boss', x: 150, y: 40, r: 14, color: '#1e40af', risk: '98.5%' },
+        { id: 'N3', name: 'SECTOR-18 SCENE', role: 'Double Homicide', x: 230, y: 80, r: 11, color: '#dc2626', risk: '100%' },
+        { id: 'N4', name: 'SURESH ARMORER', role: 'Weapon Supply', x: 150, y: 120, r: 11, color: '#d97706', risk: '94.0%' },
+        { id: 'N5', name: 'KTM GETAWAY', role: 'Vehicle Vector', x: 80, y: 140, r: 9, color: '#16a34a', risk: '88.2%' },
+        { id: 'N6', name: 'HAWALA ₹35L', role: 'Escrow Account', x: 210, y: 140, r: 10, color: '#2563eb', risk: '91.5%' }
       ],
       edges: [
-        { from: [60, 70], to: [140, 35], color: '#FF5555', width: 2.2, label: 'HIT CONTRACT' },
-        { from: [60, 70], to: [210, 70], color: '#FF5555', width: 2, label: '9mm CASINGS' },
-        { from: [140, 35], to: [140, 110], color: '#FBBF24', width: 1.5, dashed: true },
-        { from: [140, 110], to: [60, 70], color: '#FBBF24', width: 1.8, dashed: true },
-        { from: [60, 70], to: [80, 130], color: '#00E676', width: 1.5 },
-        { from: [140, 35], to: [190, 130], color: '#A855F7', width: 1.5 },
+        { from: [70, 80], to: [150, 40], color: '#dc2626', label: 'HIT CONTRACT' },
+        { from: [70, 80], to: [230, 80], color: '#dc2626', label: '9mm CASINGS' },
+        { from: [150, 40], to: [150, 120], color: '#d97706', dashed: true },
+        { from: [150, 120], to: [70, 80], color: '#d97706', dashed: true },
+        { from: [70, 80], to: [80, 140], color: '#16a34a' },
+        { from: [150, 40], to: [210, 140], color: '#2563eb' }
       ]
     },
     CLUSTER_ROBBERY_FENCING: {
-      name: 'ARMED BANK HEISTS & GOLD BULLION',
+      name: 'Armed Bank Heists & Gold Bullion Vault Breaches',
       nodesCount: '842',
-      edgesCount: '2,910',
       threatLevel: 'HIGH',
-      threatColor: '#FBBF24',
       nodes: [
-        { id: 'FN1', name: "SAMEER 'GHOST' QURESHI", type: 'SAFE_CRACKER', x: 60, y: 50, r: 14, color: '#FBBF24', risk: '92.4%', status: 'TRACKING' },
-        { id: 'FN2', name: 'AXIS BANK VAULT 14KG GOLD', type: 'CRIME_SCENE', x: 140, y: 40, r: 14, color: '#FF5555', risk: '99.0%', status: 'BREACHED' },
-        { id: 'FN3', name: 'BULLION FENCER CHANDNI CHOWK', type: 'BLACK_MARKET', x: 210, y: 60, r: 11, color: '#00E676', risk: '89.2%', status: 'MONITORED' },
-        { id: 'FN4', name: 'GETAWAY BOLERO HR26', type: 'ANPR_CAMERA', x: 110, y: 110, r: 10, color: '#00E5FF', risk: '96.0%', status: 'GPS HIT' },
+        { id: 'FN1', name: 'SAMEER QURESHI', role: 'Safe Cracker', x: 70, y: 60, r: 13, color: '#d97706', risk: '92.4%' },
+        { id: 'FN2', name: 'AXIS BANK VAULT', role: '14kg Gold Heist', x: 150, y: 50, r: 14, color: '#dc2626', risk: '99.0%' },
+        { id: 'FN3', name: 'CHANDNI CHOWK', role: 'Bullion Fencer', x: 220, y: 70, r: 11, color: '#16a34a', risk: '89.2%' },
+        { id: 'FN4', name: 'GETAWAY BOLERO', role: 'ANPR Camera', x: 120, y: 120, r: 10, color: '#1e40af', risk: '96.0%' }
       ],
       edges: [
-        { from: [60, 50], to: [140, 40], color: '#FF5555', width: 2.2 },
-        { from: [140, 40], to: [210, 60], color: '#FBBF24', width: 2 },
-        { from: [60, 50], to: [110, 110], color: '#00E5FF', width: 1.8, dashed: true },
+        { from: [70, 60], to: [150, 50], color: '#dc2626' },
+        { from: [150, 50], to: [220, 70], color: '#d97706' },
+        { from: [70, 60], to: [120, 120], color: '#1e40af', dashed: true }
       ]
     },
     CLUSTER_NARCO_PIPELINE: {
-      name: 'NARCOTICS & MILITARY ARMS TRAFFICKING',
+      name: 'Maritime Narcotics & Military Arms Pipeline',
       nodesCount: '620',
-      edgesCount: '1,490',
       threatLevel: 'CRITICAL',
-      threatColor: '#FF5555',
       nodes: [
-        { id: 'DN1', name: "ELENA 'CZAR' ROSTOVA", type: 'CARTEL_BOSS', x: 70, y: 70, r: 14, color: '#FF5555', risk: '96.0%', status: 'INTERPOL' },
-        { id: 'DN2', name: 'PORT TERMINAL C YARD', type: 'SEIZURE', x: 140, y: 40, r: 14, color: '#00E5FF', risk: '100%', status: '100KG SEIZED' },
-        { id: 'DN3', name: 'STEYR TMP FIREARMS', type: 'WEAPONS_CACHE', x: 200, y: 80, r: 12, color: '#FBBF24', risk: '98.0%', status: 'CUSTOMS' },
+        { id: 'DN1', name: 'ELENA ROSTOVA', role: 'Cartel Boss', x: 80, y: 80, r: 13, color: '#dc2626', risk: '96.0%' },
+        { id: 'DN2', name: 'PORT TERMINAL C', role: '100kg Opioids', x: 150, y: 50, r: 13, color: '#1e40af', risk: '100%' },
+        { id: 'DN3', name: 'STEYR TMP FIREARMS', role: 'Military Weapons', x: 220, y: 90, r: 11, color: '#d97706', risk: '98.0%' }
       ],
       edges: [
-        { from: [70, 70], to: [140, 40], color: '#00E5FF', width: 2.2 },
-        { from: [140, 40], to: [200, 80], color: '#FBBF24', width: 2 },
+        { from: [80, 80], to: [150, 50], color: '#1e40af' },
+        { from: [150, 50], to: [220, 90], color: '#d97706' }
       ]
     }
   };
 
-  // Recent Live Activity Logs
-  const [recentLogs, setRecentLogs] = useState([
-    {
-      id: 101,
-      time: 'Just now',
-      type: 'BALLISTICS MATCH',
-      typeColor: '#FF5555',
-      entity: 'SECTOR 18 HOMICIDE → MAYANK KOTOLI',
-      severityBadge: 'CRITICAL',
-      severityColor: '#FF5555',
-      rawPayload: 'FSL Forensic Ballistics match: 9mm cartridge casing recovered from Sector 18 double homicide fired from seized Beretta 92FS with 99.4% confidence.',
-      action: 'DISPATCH STF'
-    },
-    {
-      id: 102,
-      time: '4 mins ago',
-      type: 'WIRETAP INTERCEPT',
-      typeColor: '#A855F7',
-      entity: "MAHESH 'TIGER' KHAN SYNDICATE",
-      severityBadge: 'CRITICAL',
-      severityColor: '#FF5555',
-      rawPayload: 'VOIP Wiretap intercept: ₹50 Lakhs ransom call made to Gurugram infrastructure builder. Voiceprint matched Mahesh Khan.',
-      action: 'SURVEIL'
-    },
-    {
-      id: 103,
-      time: '12 mins ago',
-      type: 'STR DNA MATCH',
-      typeColor: '#00E5FF',
-      entity: "DEVENDRA 'D-7' RAWAT",
-      severityBadge: 'CRITICAL',
-      severityColor: '#FF5555',
-      rawPayload: '100% STR DNA profile match on forensic kit #FK-8821. Active Non-Bailable Warrant issued across NCR jurisdiction.',
-      action: 'CORDON AREA'
-    },
-    {
-      id: 104,
-      time: '28 mins ago',
-      type: 'ANPR TOLL HIT',
-      typeColor: '#00E676',
-      entity: 'GETAWAY KTM DUKE → MAYANK KOTOLI',
-      severityBadge: 'HIGH',
-      severityColor: '#FBBF24',
-      rawPayload: 'ANPR camera flagged unregistered motorcycle at Kherki Daula Toll plaza traveling at 114 km/h.',
-      action: 'INTERCEPT'
-    }
-  ]);
+  const currentCluster = CLUSTERS[activeCluster] || CLUSTERS.CLUSTER_HOMICIDE_GANG;
 
-  const currentCluster = clusterData[activeCluster] || clusterData.CLUSTER_HOMICIDE_GANG;
+  // Real-Time Field Activity & Telemetry Feed
+  const RECENT_ACTIVITY = [
+    {
+      id: 'ACT-01',
+      time: '4 mins ago',
+      type: 'BALLISTICS VERIFIED',
+      typeColor: '#dc2626',
+      entity: 'Mayank Kotoli (CRM-9942)',
+      detail: 'State FSL confirmed 9mm cartridge casings match Sector 18 double homicide (#FSL-884).'
+    },
+    {
+      id: 'ACT-02',
+      time: '18 mins ago',
+      type: 'CELL TOWER PING',
+      typeColor: '#d97706',
+      entity: 'Burner Intercept (+91-98711-40291)',
+      detail: 'Cell tower triangulation pinged suspect mobile moving along Meerut Expressway corridor.'
+    },
+    {
+      id: 'ACT-03',
+      time: '45 mins ago',
+      type: 'ANPR HIT',
+      typeColor: '#2563eb',
+      entity: 'Unregistered KTM Duke 390',
+      detail: 'Captured crossing Kherki Daula Highway Toll barrier heading towards NCR border.'
+    },
+    {
+      id: 'ACT-04',
+      time: '2 hours ago',
+      type: 'DNA CODIS MATCH',
+      typeColor: '#16a34a',
+      entity: "Devendra 'D-7' Rawat",
+      detail: '100% STR profile match confirmed on forensic kit #FK-8821 in serial assault investigation.'
+    }
+  ];
 
   return (
-    <div style={{
-      flex: 1,
-      padding: '1.5rem 2rem 3rem 2rem',
-      maxWidth: '1550px',
-      margin: '0 auto',
-      width: '100%',
-      boxSizing: 'border-box'
-    }}>
-      
-      {/* ================= TOP HEADER & QUICK CONTROLS ================= */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '1.5rem',
-        flexWrap: 'wrap',
-        gap: '1rem',
-        borderBottom: '1px solid rgba(0, 229, 255, 0.15)',
-        paddingBottom: '1rem'
-      }}>
+    <div style={{ padding: '24px 28px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
+      {/* ================= PAGE HEADER ================= */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px',
+          marginBottom: '20px'
+        }}
+      >
         <div>
-          <div style={{
-            fontFamily: 'monospace',
-            fontSize: '11px',
-            color: 'var(--cyan-glow)',
-            letterSpacing: '1.5px',
-            marginBottom: '3px'
-          }}>
-            // INTELLIGENCE & CRIME PREDICTION PLATFORM
+          <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e40af', letterSpacing: '0.8px' }}>
+            LAW ENFORCEMENT INTELLIGENCE WORKBENCH
           </div>
-          <h1 style={{
-            fontSize: '24px',
-            fontWeight: 900,
-            margin: 0,
-            color: '#FFFFFF',
-            letterSpacing: '0.5px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px'
-          }}>
-            <span>🛡️</span>
-            <span>COMMAND & PREDICTION DASHBOARD</span>
+          <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#0f172a', margin: '2px 0 0 0' }}>
+            Command & Investigation Dashboard
           </h1>
+          <p style={{ fontSize: '13px', color: '#64748b', margin: '3px 0 0 0' }}>
+            Real-time crime intelligence, forensic correlation, and suspect threat monitoring.
+          </p>
         </div>
 
-        {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <button
             onClick={() => onNavigate && onNavigate('network')}
-            className="interactive-btn"
-            style={{
-              backgroundColor: 'rgba(0, 229, 255, 0.12)',
-              border: '1px solid var(--cyan-glow)',
-              color: 'var(--cyan-glow)',
-              padding: '8px 14px',
-              borderRadius: '5px',
-              fontSize: '11.5px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
+            className="btn-secondary"
           >
-            <span>🕸️</span>
-            <span>GANG NETWORK MAPPER</span>
+            <span>Inspect Syndicate Graph</span>
+            <ExternalLink size={13} />
           </button>
 
           <button
             onClick={() => setIsAddCriminalModalOpen(true)}
-            style={{
-              backgroundColor: '#00E5FF',
-              color: '#07090E',
-              border: 'none',
-              borderRadius: '5px',
-              padding: '8px 16px',
-              fontSize: '11.5px',
-              fontWeight: 800,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)'
-            }}
+            className="btn-primary"
           >
-            <span>🚨</span>
-            <span>+ REGISTER CRIMINAL</span>
+            <Plus size={14} />
+            <span>Register Suspect</span>
           </button>
         </div>
       </div>
 
-      {/* ================= CONNECTED POLICE STATION (SIMPLE & CONCISE) ================= */}
-      <div style={{
-        backgroundColor: 'rgba(11, 18, 30, 0.85)',
-        border: '1px solid rgba(0, 229, 255, 0.22)',
-        borderRadius: '8px',
-        padding: '0.85rem 1.25rem',
-        marginBottom: '1.5rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '1rem',
-        background: 'linear-gradient(90deg, rgba(0, 229, 255, 0.06) 0%, rgba(11, 18, 30, 0.9) 100%)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-      }}>
-        {/* Left: Station Identity & Details */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 360px' }}>
-          <div style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '8px',
-            backgroundColor: 'rgba(0, 229, 255, 0.12)',
-            border: '1.5px solid var(--cyan-glow)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '20px',
-            boxShadow: '0 0 12px rgba(0, 229, 255, 0.25)',
-            flexShrink: 0
-          }}>
-            🏢
-          </div>
-          <div>
-            <div style={{
-              fontSize: '10.5px',
-              fontFamily: 'monospace',
-              color: 'var(--cyan-glow)',
-              letterSpacing: '1px',
+      {/* ================= CONNECTED POLICE STATION BANNER ================= */}
+      <div
+        className="cl-card"
+        style={{
+          padding: '12px 18px',
+          marginBottom: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '14px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '6px',
+              backgroundColor: 'var(--accent-subtle, #eff6ff)',
+              border: '1px solid var(--border-strong, #bfdbfe)',
+              color: 'var(--accent-primary, #1e40af)',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              marginBottom: '2px',
-              flexWrap: 'wrap'
-            }}>
-              <span>CONNECTED POLICE STATION</span>
-              <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>•</span>
-              <span style={{ color: '#94A3B8' }}>{activeStation.code}</span>
-              <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>•</span>
-              <span style={{ color: '#00E676', fontWeight: 700 }}>● {activeStation.cctnsStatus}</span>
-            </div>
+              justifyContent: 'center'
+            }}
+          >
+            <Building size={18} />
+          </div>
+
+          <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '0.3px' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--card-text, #0f172a)' }}>
                 {activeStation.name}
               </span>
-              <span style={{
-                fontSize: '11px',
-                color: '#94A3B8',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                padding: '2px 8px',
-                borderRadius: '4px',
-                border: '1px solid rgba(255, 255, 255, 0.1)'
-              }}>
-                📍 {activeStation.district} ({activeStation.zone})
+              <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--card-text-muted, #64748b)', backgroundColor: 'var(--card-bg-elevated, #f1f5f9)', padding: '1px 6px', borderRadius: '3px' }}>
+                {activeStation.code}
               </span>
-              <button
-                onClick={() => setShowStationDetails(prev => !prev)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--cyan-glow)',
-                  fontSize: '11px',
-                  fontFamily: 'monospace',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  padding: 0
-                }}
-              >
-                {showStationDetails ? 'Hide Details ▲' : 'View Details ▼'}
-              </button>
+              <span className="badge-verified">
+                ● {activeStation.cctnsStatus}
+              </span>
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--card-text-muted, #64748b)', marginTop: '2px' }}>
+              📍 {activeStation.district} • Station Head: <strong style={{ color: 'var(--card-text, #0f172a)' }}>{activeStation.sho}</strong> • Latency: {activeStation.ping}
             </div>
           </div>
         </div>
 
-        {/* Right: Quick Station Switcher & Active Officers */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {/* Active Officers Pill */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            backgroundColor: 'rgba(0, 229, 255, 0.08)',
-            border: '1px solid rgba(0, 229, 255, 0.25)',
-            borderRadius: '6px',
-            padding: '5px 10px',
-            fontSize: '11px',
-            fontFamily: 'monospace',
-            color: '#E2E8F0'
-          }}>
-            <span>👮</span>
-            <span><strong>{activeStation.activeOfficers}</strong> Officers Active</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ fontSize: '12px', color: 'var(--card-text-muted, #64748b)' }}>
+            Officers Active: <strong style={{ color: 'var(--card-text, #0f172a)' }}>{activeStation.activeOfficers}</strong>
           </div>
 
-          {/* Quick Station Switch Dropdown */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <label style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
-              STATION:
-            </label>
-            <select
-              value={selectedStationId}
-              onChange={(e) => {
-                const newId = e.target.value;
-                setSelectedStationId(newId);
-                localStorage.setItem('crimelens_station_id', newId);
-                const st = POLICE_STATIONS.find(s => s.id === newId);
-                if (st) {
-                  showToast(`✓ Switched to ${st.name}`);
-                }
-              }}
-              style={{
-                backgroundColor: 'rgba(7, 12, 20, 0.95)',
-                border: '1px solid rgba(0, 229, 255, 0.35)',
-                borderRadius: '5px',
-                color: 'var(--cyan-glow)',
-                fontFamily: 'monospace',
-                fontSize: '11.5px',
-                fontWeight: 700,
-                padding: '6px 10px',
-                outline: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              {POLICE_STATIONS.map((st) => (
-                <option key={st.id} value={st.id} style={{ backgroundColor: '#0B121E', color: '#FFFFFF' }}>
-                  {st.name} ({st.code})
-                </option>
-              ))}
-            </select>
-          </div>
+          <button
+            onClick={() => setShowStationDetails((prev) => !prev)}
+            className="btn-ghost"
+            style={{ fontSize: '11.5px', padding: '4px 8px' }}
+          >
+            {showStationDetails ? 'Hide Station Info ▲' : 'Station Info ▼'}
+          </button>
         </div>
 
-        {/* Optional Collapsible Station Details */}
         {showStationDetails && (
-          <div style={{
-            width: '100%',
-            marginTop: '8px',
-            paddingTop: '10px',
-            borderTop: '1px solid rgba(0, 229, 255, 0.15)',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '10px',
-            fontSize: '11.5px',
-            fontFamily: 'monospace'
-          }}>
-            <div style={{ color: '#94A3B8' }}>
-              <span style={{ color: 'var(--cyan-glow)' }}>Station Head (SHO): </span>
-              <strong style={{ color: '#FFFFFF' }}>{activeStation.sho}</strong>
+          <div
+            style={{
+              width: '100%',
+              paddingTop: '12px',
+              marginTop: '4px',
+              borderTop: '1px solid var(--card-border, #e2e8f0)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '12px',
+              fontSize: '12px',
+              color: 'var(--card-text-muted, #64748b)'
+            }}
+          >
+            <div>
+              Zone: <strong style={{ color: 'var(--card-text, #0f172a)' }}>{activeStation.zone}</strong>
             </div>
-            <div style={{ color: '#94A3B8' }}>
-              <span style={{ color: 'var(--cyan-glow)' }}>Emergency Hotline: </span>
-              <strong style={{ color: '#00E676' }}>{activeStation.emergencyHotline}</strong>
+            <div>
+              Emergency Hotline: <strong style={{ color: 'var(--status-verified, #16a34a)' }}>{activeStation.emergencyHotline}</strong>
             </div>
-            <div style={{ color: '#94A3B8' }}>
-              <span style={{ color: 'var(--cyan-glow)' }}>Network Latency: </span>
-              <strong style={{ color: '#FFFFFF' }}>{activeStation.ping} (Encrypted Tunnel)</strong>
+            <div>
+              Encryption: <strong style={{ color: 'var(--card-text, #0f172a)' }}>AES-256 STF VPN Tunnel</strong>
             </div>
-            <div style={{ color: '#94A3B8' }}>
-              <span style={{ color: 'var(--cyan-glow)' }}>CCTNS Sync: </span>
-              <strong style={{ color: '#00E676' }}>Real-Time Continuous</strong>
+            <div>
+              CCTNS Gateway: <strong style={{ color: 'var(--status-verified, #16a34a)' }}>Sync Active</strong>
             </div>
           </div>
         )}
       </div>
 
-      {/* ================= 4 KPI METRIC CARDS ================= */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '1rem',
-        marginBottom: '1.75rem'
-      }}>
-        {metrics.map((m) => (
-          <div
-            key={m.id}
-            onClick={() => onNavigate && onNavigate(m.targetPage)}
-            style={{
-              backgroundColor: 'rgba(11, 18, 30, 0.85)',
-              border: `1px solid ${m.isWarning ? 'rgba(255, 85, 85, 0.4)' : 'rgba(0, 229, 255, 0.2)'}`,
-              borderRadius: '8px',
-              padding: '1.1rem 1.25rem',
-              cursor: 'pointer',
-              transition: 'transform 0.15s ease, box-shadow 0.15s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.borderColor = m.color;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.borderColor = m.isWarning ? 'rgba(255, 85, 85, 0.4)' : 'rgba(0, 229, 255, 0.2)';
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-secondary)' }}>{m.title}</span>
-              <span>{m.icon}</span>
+      {/* ================= TOP 4 KPI OVERVIEW CARDS ================= */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: '16px',
+          marginBottom: '24px'
+        }}
+      >
+        {KPI_METRICS.map((kpi) => {
+          const Icon = kpi.icon;
+          return (
+            <div
+              key={kpi.id}
+              className="cl-card"
+              onClick={() => onNavigate && onNavigate(kpi.targetPage)}
+              style={{
+                padding: '16px 20px',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--card-text-muted, #64748b)', letterSpacing: '0.5px' }}>
+                  {kpi.label}
+                </span>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '6px',
+                    backgroundColor:
+                      kpi.status === 'critical'
+                        ? 'var(--status-critical-bg, #fef2f2)'
+                        : kpi.status === 'verified'
+                        ? 'var(--status-verified-bg, #f0fdf4)'
+                        : 'var(--accent-subtle, #eff6ff)',
+                    color:
+                      kpi.status === 'critical'
+                        ? 'var(--status-critical, #dc2626)'
+                        : kpi.status === 'verified'
+                        ? 'var(--status-verified, #16a34a)'
+                        : 'var(--accent-primary, #1e40af)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Icon size={16} />
+                </div>
+              </div>
+
+              <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--card-text, #0f172a)', marginBottom: '4px' }}>
+                {kpi.value}
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span
+                  style={{
+                    fontSize: '11.5px',
+                    fontWeight: 500,
+                    color:
+                      kpi.status === 'critical'
+                        ? 'var(--status-critical, #dc2626)'
+                        : kpi.status === 'verified'
+                        ? 'var(--status-verified, #16a34a)'
+                        : 'var(--card-text-muted, #64748b)'
+                  }}
+                >
+                  {kpi.trend}
+                </span>
+                <span style={{ fontSize: '11.5px', color: 'var(--accent-primary, #1e40af)', fontWeight: 600 }}>View →</span>
+              </div>
             </div>
-            <div style={{ fontSize: '24px', fontWeight: 900, color: '#FFFFFF', marginBottom: '4px' }}>
-              {m.displayValue}
-            </div>
-            <div style={{ fontSize: '11px', color: m.color, fontWeight: 600 }}>
-              {m.change} →
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* ================= SECTION 1: SIMPLIFIED AI SUSPECT PREDICTION ================= */}
-      <div style={{
-        backgroundColor: 'rgba(11, 18, 30, 0.9)',
-        border: '1px solid rgba(0, 229, 255, 0.25)',
-        borderRadius: '10px',
-        padding: '1.25rem 1.5rem',
-        marginBottom: '1.75rem',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.35)'
-      }}>
-        {/* Header & Quick Selector Pills */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '0.75rem',
-          marginBottom: '1rem'
-        }}>
+      {/* ================= AI INVESTIGATION CORRELATION ASSISTANT ================= */}
+      <div
+        className="cl-card"
+        style={{
+          padding: '20px 24px',
+          marginBottom: '24px'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '12px',
+            marginBottom: '16px'
+          }}
+        >
           <div>
-            <div style={{ fontSize: '10.5px', fontFamily: 'monospace', color: 'var(--cyan-glow)', letterSpacing: '1px' }}>
-              // NEURAL CRIME INVESTIGATOR
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Cpu size={15} color="var(--accent-primary, #1e40af)" />
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-primary, #1e40af)', letterSpacing: '0.8px' }}>
+                NEURAL INVESTIGATION ASSISTANT
+              </span>
             </div>
-            <h2 style={{ fontSize: '18px', fontWeight: 800, margin: '2px 0 0 0', color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>⚡</span>
-              <span>AI SUSPECT PREDICTOR</span>
+            <h2 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--card-text, #0f172a)', margin: '2px 0 0 0' }}>
+              AI Suspect & Modus Operandi Matcher
             </h2>
           </div>
 
-          {/* Quick Incident Type Pills */}
+          {/* Quick Incident Scenario Selectors */}
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
             {[
-              { id: 'HOMICIDE_9MM', label: '🔴 9mm Homicide' },
-              { id: 'EXTORTION_MCOCA', label: '🔵 Extortion' },
-              { id: 'VAULT_BREACH', label: '🟡 Bank Heist' },
-              { id: 'PREDATOR_HIGHWAY', label: '🟠 Highway Predator' },
-              { id: 'NARCO_MARITIME', label: '🟣 Narco Smuggling' }
+              { id: 'HOMICIDE_9MM', label: '9mm Homicide Ambush' },
+              { id: 'EXTORTION_MCOCA', label: 'MCOCA Extortion' },
+              { id: 'VAULT_BREACH', label: 'Bank Vault Heist' },
+              { id: 'PREDATOR_HIGHWAY', label: 'Highway Predator' },
+              { id: 'NARCO_MARITIME', label: 'NDPS Port Opioids' }
             ].map((scen) => {
               const isSelected = selectedScenario === scen.id && !predictionInput;
               return (
@@ -846,18 +630,18 @@ export default function DashboardPage({ onNavigate }) {
                   onClick={() => {
                     setSelectedScenario(scen.id);
                     setPredictionInput('');
-                    showToast(`Matched pattern: ${scen.label}`);
+                    showToast(`Matched scenario: ${scen.label}`);
                   }}
                   style={{
-                    backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                    border: `1px solid ${isSelected ? 'var(--cyan-glow)' : 'rgba(255, 255, 255, 0.12)'}`,
-                    color: isSelected ? 'var(--cyan-glow)' : '#94A3B8',
-                    borderRadius: '20px',
-                    padding: '5px 12px',
-                    fontSize: '11px',
+                    backgroundColor: isSelected ? 'var(--accent-subtle, #eff6ff)' : 'var(--card-bg-elevated, #f8fafc)',
+                    color: isSelected ? 'var(--accent-primary, #1e40af)' : 'var(--card-text-secondary, #475569)',
+                    border: `1.5px solid ${isSelected ? 'var(--accent-primary, #1e40af)' : 'var(--card-border, #cbd5e1)'}`,
+                    borderRadius: '4px',
+                    padding: '4px 10px',
+                    fontSize: '11.5px',
                     fontWeight: isSelected ? 700 : 500,
                     cursor: 'pointer',
-                    transition: 'all 0.15s ease'
+                    transition: 'all 0.12s ease'
                   }}
                 >
                   {scen.label}
@@ -868,25 +652,26 @@ export default function DashboardPage({ onNavigate }) {
         </div>
 
         {/* Search Clues Bar */}
-        <div style={{ position: 'relative', marginBottom: '1rem' }}>
-          <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: 'var(--cyan-glow)' }}>
-            🔍
-          </span>
+        <div style={{ position: 'relative', marginBottom: '16px' }}>
+          <Search
+            size={16}
+            color="var(--card-text-muted, #64748b)"
+            style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
+          />
           <input
             type="text"
             value={predictionInput}
             onChange={(e) => setPredictionInput(e.target.value)}
-            placeholder="Type crime clue or modus operandi (e.g. 'Biker on KTM Duke', '₹50L ransom call', 'Vault lance breach')..."
+            placeholder="Type incident clues or modus operandi (e.g. 'Unregistered KTM Duke getaway', '₹50L builder extortion', 'Thermal lance vault breach')..."
             style={{
               width: '100%',
-              boxSizing: 'border-box',
-              backgroundColor: 'rgba(7, 12, 20, 0.9)',
-              border: '1px solid rgba(0, 229, 255, 0.3)',
-              borderRadius: '6px',
-              padding: '9px 12px 9px 36px',
-              color: '#FFFFFF',
-              fontSize: '12.5px',
-              outline: 'none'
+              paddingLeft: '36px',
+              paddingRight: '36px',
+              height: '38px',
+              fontSize: '13px',
+              backgroundColor: 'var(--bg-input, #ffffff)',
+              color: 'var(--text-primary, #0f172a)',
+              border: '1px solid var(--card-border, #cbd5e1)'
             }}
           />
           {predictionInput && (
@@ -899,7 +684,7 @@ export default function DashboardPage({ onNavigate }) {
                 transform: 'translateY(-50%)',
                 background: 'none',
                 border: 'none',
-                color: '#94A3B8',
+                color: 'var(--card-text-muted, #94a3b8)',
                 cursor: 'pointer'
               }}
             >
@@ -908,190 +693,192 @@ export default function DashboardPage({ onNavigate }) {
           )}
         </div>
 
-        {/* Simplified Suspect Predictions List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {activePrediction.predictedSuspects.map((suspect, idx) => (
-            <div
-              key={suspect.id}
-              style={{
-                backgroundColor: idx === 0 ? 'rgba(255, 85, 85, 0.08)' : 'rgba(7, 12, 20, 0.75)',
-                border: `1px solid ${idx === 0 ? 'rgba(255, 85, 85, 0.4)' : 'rgba(255, 255, 255, 0.08)'}`,
-                borderRadius: '6px',
-                padding: '10px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '12px'
-              }}
-            >
-              {/* Suspect Identity & Evidence Summary */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 320px' }}>
-                <div style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '50%',
-                  backgroundColor: idx === 0 ? 'rgba(255, 85, 85, 0.2)' : 'rgba(0, 229, 255, 0.12)',
-                  border: `1.5px solid ${idx === 0 ? '#FF5555' : 'var(--cyan-glow)'}`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 900,
-                  fontSize: '13px',
-                  color: idx === 0 ? '#FF5555' : 'var(--cyan-glow)',
-                  fontFamily: 'monospace'
-                }}>
-                  {suspect.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                </div>
-
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '14px', fontWeight: 800, color: '#FFFFFF' }}>
-                      {suspect.name}
-                    </span>
-                    <span style={{ fontSize: '10.5px', fontFamily: 'monospace', color: 'var(--cyan-glow)' }}>
-                      ({suspect.id})
-                    </span>
-                    <span style={{
-                      fontSize: '9.5px',
-                      fontFamily: 'monospace',
-                      fontWeight: 700,
-                      color: idx === 0 ? '#FF5555' : '#FBBF24',
-                      backgroundColor: idx === 0 ? 'rgba(255, 85, 85, 0.15)' : 'rgba(251, 191, 36, 0.15)',
-                      padding: '1px 6px',
-                      borderRadius: '3px'
-                    }}>
-                      {suspect.status}
-                    </span>
-                  </div>
-
-                  <div style={{ fontSize: '11.5px', color: '#94A3B8', marginTop: '2px' }}>
-                    <strong style={{ color: '#FBBF24' }}>🧬 {suspect.confidence}</strong> • {suspect.modusOperandi.slice(0, 85)}...
-                  </div>
-                </div>
-              </div>
-
-              {/* Match Probability */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'monospace', color: 'var(--text-secondary)' }}>MATCH PROBABILITY</div>
-                  <div style={{ fontSize: '17px', fontWeight: 900, color: idx === 0 ? '#FF5555' : 'var(--cyan-glow)', fontFamily: 'monospace' }}>
-                    {suspect.probability}%
-                  </div>
-                </div>
-
-                {/* Quick Action Buttons */}
-                <div style={{ display: 'flex', gap: '6px' }}>
-                  <button
-                    onClick={() => onNavigate && onNavigate('network', { suspect: suspect.name })}
-                    className="interactive-btn"
-                    title="Map Gang Network"
-                    style={{
-                      backgroundColor: 'rgba(0, 229, 255, 0.12)',
-                      border: '1px solid var(--cyan-glow)',
-                      color: 'var(--cyan-glow)',
-                      padding: '6px 10px',
-                      borderRadius: '4px',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}
-                  >
-                    <span>🕸️</span>
-                    <span>NETWORK</span>
-                  </button>
-
-                  <button
-                    onClick={() => onNavigate && onNavigate('entities')}
-                    className="interactive-btn"
-                    title="View 360° Police Dossier"
-                    style={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.15)',
-                      color: '#FFFFFF',
-                      padding: '6px 10px',
-                      borderRadius: '4px',
-                      fontSize: '11px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <span>👤 DOSSIER</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ================= SECTION 2: GANG TOPOLOGY & RECENT INTELLIGENCE ================= */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1.2fr 1fr',
-        gap: '1.5rem',
-        marginBottom: '2rem'
-      }}>
-        {/* Left: Gang Cluster Map */}
-        <div style={{
-          backgroundColor: 'rgba(11, 18, 30, 0.88)',
-          border: '1px solid rgba(0, 229, 255, 0.2)',
-          borderRadius: '8px',
-          padding: '1.25rem',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
-        }}>
-          <div>
-            <div style={{
+        {/* Structured AI Finding & Evidence Card (Nested Card) */}
+        <div
+          className="nested-card"
+          style={{
+            backgroundColor: 'var(--card-bg-elevated, #f8fafc)',
+            border: '1px solid var(--card-border, #e2e8f0)',
+            borderRadius: '6px',
+            padding: '16px 20px'
+          }}
+        >
+          {/* Header Row */}
+          <div
+            style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: '10px'
-            }}>
-              <div>
-                <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--cyan-glow)' }}>
-                  🕸️ GANG SYNDICATE TOPOLOGY
+              flexWrap: 'wrap',
+              gap: '10px',
+              borderBottom: '1px solid var(--card-border, #e2e8f0)',
+              paddingBottom: '12px',
+              marginBottom: '12px'
+            }}
+          >
+            <div>
+              <div style={{ fontSize: '11px', color: 'var(--card-text-muted, #64748b)', fontWeight: 600 }}>CORRELATED INCIDENT TYPE</div>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--card-text, #0f172a)' }}>
+                {activePrediction.title}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--card-text-muted, #64748b)' }}>CONFIDENCE SCORE</div>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--accent-primary, #1e40af)', fontFamily: 'monospace' }}>
+                  {activePrediction.suspect.confidence}%
                 </div>
-                <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: '#FFFFFF' }}>
+              </div>
+              <span className={activePrediction.suspect.threatLevel === 'CRITICAL' ? 'badge-critical' : 'badge-warning'}>
+                {activePrediction.suspect.threatLevel} THREAT
+              </span>
+            </div>
+          </div>
+
+          {/* Structured Forensic Schema Grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '16px',
+              fontSize: '13px'
+            }}
+          >
+            {/* Primary Suspect */}
+            <div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--card-text-muted, #64748b)', marginBottom: '4px' }}>
+                PRIMARY SUSPECT IDENTIFIED
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <strong style={{ fontSize: '15px', color: 'var(--card-text, #0f172a)' }}>
+                  {activePrediction.suspect.name}
+                </strong>
+                <span style={{ fontSize: '11.5px', fontFamily: 'monospace', color: 'var(--accent-primary, #1e40af)' }}>
+                  ({activePrediction.suspect.id})
+                </span>
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--card-text-muted, #64748b)', marginTop: '2px' }}>
+                Role: {activePrediction.suspect.role} • Status: <span style={{ color: 'var(--status-critical, #dc2626)', fontWeight: 600 }}>{activePrediction.suspect.status}</span>
+              </div>
+            </div>
+
+            {/* Explainable Reasoning */}
+            <div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--card-text-muted, #64748b)', marginBottom: '4px' }}>
+                EXPLAINABLE REASONING (AI ANALYSIS)
+              </div>
+              <p style={{ fontSize: '12.5px', color: 'var(--card-text-secondary, #334155)', margin: 0 }}>
+                {activePrediction.suspect.reason}
+              </p>
+            </div>
+
+            {/* Verified Forensic Evidence */}
+            <div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--status-verified, #16a34a)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <CheckCircle2 size={13} color="var(--status-verified, #16a34a)" />
+                <span>VERIFIED FORENSIC EVIDENCE</span>
+              </div>
+              <p style={{ fontSize: '12.5px', color: 'var(--card-text-secondary, #334155)', margin: 0 }}>
+                {activePrediction.suspect.verifiedEvidence}
+              </p>
+            </div>
+
+            {/* Recommended Police Action */}
+            <div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent-primary, #1e40af)', marginBottom: '4px' }}>
+                RECOMMENDED ACTION
+              </div>
+              <p style={{ fontSize: '12.5px', color: 'var(--card-text, #0f172a)', fontWeight: 600, margin: 0 }}>
+                {activePrediction.suspect.recommendedAction}
+              </p>
+            </div>
+          </div>
+
+          {/* Action Row */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '10px',
+              marginTop: '14px',
+              paddingTop: '12px',
+              borderTop: '1px solid var(--card-border, #e2e8f0)'
+            }}
+          >
+            <button
+              onClick={() => onNavigate && onNavigate('network', { suspect: activePrediction.suspect.name })}
+              className="btn-secondary"
+              style={{ fontSize: '12px', padding: '6px 12px' }}
+            >
+              Map Gang Network →
+            </button>
+            <button
+              onClick={() => onNavigate && onNavigate('entities', { suspect: activePrediction.suspect.name })}
+              className="btn-primary"
+              style={{ fontSize: '12px', padding: '6px 14px' }}
+            >
+              Open Suspect 360° Dossier →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ================= INVESTIGATION & INTELLIGENCE SECTION ================= */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
+          gap: '20px',
+          marginBottom: '20px'
+        }}
+      >
+        {/* Left: Syndicate Network Topology */}
+        <div
+          className="cl-card"
+          style={{
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <div>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-primary, #1e40af)' }}>
+                  INTELLIGENCE TOPOLOGY
+                </div>
+                <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--card-text, #0f172a)', margin: '2px 0 0 0' }}>
                   {currentCluster.name}
                 </h3>
               </div>
 
               <button
                 onClick={() => onNavigate && onNavigate('network')}
-                style={{
-                  backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                  border: '1px solid var(--cyan-glow)',
-                  color: 'var(--cyan-glow)',
-                  padding: '5px 10px',
-                  borderRadius: '4px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  cursor: 'pointer'
-                }}
+                className="btn-ghost"
+                style={{ fontSize: '11.5px' }}
               >
-                OPEN FULL GRAPH ↗
+                <span>Full Graph</span>
+                <ArrowRight size={13} />
               </button>
             </div>
 
-            {/* Cluster Buttons */}
+            {/* Cluster Tabs */}
             <div style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
-              {Object.keys(clusterData).map((key) => (
+              {Object.keys(CLUSTERS).map((key) => (
                 <button
                   key={key}
                   onClick={() => setActiveCluster(key)}
                   style={{
-                    backgroundColor: activeCluster === key ? 'rgba(0, 229, 255, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                    border: `1px solid ${activeCluster === key ? 'var(--cyan-glow)' : 'rgba(255, 255, 255, 0.1)'}`,
-                    color: activeCluster === key ? 'var(--cyan-glow)' : '#94A3B8',
                     padding: '4px 8px',
                     borderRadius: '4px',
-                    fontSize: '10.5px',
-                    cursor: 'pointer',
-                    fontWeight: activeCluster === key ? 700 : 400
+                    fontSize: '11px',
+                    fontWeight: activeCluster === key ? 600 : 400,
+                    backgroundColor: activeCluster === key ? 'var(--accent-subtle, #eff6ff)' : 'var(--card-bg-elevated, #f8fafc)',
+                    color: activeCluster === key ? 'var(--accent-primary, #1e40af)' : 'var(--card-text-muted, #64748b)',
+                    border: activeCluster === key ? '1px solid var(--border-active, #bfdbfe)' : '1px solid var(--card-border, #e2e8f0)',
+                    cursor: 'pointer'
                   }}
                 >
                   {key.replace('CLUSTER_', '')}
@@ -1099,16 +886,18 @@ export default function DashboardPage({ onNavigate }) {
               ))}
             </div>
 
-            {/* SVG Graph Canvas */}
-            <div style={{
-              height: '180px',
-              backgroundColor: 'rgba(4, 8, 15, 0.85)',
-              borderRadius: '6px',
-              border: '1px solid rgba(0, 229, 255, 0.1)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <svg width="100%" height="100%" viewBox="0 0 270 160">
+            {/* Clean SVG Canvas */}
+            <div
+              className="nested-card"
+              style={{
+                height: '190px',
+                backgroundColor: 'var(--card-bg-elevated, #f8fafc)',
+                borderRadius: '6px',
+                border: '1px solid var(--card-border, #e2e8f0)',
+                position: 'relative'
+              }}
+            >
+              <svg width="100%" height="100%" viewBox="0 0 280 160">
                 {currentCluster.edges.map((edge, i) => (
                   <line
                     key={i}
@@ -1116,8 +905,8 @@ export default function DashboardPage({ onNavigate }) {
                     y1={edge.from[1]}
                     x2={edge.to[0]}
                     y2={edge.to[1]}
-                    stroke={edge.color}
-                    strokeWidth={edge.width || 1.5}
+                    stroke={edge.color || 'var(--card-border-strong, #cbd5e1)'}
+                    strokeWidth="1.6"
                     strokeDasharray={edge.dashed ? '3 3' : 'none'}
                   />
                 ))}
@@ -1126,12 +915,19 @@ export default function DashboardPage({ onNavigate }) {
                     key={node.id}
                     onClick={() => {
                       setSelectedNode(node);
-                      showToast(`Selected Node: ${node.name} (${node.risk})`);
+                      showToast(`Node selected: ${node.name} (${node.risk})`);
                     }}
                     style={{ cursor: 'pointer' }}
                   >
-                    <circle cx={node.x} cy={node.y} r={node.r} fill={node.color} />
-                    <text x={node.x} y={node.y + node.r + 9} fill="#FFFFFF" fontSize="7.5" textAnchor="middle" fontWeight="bold">
+                    <circle cx={node.x} cy={node.y} r={node.r} fill={node.color} stroke="var(--card-bg, #ffffff)" strokeWidth="2" />
+                    <text
+                      x={node.x}
+                      y={node.y + node.r + 10}
+                      fill="var(--card-text, #0f172a)"
+                      fontSize="8"
+                      textAnchor="middle"
+                      fontWeight="600"
+                    >
                       {node.name.slice(0, 14)}
                     </text>
                   </g>
@@ -1140,59 +936,70 @@ export default function DashboardPage({ onNavigate }) {
             </div>
           </div>
 
-          <div style={{
-            fontSize: '11px',
-            color: 'var(--text-secondary)',
-            marginTop: '10px',
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}>
-            <span>Total Nodes: <strong>{currentCluster.nodesCount}</strong></span>
-            <span>Threat Index: <strong style={{ color: currentCluster.threatColor }}>{currentCluster.threatLevel}</strong></span>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: '12px',
+              color: 'var(--card-text-muted, #64748b)',
+              marginTop: '12px',
+              paddingTop: '8px',
+              borderTop: '1px solid var(--card-border, #f1f5f9)'
+            }}
+          >
+            <span>Tracked Entities: <strong style={{ color: 'var(--card-text, #0f172a)' }}>{currentCluster.nodesCount}</strong></span>
+            <span>Threat Index: <strong style={{ color: 'var(--status-critical, #dc2626)' }}>{currentCluster.threatLevel}</strong></span>
           </div>
         </div>
 
-        {/* Right: Live STF Intercepts & Forensic Activity */}
-        <div style={{
-          backgroundColor: 'rgba(11, 18, 30, 0.88)',
-          border: '1px solid rgba(0, 229, 255, 0.2)',
-          borderRadius: '8px',
-          padding: '1.25rem',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <div style={{
+        {/* Right: Live Field Activity & Telemetry Feed */}
+        <div
+          className="cl-card"
+          style={{
+            padding: '20px',
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '12px'
-          }}>
-            <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--cyan-glow)' }}>
-              ⚡ LIVE STF TELEMETRY & INTERCEPTS
+            flexDirection: 'column'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <div>
+              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-primary, #1e40af)' }}>
+                FORENSIC ACTIVITY FEED
+              </div>
+              <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--card-text, #0f172a)', margin: '2px 0 0 0' }}>
+                Live STF Telemetry & Field Intercepts
+              </h3>
             </div>
-            <span style={{ fontSize: '10px', color: '#00E676', fontWeight: 700, fontFamily: 'monospace' }}>
+
+            <span className="badge-verified">
               ● STREAM ACTIVE
             </span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', maxHeight: '250px' }}>
-            {recentLogs.map((log) => (
+            {RECENT_ACTIVITY.map((act) => (
               <div
-                key={log.id}
+                key={act.id}
+                className="nested-card"
                 style={{
-                  backgroundColor: 'rgba(7, 12, 20, 0.8)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '5px',
-                  padding: '8px 10px',
-                  fontSize: '11.5px'
+                  backgroundColor: 'var(--card-bg-elevated, #f8fafc)',
+                  border: '1px solid var(--card-border, #e2e8f0)',
+                  borderRadius: '6px',
+                  padding: '10px 12px'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
-                  <span style={{ fontWeight: 800, color: log.typeColor }}>{log.type}</span>
-                  <span style={{ color: '#94A3B8', fontSize: '10px' }}>{log.time}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '10.5px', fontWeight: 700, color: act.typeColor }}>
+                    {act.type}
+                  </span>
+                  <span style={{ fontSize: '10.5px', color: 'var(--card-text-muted, #94a3b8)' }}>{act.time}</span>
                 </div>
-                <div style={{ color: '#FFFFFF', fontWeight: 700, marginBottom: '2px' }}>{log.entity}</div>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '10.5px' }}>{log.rawPayload}</div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--card-text, #0f172a)', marginBottom: '2px' }}>
+                  {act.entity}
+                </div>
+                <div style={{ fontSize: '12px', color: 'var(--card-text-secondary, #475569)' }}>
+                  {act.detail}
+                </div>
               </div>
             ))}
           </div>
@@ -1205,41 +1012,36 @@ export default function DashboardPage({ onNavigate }) {
           isOpen={isAddCriminalModalOpen}
           onClose={() => setIsAddCriminalModalOpen(false)}
           onCriminalAdded={(newCrim) => {
-            showToast(`✓ ${newCrim.name} registered! Opening Criminal 360 Dossier...`);
+            showToast(`✓ ${newCrim.name} registered. Opening Dossier...`);
             setIsAddCriminalModalOpen(false);
             if (onNavigate) {
-              onNavigate('entities', { suspect: newCrim.name });
-            }
-          }}
-          onSuccess={(newCrim) => {
-            setIsAddCriminalModalOpen(false);
-            if (onNavigate && newCrim) {
               onNavigate('entities', { suspect: newCrim.name });
             }
           }}
         />
       )}
 
-      {/* ================= FLOATING TOAST ================= */}
+      {/* ================= TOAST NOTIFICATION ================= */}
       {toastMessage && (
-        <div style={{
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          backgroundColor: 'rgba(0, 229, 255, 0.95)',
-          color: '#07090E',
-          padding: '12px 20px',
-          borderRadius: '6px',
-          fontWeight: 800,
-          fontFamily: 'monospace',
-          fontSize: '13px',
-          boxShadow: '0 0 25px rgba(0, 229, 255, 0.5)',
-          zIndex: 99999
-        }}>
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            backgroundColor: 'var(--bg-modal, #ffffff)',
+            color: 'var(--text-primary, #0f172a)',
+            border: '1px solid var(--border-color, #e2e8f0)',
+            padding: '10px 18px',
+            borderRadius: '6px',
+            fontSize: '13px',
+            fontWeight: 600,
+            boxShadow: 'var(--shadow-md)',
+            zIndex: 99999
+          }}
+        >
           {toastMessage}
         </div>
       )}
-
     </div>
   );
 }

@@ -180,24 +180,24 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
           onClick={() => setIsOpen(true)}
           title="Open CrimeLens AI Copilot"
           style={{
-            width: '56px',
-            height: '56px',
+            width: '52px',
+            height: '52px',
             borderRadius: '50%',
-            backgroundColor: '#0c111a',
-            border: '2px solid #00E5FF',
-            boxShadow: '0 0 25px rgba(0, 229, 255, 0.45)',
+            backgroundColor: '#1e40af',
+            border: '2px solid #ffffff',
+            boxShadow: '0 4px 14px rgba(30, 64, 175, 0.35)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
             position: 'relative',
-            transition: 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-            color: '#00E5FF'
+            transition: 'transform 0.15s ease',
+            color: '#ffffff'
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.06)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
         >
-          <span style={{ fontSize: '24px' }}>🤖</span>
+          <span style={{ fontSize: '22px' }}>🤖</span>
           <span style={{
             position: 'absolute',
             top: '2px',
@@ -205,60 +205,59 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
             width: '10px',
             height: '10px',
             borderRadius: '50%',
-            backgroundColor: '#00E676',
-            boxShadow: '0 0 8px #00E676'
+            backgroundColor: '#16a34a',
+            border: '2px solid #ffffff'
           }} />
         </button>
       )}
 
       {/* Expanded Floating Chatbot Modal */}
       {isOpen && (
-        <div style={{
+        <div className="cl-card" style={{
           width: '390px',
           maxWidth: 'calc(100vw - 32px)',
           height: '560px',
-          backgroundColor: 'rgba(12, 17, 26, 0.98)',
-          border: '1.5px solid #00E5FF',
-          borderRadius: '12px',
-          boxShadow: '0 0 40px rgba(0, 229, 255, 0.3), 0 20px 40px rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(20px)',
+          backgroundColor: 'var(--bg-modal, #ffffff)',
+          border: '1px solid var(--border-color, #cbd5e1)',
+          borderRadius: '10px',
+          boxShadow: 'var(--shadow-lg)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          animation: 'fadeIn 0.2s ease',
-          color: '#FFFFFF'
+          animation: 'fadeIn 0.15s ease',
+          color: 'var(--text-primary, #0f172a)'
         }}>
           {/* Header */}
           <div style={{
             padding: '12px 16px',
-            borderBottom: '1px solid rgba(0, 229, 255, 0.2)',
+            borderBottom: '1px solid var(--border-color, #e2e8f0)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: 'rgba(7, 10, 16, 0.95)'
+            backgroundColor: 'var(--bg-surface, #ffffff)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                border: '1px solid #00E5FF',
+                width: '30px',
+                height: '30px',
+                borderRadius: '6px',
+                backgroundColor: 'var(--accent-subtle, #eff6ff)',
+                border: '1px solid var(--border-strong, #bfdbfe)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '17px'
+                fontSize: '16px'
               }}>
                 🤖
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>
-                  CRIMELENS AI COPILOT
+                <h4 style={{ margin: 0, fontSize: '13px', fontWeight: 800, color: 'var(--text-primary, #0f172a)' }}>
+                  CrimeLens AI Assistant
                 </h4>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#00E676', display: 'inline-block' }} />
-                  <span style={{ fontSize: '9.5px', color: '#00E5FF', fontFamily: 'monospace' }}>
-                    GEMINI LIVE // READY
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--status-verified, #16a34a)', display: 'inline-block' }} />
+                  <span style={{ fontSize: '10px', color: 'var(--status-verified, #16a34a)', fontWeight: 600, fontFamily: 'monospace' }}>
+                    FORENSICS CO-PILOT // ACTIVE
                   </span>
                 </div>
               </div>
@@ -270,9 +269,9 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
                 title="Clear Chat History"
                 style={{
                   background: 'none',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  border: '1px solid var(--border-color, #e2e8f0)',
                   borderRadius: '4px',
-                  color: '#94A3B8',
+                  color: 'var(--text-muted, #64748b)',
                   fontSize: '10px',
                   padding: '3px 7px',
                   cursor: 'pointer'
@@ -286,8 +285,8 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#94A3B8',
-                  fontSize: '18px',
+                  color: 'var(--text-muted, #64748b)',
+                  fontSize: '16px',
                   cursor: 'pointer',
                   padding: '2px 6px'
                 }}
@@ -300,8 +299,8 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
           {/* Quick Prompts Bar */}
           <div style={{
             padding: '6px 12px',
-            backgroundColor: 'rgba(7, 10, 16, 0.6)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+            backgroundColor: 'var(--bg-subtle, #f8fafc)',
+            borderBottom: '1px solid var(--border-color, #e2e8f0)',
             display: 'flex',
             gap: '6px',
             overflowX: 'auto',
@@ -312,12 +311,13 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
                 key={idx}
                 onClick={() => handleSendText(p)}
                 style={{
-                  backgroundColor: 'rgba(0, 229, 255, 0.08)',
-                  border: '1px solid rgba(0, 229, 255, 0.25)',
-                  color: '#00E5FF',
+                  backgroundColor: 'var(--bg-surface, #ffffff)',
+                  border: '1px solid var(--border-color, #cbd5e1)',
+                  color: 'var(--accent-primary, #1e40af)',
                   borderRadius: '12px',
                   padding: '3px 8px',
                   fontSize: '10px',
+                  fontWeight: 500,
                   cursor: 'pointer',
                   flexShrink: 0
                 }}
@@ -334,7 +334,8 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
             padding: '14px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px'
+            gap: '12px',
+            backgroundColor: 'var(--bg-subtle, #f8fafc)'
           }}>
             {messages.map((m) => (
               <div
@@ -347,15 +348,15 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
               >
                 <div style={{
                   maxWidth: '88%',
-                  padding: '10px 13px',
-                  borderRadius: m.sender === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                  backgroundColor: m.sender === 'user' ? '#00E5FF' : 'rgba(18, 24, 38, 0.95)',
-                  color: m.sender === 'user' ? '#07090E' : '#FFFFFF',
+                  padding: '10px 12px',
+                  borderRadius: m.sender === 'user' ? '8px 8px 1px 8px' : '8px 8px 8px 1px',
+                  backgroundColor: m.sender === 'user' ? 'var(--accent-subtle, #eff6ff)' : 'var(--bg-surface, #ffffff)',
+                  color: m.sender === 'user' ? 'var(--accent-primary, #1e40af)' : 'var(--text-primary, #0f172a)',
                   fontSize: '12px',
                   lineHeight: 1.45,
                   fontWeight: m.sender === 'user' ? 600 : 400,
-                  border: m.sender === 'user' ? 'none' : '1px solid rgba(0, 229, 255, 0.25)',
-                  boxShadow: m.sender === 'user' ? '0 0 15px rgba(0, 229, 255, 0.3)' : 'none'
+                  border: m.sender === 'user' ? '1px solid var(--border-strong, #bfdbfe)' : '1px solid var(--border-color, #e2e8f0)',
+                  boxShadow: 'var(--shadow-sm)'
                 }}>
                   {m.text}
 
@@ -370,9 +371,9 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
                             fontWeight: 700,
                             padding: '2px 6px',
                             borderRadius: '3px',
-                            backgroundColor: 'rgba(0, 229, 255, 0.15)',
-                            color: '#00E5FF',
-                            border: '1px solid rgba(0, 229, 255, 0.3)',
+                            backgroundColor: 'var(--accent-subtle, #eff6ff)',
+                            color: 'var(--accent-primary, #1e40af)',
+                            border: '1px solid var(--border-strong, #bfdbfe)',
                             fontFamily: 'monospace'
                           }}
                         >
@@ -387,8 +388,8 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
                     <div style={{
                       marginTop: '6px',
                       fontSize: '10.5px',
-                      color: '#94A3B8',
-                      borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                      color: 'var(--text-muted, #64748b)',
+                      borderTop: '1px solid var(--border-color, #f1f5f9)',
                       paddingTop: '4px'
                     }}>
                       💡 {m.note}
@@ -403,7 +404,7 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
                       style={{
                         background: 'none',
                         border: 'none',
-                        color: copiedId === m.id ? '#00E676' : '#64748B',
+                        color: copiedId === m.id ? 'var(--status-verified, #16a34a)' : 'var(--text-muted, #94a3b8)',
                         fontSize: '10px',
                         cursor: 'pointer',
                         padding: '0 4px'
@@ -421,14 +422,15 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '8px 12px',
-                borderRadius: '10px',
-                backgroundColor: 'rgba(18, 24, 38, 0.8)',
+                padding: '6px 10px',
+                borderRadius: '6px',
+                backgroundColor: 'var(--bg-surface, #ffffff)',
+                border: '1px solid var(--border-color, #e2e8f0)',
                 width: 'fit-content'
               }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#00E5FF', animation: 'pulse 1s infinite' }} />
-                <span style={{ fontSize: '11px', color: '#00E5FF', fontFamily: 'monospace' }}>
-                  Scanning intelligence &amp; FIR records...
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--accent-primary, #1e40af)', display: 'inline-block' }} />
+                <span style={{ fontSize: '11px', color: 'var(--text-muted, #64748b)', fontFamily: 'monospace' }}>
+                  Cross-referencing FIR records...
                 </span>
               </div>
             )}
@@ -440,11 +442,11 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
             onSubmit={handleSend}
             style={{
               padding: '10px 12px',
-              borderTop: '1px solid rgba(0, 229, 255, 0.2)',
+              borderTop: '1px solid var(--border-color, #e2e8f0)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              backgroundColor: 'rgba(7, 10, 16, 0.95)'
+              backgroundColor: 'var(--bg-surface, #ffffff)'
             }}
           >
             <input
@@ -455,11 +457,11 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
               placeholder="Ask CrimeLens AI (e.g. Mayank Kotoli FIRs)..."
               style={{
                 flex: 1,
-                backgroundColor: 'rgba(18, 24, 38, 0.9)',
-                border: '1px solid rgba(0, 229, 255, 0.3)',
+                backgroundColor: 'var(--bg-input, #ffffff)',
+                border: '1px solid var(--border-strong, #cbd5e1)',
                 borderRadius: '6px',
-                padding: '9px 12px',
-                color: '#FFFFFF',
+                padding: '7px 10px',
+                color: 'var(--text-primary, #0f172a)',
                 fontSize: '12px',
                 outline: 'none'
               }}
@@ -467,20 +469,15 @@ export default function AIChatbotWidget({ isOpen: externalIsOpen, onToggle, onCl
             <button
               type="submit"
               disabled={isTyping || !inputVal.trim()}
+              className="btn-primary"
               style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                backgroundColor: inputVal.trim() ? '#00E5FF' : 'rgba(0, 229, 255, 0.2)',
-                color: '#07090E',
-                border: 'none',
+                width: '32px',
+                height: '32px',
                 padding: 0,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: inputVal.trim() ? 'pointer' : 'default',
-                fontWeight: 800,
-                fontSize: '14px'
+                fontSize: '13px'
               }}
             >
               ➤
