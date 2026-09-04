@@ -81,35 +81,38 @@ SIH-HACKATHON/
 - **Node.js** (v18 or higher recommended)
 - **npm** (v9 or higher)
 
-### Installation
+### Installation & Running
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/mayankkotuli099/SIH-HACKATHON.git
-   cd SIH-HACKATHON
+   git clone https://github.com/mayankkotuli099/Crime-Lens.git
+   cd Crime-Lens
    ```
 
 2. **Install dependencies**:
    ```bash
-   npm install
+   cd config && npm install
    ```
 
 3. **Start the development server**:
    ```bash
    npm run dev
    ```
+   *(Or from the repository root: `npm --prefix config run dev`)*
+
    Open [http://localhost:5173](http://localhost:5173) in your browser to launch the CrimeLens tactical terminal.
 
 ### Production Build
 
 To compile a production bundle:
 ```bash
-npm run build
+npm --prefix config run build
 ```
+*(Or inside `config/`: `npm run build`)*
 
-To preview the production build locally:
+To preview the production bundle locally:
 ```bash
-npm run preview
+npm --prefix config run preview
 ```
 
 ---
